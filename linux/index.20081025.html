@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+  <style type="text/css">
+body { font-family: sans-serif; }
+pre { font-family: monospace; }
+  </style>
+  <title>PLScsi for Linux</title>
+</head>
+<body>
+<p>Saturday, May 22, 2004</p>
+<h1><a href="http://www.bswd.com/cornucop.htm">Storage/</a> <a
+ href="..">PLScsi/</a>
+Linux/</h1>
+<table style="text-align: left; width: 100%;" border="0" cellspacing="2"
+ cellpadding="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">
+      <p>Web Services:</p>
+      <p><a href="http://www.kernel.org/">www.kernel.org/</a></p>
+      <p><a href="http://lxr.linux.no/source/">lxr.linux.no/source/</a></p>
+      <p><br>
+Downloads:<br>
+      </p>
+      <p><a href="plscsi.tar.gz">plscsi.tar.gz</a><br>
+      </p>
+      <a href="lscsi.c.txt">lscsi.c.txt</a><br>
+      <br>
+      <br>
+Doc:<br>
+      <br>
+      <a href="..">plscsi/</a><br>
+      <br>
+      <br>
+Chat:<br>
+      <p><a href="http://marc.theaimsgroup.com/?l=kernelnewbies">kernelnewbies</a><br>
+      </p>
+      <p><a href="http://marc.theaimsgroup.com/?l=linux-fsdevel">linux-fsdevel</a></p>
+      <p><a href="http://marc.theaimsgroup.com/?l=linux-ide">linux-ide</a><br>
+      </p>
+      <p></p>
+      <p><a href="http://marc.theaimsgroup.com/?l=linux-scsi">linux-scsi</a><br>
+      </p>
+      <p><br>
+See Also:</p>
+      <p><a
+ href="http://www.google.com/search?q=link:members.aol.com/plscsi/linux/">links&nbsp;to&nbsp;this&nbsp;page</a></p>
+      <p><a href="index.2004-05.html">previous&nbsp;edition</a><br>
+      </p>
+      <p><a
+ href="http://www.catb.org/%7Eesr/writings/cathedral-bazaar/cathedral-bazaar/ar01s04.html">release
+early often</a></p>
+      <p><a href="../tools/knoppix/">Knoppix
+Linux</a> (Linux via bootable CD)<br>
+      </p>
+      <p><a href="http://topologi-linux.sourceforge.net/">topologi Linux</a>
+(Run Linux in Windows)<br>
+      </p>
+      <p><a href="http://www.torque.net/sg/">sg utils</a></p>
+      <br>
+      <p> </p>
+      </td>
+      <td style="vertical-align: top;">
+      <p><br>
+      </p>
+      <br>
+      </td>
+      <td style="vertical-align: top;">
+      <p>Welcome, bienvenido,
+bienvenue.<br>
+      </p>
+      <p>To discover what PLScsi is, see the Doc.<br>
+      </p>
+      <p>Learning to use a tool like PLScsi will probably
+remind you of
+the need
+to backup often.&nbsp; To discover more specifically what destruction
+to fear, see the Doc.<br>
+      </p>
+      <p>Known bugs of PLScsi for Linux include:<br>
+      </p>
+      <p>1) FIXME: Parse the device name to default to O_RDWR |
+O_NONBLOCK for /dev/sg$n despite defaulting to O_NONBLOCK for
+/dev/scd$v /dev/hd$v.<br>
+      </p>
+      <p>2) FIXME: Teach `plscsi -w` to mean `plscsi /dev/sg* /dev/hd*
+/dev/scd*` rather than just `plscsi /dev/sg[0-9]*`.&nbsp; That is, list
+connected devices to which Linux has given newly well-known names.<br>
+      </p>
+      <p>3) FIXME: Consider substituting a default of timeout of five
+seconds for the default timeout of twenty-eight hours, as discussed at
+-X within $s.$ns in the Manual of the Doc.&nbsp;&nbsp; Meanwhile,
+people can set `-X time 5 0` to explore this alternative.<br>
+      </p>
+      <p>4) FIXME: Add -X csp for ioctl CDROM_SEND_PACKET to coexist
+with -X sgio for ioctl SG_IO, mostly for the sake of ide-cd DVD/ CD in
+Linux 2.4.<br>
+      </p>
+      <p>5) FIXME: Port back to Linux the master source code.<br>
+      </p>
+      <p>As of this writing, the master source code was last released
+as:<a href="http://members.aol.com/plscsi/mac/gcsmac.tar.gz">
+http://members.aol.com/plscsi/mac/gcsmac.tar.gz</a><br>
+      </p>
+      <p>The Linux .tar.gz here now mostly works, but isn't
+pretty.&nbsp; Sorry to say more people
+have more recently volunteered to help the Mac effort.&nbsp; The Mac
+source
+is dramatically more concise, and less culturally alien to Linux folk,
+but not yet ported back to Linux.<br>
+      </p>
+      <p>Please write to <a
+ href="mailto:p.lavarre@ieee.org?Subject=members.aol.com/plscsi/linux/">Pat
+LaVarre</a>
+to share your experience of PLScsi. </p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</body>
+</html>

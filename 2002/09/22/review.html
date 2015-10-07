@@ -1,0 +1,465 @@
+<html>
+
+<head>
+<title>PLScsi - 2002/09/22 Code Review</title>
+<style type="text/css">
+body { font-family: sans-serif; }
+pre { font-family: monospace; }
+</style>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p>
+<a href="../../../index.html">Home</a>
+</p>
+
+<h1><a name="contents"></a>Code Review of 2002/09/22 PLScsi</h1>
+
+<p><font size="2">(This page was </font>
+<a href="http://members.aol.com/plscsi/news.html">
+<font size="2">http://members.aol.com/plscsi/2002/09/22/review.html</font></a>
+<font size="2"> sometime after Saturday, November 2, 2002 began.)</font></p>
+
+<p>
+Welcome to a review of the source code posted as: <a href="../../../2002/09/22/plscsi.zip">
+../../../2002/09/22/plscsi.zip</a>
+</p>
+
+<p>
+We review:
+</p>
+
+<blockquote>
+<p>
+<a href="#if-of-scsi-cpp">the #if of "scsi.cpp"</a><br>
+<a href="#if-of-h">the #if of "*.h"</a><br>
+<a href="#if-of-cpp">the #if of "*.cpp"</a>
+</p>
+</blockquote>
+
+<p>Please <a
+href="mailto:p.lavarre@ieee.org">mailto:p.lavarre@ieee.org</a>
+ any comments or questions you have about this web
+page.
+</p>
+
+<hr>
+<p><a href="#contents">Contents</a></p>
+<a name="if-of-scsi-cpp"></a>
+<h1>the #if of "scsi.cpp"</h1>
+
+<p>
+Here we review the #if of "scsi.cpp" of
+<a href="../../../2002/09/22/plscsi.zip">
+../../../2002/09/22/plscsi.zip</a>
+</p>
+
+<p>
+Perhaps you can disentangle this more elegantly?
+</p>
+
+<p>
+We support four kinds of connection: sgio, sptx,
+winaspi, dosaspi, on three platforms.  As yet, Linux
+talks only sgio.  Windows talks only sptx and winaspi.
+Dos talks only dosaspi.
+</p>
+
+<p>
+As we learn to support more kinds of connection, e.g.
+a virtual Scsi device passing thru to a backing file,
+etc., then all platforms will be supporting more than
+one kind of connection.
+</p>
+
+<p>
+While enumerating devices, we want to newScsi once,
+and then scsiOpen/scsiClose repeatedly, at least
+until we code a deleteScsi to recover the memory that
+newScsi leaks.
+</p>
+
+<p>
+We want to scsiSetErr after we newScsi but before we
+scsiOpen, so that we can discard stderr while
+enumerating devices.
+</p>
+
+<p>
+Given a device name, we want scsiOpen to try to open
+each possible kind of connection, but stop after the
+first success.
+</p>
+
+<p>
+Given an open connection, we want many calls to apply
+only to that open connection: scsiLimitSense,
+scsiLimitSeconds, scsiSay, scsiGetLength,
+scsiGetSense.
+</p>
+
+<p>
+For example, we want to be able to set a Linux sgio
+timeout to more than 30 hours, even though the
+winaspi scsiLimitSeconds rejects such an argument as
+being inexpressibly out-of-range.
+</p>
+
+<p>
+Of all we're doing in "scsi.cpp", only these calls
+immediately above look like virtual method invocations.
+</p>
+
+<p>
+scsiReadName resembles scsiOpen in that scsiReadName
+consults each possible kind of connection in order to
+list all possible devices names, but differs by
+retrying til each kind of connection reports
+end-of-list, rather than stopping after the first
+success.
+</p>
+
+<p>
+scsiSwallowArg is more like scsiOpen: when first it
+finds a kind of connection that accepts an arg
+(passed in from the command line via -X), it then
+disables all the remaining kinds of connection from
+future consideration by scsiOpen or scsiReadName or
+scsiSwallowArg.
+</p>
+
+<p>
+If #if in the .cpp are evil, then how should we code
+all this?
+</p>
+
+<p>
+We hesitated to make each platform support every kind
+of connection, by the rule of trying not to burden
+each platform with the troubles of the other.  For
+example, #if __MSDOS__ has no sgio.
+</p>
+
+<p>
+We hesitated to make each kind of connection support
+all the operations of the others, by the same rule.
+For example, dosaspi.cpp has no aspiLimitSeconds,
+and *aspi.cpp has no aspiClose.
+</p>
+
+<p>
+We hesitated to standardise on sgio.  First of all,
+that would discriminate against all the clueless
+programmers that think Windows is the whole world.
+Also, over the years, sgio hasn't been stable, and it
+currently includes many options that we have never
+tried to exercise, options that we don't yet
+understand.
+</p>
+
+<p>
+In place of #if in "scsi.cpp", what should we do?
+</p>
+
+<hr>
+<p><a href="#contents">Contents</a></p>
+<a name="if-of-h"></a>
+<h1>the #if of "*.h"</h1>
+</p>
+
+<p>
+Here we review the #if of the *.h of
+<a href="../../../2002/09/22/plscsi.zip">
+../../../2002/09/22/plscsi.zip</a>
+</p>
+
+<p>
+&gt; winaspi.h<br>
+&gt; wnaspi32.h<br>
+</p>
+
+<p>
+These .h files we didn't write, we copied unchanged, so
+to these we make no changes.
+</p>
+
+<p>
+The only other .h are: dosaspi.h plscsi.h winsg.h
+</p>
+
+<p>
+&gt; dosaspi.h:#ifndef DOSASPI_H<br>
+&gt; plscsi.h:#ifndef PLSCSI_H<br>
+</p>
+
+<p>
+These #if... exist to compile the .h file once only
+no matter if repeatedly included.  We could/should fix
+winsg.h to allow this also.
+</p>
+
+<p>
+&gt; plscsi.h:#ifdef __cplusplus<br>
+</p>
+
+<p>
+This #if... we need to link with .c code.
+</p>
+
+<p>
+We chose .cpp partly because some of us like the c99 feature of
+declaring a var where we initialise it and partly
+because the MS $$ Win tools expect people to use .cpp.
+</p>
+
+<p>
+&gt; winsg.h:#ifdef _WIN32<br>
+</p>
+
+<p>
+This #if... is a comment, redundant with the / * * /
+comment above it that says winsg.h exists to:
+</p>
+
+<p>
+Pretend to link with Linux SG_IO when compiled for
+Windows.
+</p>
+
+<p>
+That is, given this file, we can use a Windows
+compiler to confirm in our Linux source we have no
+silly compile errors, though maybe we still have link
+errors and runtime bugs.
+</p>
+
+<p>
+&gt; plscsi.h:#if 0<br>
+&gt; plscsi.h:#include <stdio.h> /* FILE ... */<br>
+&gt; plscsi.h:#endif<br>
+</p>
+
+<p>
+The issue here is how to document that we need names
+like FILE defined for plscsi.h to make sense.
+</p>
+
+<p>
+[[[We've since heard the argument, paraphrased from K&amp;R,
+that if we use FILE in a .h, then we should #include
+a definition of it, else a caller could #include
+a definition other than what we used when compiling the code.]]]
+</p>
+
+<p>
+&gt; plscsi.h:#ifdef __MSDOS__<br>
+&gt; ...<br>
+&gt; #define CALLOC farcalloc<br>
+</p>
+
+<p>
+Maybe these #if... we like?
+</p>
+
+<p>
+These exist to let plscsi work with more than INT_MAX
+bytes of memory in places where INT_MAX is just x7FFF,
+such as the free DOS compilers
+that work no matter what we do beyond the first 640KiB.
+</p>
+
+<p>
+&gt; plscsi.h:#ifndef _WIN32<br>
+&gt; plscsi.h:#ifndef __MSDOS__<br>
+</p>
+
+<p>
+These exist because we don't have good `make`
+solutions for Dos & Windows.
+</p>
+
+<p>
+In Dos CLI we build *.c*,
+because we don't know the 8.3 names of our source files.
+In Dos GUI and Win GUI we add *.c* to the build,
+partly because the binary (not text) Makefile of the
+Win GUI is Huge, even when .zip compressed.
+</p>
+
+<p>
+&gt; plscsi.h:#ifdef DOSASPI<br>
+&gt; plscsi.h:#ifdef WINASPI<br>
+</p>
+
+<p>
+These exist to make #ifdef XXXASPI become shorthand
+for #if (defined(DOSASPI) | defined(WINASPI)).
+</p>
+
+<p>
+Some of our development tools (e.g. display only the code
+that compiles) understand a single short #ifdef like
+that better than than the otherwise equivalent, newer,
+longer form.
+</p>
+
+<p>
+&gt; plscsi.h:#ifdef XXXASPI<br>
+&gt; plscsi.h:#ifdef SGIO<br>
+&gt; plscsi.h:#ifdef SPTX<br>
+</p>
+
+<p>
+These exist to avoid declaring routines that don't
+exist.  These help make a compile warning out of what
+would otherwise be a link error.
+</p>
+
+<hr>
+<p><a href="#contents">Contents</a></p>
+<a name="if-of-cpp"></a>
+<h1>the #if of "*.cpp"</h1>
+
+<p>
+Here we review the #if of the *.cpp of
+<a href="../../../2002/09/22/plscsi.zip">
+../../../2002/09/22/plscsi.zip</a>
+</p>
+
+<p>
+&gt; cl.cpp<br>
+&gt; plscsi.cpp<br>
+</p>
+
+<p>
+These are free of the #if evil.
+</p>
+
+<p>
+&gt; scsistub.cpp:        #ifdef SGIO<br>
+&gt; ...<br>
+</p>
+
+<p>
+These are a short form of what we see in "scsi.cpp".
+When we fix "scsi.cpp", maybe these will disappear?
+</p>
+
+<p>
+Indeed, the idea of "scsistub.cpp" is to be as small
+as possible: to show how to talk to a specific
+platform, such as Linux ioctl SG_IO, without having
+to involve any #if.
+</p>
+
+<p>
+If we really do kill of the #if of "scsi.cpp", then
+maybe "scsistub.cpp" goes away all together.  We were
+pleased to see how dramatically it shrunk between the
+last two revisions of plscsi.  We took that shrinkage
+as a sign that we were moving in the right direction.
+</p>
+
+<p>
+&gt; scsi.cpp:#ifdef SGIO<br>
+&gt; ...<br>
+</p>
+
+<p>
+These are legion, and Evil.  How to be less evil
+there has us stumped. See
+<a href="#if-of-scsi-cpp">the #if of "scsi.cpp"</a><br>
+</p>
+
+<p>
+&gt; dosaspi.cpp:#ifdef DOSASPI<br>
+&gt; sgio.cpp:#ifdef SGIO<br>
+&gt; sgio.cpp:#ifdef _WIN32<br>
+&gt; sptx.cpp:#ifdef SPTX<br>
+&gt; wideint.cpp:#ifdef __MSDOS__<br>
+&gt; winaspi.cpp:#ifdef WINASPI<br>
+</p>
+
+<p>
+These have #if only because of the make troubles
+discussed in
+<a href="#if-of-h">the #if of "*.h"</a>
+</p>
+
+<p>
+We hear some may
+have some kind of development tool that chokes when
+lots of code outside of an .h file is enclosed by #if?
+Maybe people lose colour in the text?
+</p>
+
+<p>
+&gt; sgio.cpp:#ifdef _WIN32<br>
+</p>
+
+<p>
+Except also this #if exists so we can duck the work of
+kluging Win C compilation environments to understand
+Linux-specific code like:
+</p>
+
+<p>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#include <scsi/sg.h>
+</p>
+
+<p>
+&gt; wideint.cpp:    #ifdef __MSDOS__<br>
+&gt; wideint.cpp:    #ifdef __MSDOS__<br>
+</p>
+
+<p>
+And also these appear, like the #if of "winsg.h", to
+scream that the code enclosed (here a not-flat
+address space) is extremly platform-specific.
+</p>
+
+<p>
+&gt; scl.cpp:#if (_WIN32 || __MSDOS__)<br>
+&gt; scl.cpp:#ifdef __MSDOS__<br>
+</p>
+
+<p>
+These decide by platform what to #include to allow
+binary data to pipe thru plscsi.
+</p>
+
+<p>
+In Linux, this takes no work, but Dos & Windows each
+require a different kind of work.  Again, it's not
+easy (I actually never discovered precisely how) to
+make one platform understand the #include syntax of
+the other.
+</p>
+
+<p>
+&gt; scl.cpp:#if (_WIN32 || __MSDOS__)<br>
+&gt; scl.cpp:#if (_WIN32 || __MSDOS__)<br>
+&gt; scl.cpp:#if (_WIN32 || __MSDOS__)<br>
+&gt; scl.cpp:#if (_WIN32 || __MSDOS__)<br>
+</p>
+
+<p>
+These substitute "set" for "export", "NUL" for
+"/dev/null", and insert the work Dos & Windows
+require to allow binary data to pipe thru plscsi.
+</p>
+
+<hr>
+<p><a href="#contents">Contents</a></p>
+
+<p>Please <a
+href="mailto:p.lavarre@ieee.org">mailto:p.lavarre@ieee.org</a>
+ any comments or questions you have about this web
+page.</p>
+
+</body>
+</html>

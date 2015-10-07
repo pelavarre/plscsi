@@ -1,0 +1,16 @@
+class Wri {
+
+	public static void main(String[] strings) throws Exception {
+		System.err.println("new " + strings[0]);
+		java.io.RandomAccessFile raf = new java.io.RandomAccessFile(strings[0], strings[1]);
+		long lo = Long.parseLong(strings[2]);
+		System.err.println("seek " + lo + " = seek x" + Long.toHexString(lo).toUpperCase());
+		raf.seek(lo);
+		System.err.println("write");
+		raf.write(0);
+		System.err.println("close");
+		raf.close();
+		System.err.println("exit");
+	}
+
+}

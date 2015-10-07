@@ -1,0 +1,7 @@
+dd if=/dev/zero of=storage.bin bs=1M count=1
+sudo losetup /dev/loop0 storage.bin
+sudo mkdir /mnt/loop0
+sudo mount /dev/loop0 /mnt/loop0/
+sudo cp /lib/modules/2.4.20-xfs/kernel/drivers/usb/storage/* /mnt/loop0/
+sudo umount /mnt/loop0/
+sudo mount /dev/loop0 /lib/modules/2.4.20-xfs/kernel/drivers/usb/storage/

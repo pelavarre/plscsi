@@ -1,0 +1,163 @@
+<html>
+
+<head>
+<title>PLScsi for Dos</title>
+<style type="text/css">
+body { font-family: sans-serif; }
+pre { font-family: monospace; }
+</style>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p>
+<a href="index.html">Home</a> &nbsp; &nbsp; &nbsp;
+<a href="linux.html">Linux</a> &nbsp; &nbsp; &nbsp;
+<a href="windows.html">Windows</a> &nbsp; &nbsp; &nbsp;
+Dos &nbsp; &nbsp; &nbsp;
+<a href="mac.html">Mac</a>
+</p>
+
+<p>
+Last updated Saturday, December 21, 2002 by <a href="mailto:p.lavarre@ieee.org">p.lavarre@ieee.org</a>
+</p>
+
+<h1>PLScsi for Dos</h1>
+
+<p>
+For IBM / Microsoft DOS ...
+</p>
+
+<p>
+<strong>Documentation:</strong>
+</p>
+<blockquote>
+<p>
+<a href="news.html">Our News</a>
+</p><p>
+<a href="why.html">Why Bother With PLScsi</a>
+</p><p>
+<a href="syntax.html">The Syntax of a SCSI Command Line</a>
+</p>
+</blockquote>
+
+<p>
+<strong>Application:</strong>
+</p>
+<blockquote>
+<p>
+<a href="2002/09/22/dos/plscsi.exe">2002/09/22/dos/plscsi.exe</a>
+= the `plscsi` application, ready to run,
+except please backup before running it
+</p>
+</blockquote>
+
+<p>
+<strong>Source Code:</strong>
+</p>
+<blockquote>
+<p>
+<a href="2002/09/22/plscsi.zip">2002/09/22/plscsi.zip</a>
+= `make` the `plscsi` application
+</p><p>
+<a href="2002/09/22/dosaspi.cpp.txt">2002/09/22/dosaspi.cpp.txt</a>
+= just the .c that makes <strong>DOS SCSIMGR$</strong> talk like SCSI elsewhere
+</p><p>
+<a href="2002/09/22/scsistub.cpp.txt">2002/09/22/scsistub.cpp.txt</a>
+= example .c for &quot;write once, talk anywhere&quot; with SCSI
+</p>
+</blockquote>
+
+<p>
+<strong>Related Tools:</strong>
+</p>
+<blockquote>
+<p>
+<a href="tools/tcc.html">tools/tcc.html</a>
+= free Borland `tcc`, albeit with INT_MAX = 32767, without `make`, and without `gas`
+</p><p>
+<a href="http://www.nu2.nu/scsitool/">
+scsitool</a> targets Dos, might work in Win 95/98/ME
+</p><p>
+<a href="windows.html">PLScsi for Windows</a> 95/98/ME, runs in a Dos box, talks thru a closely related ASPI
+</p>
+</blockquote>
+
+<p>
+<strong>Links:</strong>
+</p>
+<blockquote>
+<p>
+
+</p><p>
+<a href="aspisdk/include/winaspi.h.txt">aspisdk/include/winaspi.h.txt</a>
+= just the main Win16 .h of the <a href="http://www.zianet.com/jgray/dat/files/aspisdk.exe">Adaptec ASPI SDK</a> (1,566,545 bytes)
+</p><p>
+<a href="aspisdk/include/dosaspi.h.txt">dosaspi.h</a>
+= what we wrote to wrap the Win16 winaspi.h so that it works in Dos
+</p><p>
+<a href="aspisdk/docs/aspidos.txt">aspisdk/docs/aspidos.txt</a>
+= talk of Dos ASPI
+</p><p>
+<a href="199402/residual.txt">199402/residual.txt</a>
+= some change history of Dos ASPI
+</p><p>
+<a href="http://www.nu2.nu/aspi/">Bart's page about ASPI</a>
+</p><p>
+Microsoft: <a href="http://msdn.microsoft.com/library/en-us/win9x/excluse_0rjn.asp">
+Special Considerations for MS-DOS Based Applications</a> i.e. Dos ASPI in a Full Screen Window
+</p>
+</blockquote>
+
+<p>
+<strong>Frequently asked questions</strong> include:
+</p>
+<blockquote>
+
+<p>
+<strong>1: Success looks like what?</strong>
+</p><p>
+<pre>
+C:\> plscsi -w
+set PLSCSI=0.0.0        // @ LG       DVD-ROM DRN8080B 1.11
+
+C:\> set PLSCSI=0.0.0
+
+> plscsi -v
+x 00000000 12 00:00:00 24 00 .. .. .. .. .. .. .. .. .. .. "R@@@$@"
+x 00000000 05:80:00:31 5B:00:00:00 4C:47:20:20 20:20:20:20 "E@@1[@@@LG      "
+x 00000010 44:56:44:2D 52:4F:4D:20 44:52:4E:38 30:38:30:42 "DVD-ROM DRN8080B"
+x 00000020 31:2E:31:31 .. .. .. .. .. .. .. .. .. .. .. .. "1.11"
+set PLSCSI=\\.\E:       // @ LG       DVD-ROM DRN8080B 1.11
+// 0 = plscsi.main exit int
+
+C:\>
+</pre>
+</p>
+
+<p>
+<strong>2: Device not found?</strong>
+</p><p>
+Did your CONFIG.SYS load some other .SYS that is an ASPI SCSIMGR$ device driver,
+such as the TAISATAP.SYS rumoured to appear on a Win ME boot floppy?
+</p>
+
+<p>
+<strong>3: Write once, breaks everywhere?</strong>
+</p><p>
+See
+<a href="news.html">Our News</a>
+</p>
+
+</blockquote>
+
+<p>
+Last updated Saturday, December 21, 2002 by <a href="mailto:p.lavarre@ieee.org">p.lavarre@ieee.org</a>
+</p>
+
+<p>
+<a href="index.html">Home</a>
+</p>
+
+</body>
+</html>

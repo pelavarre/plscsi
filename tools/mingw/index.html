@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+  <style type="text/css">
+body { font-family: sans-serif; }
+pre { font-family: monospace; }
+  </style>
+  <title>PLScsi Tools MinGW Review</title>
+</head>
+<body>
+<h1><a href="../../">PLScsi/</a>&nbsp; <a href="../">Tools/</a>&nbsp;
+MinGW/<br>
+</h1>
+<p>Updated on Saturday, September 27, 2003<br>
+</p>
+<table cellpadding="2" cellspacing="2" border="0"
+ style="text-align: left; width: 100%;">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">
+      <p>&nbsp;</p>
+      <p>See Also:</p>
+      <p><a
+ href="http://www.google.com/search?q=link:members.aol.com/plscsi/tools/mingw/">links&nbsp;to&nbsp;this&nbsp;page</a> </p>
+      <p><a href="http://www.mingw.org">mingw</a>&nbsp;home&nbsp;page</p>
+      <p><a href="http://www.gnu.org/">gnu</a>&nbsp;home&nbsp;page</p>
+      <p><a href="http://groups.google.com/groups?group=gnu.gcc.help">gnu.gcc.help</a><br>
+      </p>
+      <p><a href="../tcc.html">tcc</a>&nbsp;dos&nbsp;cc&nbsp;faq</p>
+      <p>&nbsp;<br>
+      </p>
+      <p>Download:</p>
+      <p><a
+ href="http://prdownloads.sf.net/mingw/MinGW-3.1.0-1.exe?download">MinGW&nbsp;3.1.0-1
+gcc/g++&nbsp;for&nbsp;Windows</a></p>
+      </td>
+      <td style="vertical-align: top;">
+      <p>&nbsp;</p>
+      </td>
+      <td style="vertical-align: top;">
+      <h1>1. MinGW is ...</h1>
+      <p><span style="font-weight: bold;">a) Hard to spell and hard to
+pronounce.</span> </p>
+      <p><span style="font-weight: bold;">b) </span>A <span
+ style="font-weight: bold;">compiler for Windows of</span> the <span
+ style="font-weight: bold;">C</span> programming language. </p>
+      <p style="margin-left: 40px;">Specifically MinGW is a version of
+Gnu gcc/g++.</p>
+      <p style="margin-left: 40px;">The gcc/g++ of "Cygwin" has more
+history as a free gcc/g++ for Windows, but Cygwin builds .exe that don't
+run unless you also install a Cygwin dll.&nbsp; And as yet we have
+failed to find a Cygwin install that works without a network connection.</p>
+      <p><span style="font-weight: bold;">c) Free &amp; effective.</span> </p>
+      <p style="margin-left: 40px;">We use Win <span
+ style="font-weight: bold;">64-bit i/o</span> to read/ write/ seek in
+large files, we use Win LoadLibrary to link dynamically with <span
+ style="font-weight: bold;">.dll's</span>, we use Win DeviceIoControl
+to pass through Scsi, we use __declspec(dllexport) to build our own
+.dll's. </p>
+      <p><span style="font-weight: bold;">d) Hard to find to download.</span></p>
+      <p style="margin-left: 40px;">The MinGW home page offers a large
+collection of diverse development tools.&nbsp; If you're looking just
+for gcc/g++, then you actually want to page around til you find the
+package plainly labelled "MinGW", not the name MinGW followed by some
+other abstruse term. </p>
+      <p><span style="font-weight: bold;">e) Hard to learn &amp; help.</span></p>
+      <p style="margin-left: 40px;">Once upon a time we carefully
+researched and composed three suggestions.&nbsp; We failed to find a
+readily available, enduring place we could post our suggestions, we may
+have lost them by now. </p>
+      <p><span style="font-weight: bold;">f) Significantly compatible
+with 1989 ANSI/ISO Standard C </span></p>
+      <p style="margin-left: 40px;">Everything we've tried so far works.</p>
+      <p><span style="font-weight: bold;">g) Significantly incompatible
+with Linux C. </span></p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;"></span>For
+example, printf and scanf of standard C 64-bit %llX and %lld don't yet
+work, instead you have to write Microsoft C: %I64X and %I64d.&nbsp;
+Possibly this incompatibility is a natural consequence of building .exe
+that work without installing a Cygwin .dll: the C programming language
+resists in many ways if you try to add your own % escapes to printf and
+scanf.</p>
+      <p><span style="font-weight: bold;">h) Significantly incompatible
+with Microsoft Visual Studio C.</span> </p>
+      <p style="margin-left: 40px;">For example, the 22 September 2002
+version of plscsi doesn't compile.</p>
+      <p style="margin-left: 40px;">To workaround this ourselves ... </p>
+      <p style="margin-left: 40px;">We resorted to writing our own
+"ntddscsi.hpp".&nbsp; [By February 2003 we had heard the mingw folk are
+moving towards supplying an &lt;ntddscsi.h&gt;, by way of the w32api
+subpackage version 2.1 released 2002 November 24.]</p>
+      <p style="margin-left: 40px;">We renamed our code to .cpp from
+.c.&nbsp; We thereby have to substitute g++ for gcc, we lose automagic
+type conversion from (void *), etc.&nbsp; But by choosing .cpp we also
+persuade mingw to allow the inline declarations we use to minimise our
+use of the gazillion Microsoft C typedef's.&nbsp; And we can release .c
+together with .cpp: we write the standard .c, then automatic editing
+tools produce the .cpp that pleases Microsoft.</p>
+      <p style="margin-left: 40px;">We edited lines of source that MSVC
+swallowed without complaint but gcc refused to compile, such as matching
+redundant typedef.</p>
+      <p style="margin-left: 40px;">Please write <a
+ href="mailto:p.lavarre@ieee.org">Pat LaVarre</a> if you want us to
+release a version of plscsi that includes those changes. </p>
+      <h1>2. MinGW can build Win 9X/ ME/ 2K/ XP .dll's.</h1>
+      <p>We have ourselves built .dll's that connect with Java, .dll's
+that connect with Forth, and .dll's that run in place of Wnaspi32.dll.</p>
+      <p>For example, to build our own Wnaspi32.dll, we wrote:</p>
+      <pre style="margin-left: 40px;"><big>__declspec(dllexport)<br>extern DWORD SendASPI32Command(void * v) { .... }<br><br>__declspec(dllexport)<br>extern DWORD GetASPI32SupportInfo(void) { ... }</big></pre>
+      <p>and then we tried: </p>
+      <pre style="margin-left: 40px;"><big>g++ -Wall -shared -Wl,--add-stdcall-alias -o wnaspi32.dll wnaspi32.cpp gccscsi.c wscsi.cpp</big></pre>
+      <pre style="margin-left: 40px;"><big>strip wnaspi32.dll</big></pre>
+      <p>That --add-stdcall-alias option seems to work, but we hit on
+this technique by searching at random without understanding.</p>
+      <p>We found many techniques that seemingly work:</p>
+      <pre style="margin-left: 40px;"><big>gcc -shared -Wl,--add-stdcall-alias -I ...<br><br>gcc -shared -Wl, --kill-at -I ...<br><br>gcc -shared -I ... but #define each exported name to prepend an underscore<br><br>gcc -shared -I ... of a Java JNI .dll but abuse #undef JNICALL to omit the keyword __stdcall</big></pre>
+      <p>Once we tried but failed to persuade the gnu.gcc.help folk to
+help us tradeoff these different approaches.</p>
+      <h2>3. Changes</h2>
+      <p>Thursday, September 27, 2003:&nbsp; Revise style: move the
+links to the upper left, out of the text.&nbsp;&nbsp; Move page to
+mingw/ from mingw.html.&nbsp; Update download instructions.</p>
+      <p>Tuesday, February 18, 2003:&nbsp; Share the story of
+successfully building plscsi.exe for Win 9X/ ME/ 2K/ XP.</p>
+      <p>December 7, 2002:&nbsp; Publish!</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p> Posted by <a href="mailto:p.lavarre@ieee.org">Pat LaVarre</a></p>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<html>
+<head>
+<title>Generic USB Storage Is</title>
+<style type="text/css">
+body { font-family: sans-serif; }
+pre { font-family: monospace; }
+</style>
+</head>
+<body bgcolor="#FFFFFF">
+
+<p>
+<a href="../index.html">PLScsi Home</a>
+</p>
+
+<p>
+Last updated Saturday, December 21, 2002 by <a href="mailto:p.lavarre@ieee.org">p.lavarre@ieee.org</a>
+</p>
+
+<h1>Generic USB Storage Is</h1>
+
+<p>
+What is the definition of generic USB storage?  If you want USB storage to just plain work, without having to install a driver for it, what does that mean?
+</p>
+
+<p>
+We're not sure, from the hints we can find in
+<a href="../devices.html">
+../devices.html</a>
+</p>
+
+<p>
+But we've heard a key point is the choice of bInterfaceClass bInterfaceSubClass bInterfaceProtocol, most recently in:
+</p>
+
+<blockquote>
+<p>
+Subject: [usb-mass:0137] generic is<br>
+Date: Thu, 19 Dec 2002 16:05:41 -0700
+</p>
+</blockquote>
+
+
+
+<h2>Linux:</h2>
+
+<p>
+Maybe Linux accepts:
+</p>
+
+<blockquote>
+<p>
+<strong>x 08 (01|02|03|04|05|06) (00|01|50)</strong>
+</p>
+</blockquote>
+
+<p>
+Linux ships with much source, and Linux folk post much of it online.
+Relevant source includes:
+</p>
+
+<blockquote>
+<p>
+<a href="http://lxr.linux.no/ident?i=storage_probe">
+http://lxr.linux.no/ident?i=storage_probe</a><br>
+<a href="http://lxr.linux.no/ident?i=storage_usb_ids">
+http://lxr.linux.no/ident?i=storage_usb_ids</a><br>
+<a href="http://lxr.linux.no/source/drivers/usb/storage/usb.c?v=2.4.19#L128">
+http://lxr.linux.no/source/drivers/usb/storage/usb.c?v=2.4.19#L128</a>
+</p>
+</blockquote>
+
+
+
+<h2>Windows</h2>
+
+<p>
+Maybe Win ME/2K/XP accepts:
+</p>
+
+<blockquote>
+<p>
+<strong>x 08 (02|05|06) 50.</strong>
+</p>
+</blockquote>
+
+<p>
+Microsoft often ships source code named C:/Windows/inf/usbstor.inf that includes a fragment like:
+</p>
+
+<blockquote>
+<p>
+[Generic]<br>
+%GenericBulkOnly.DeviceDesc%=USBSTOR_BULK, USB\Class_08&SubClass_02&Prot_50<br>
+%GenericBulkOnly.DeviceDesc%=USBSTOR_BULK, USB\Class_08&SubClass_05&Prot_50<br>
+%GenericBulkOnly.DeviceDesc%=USBSTOR_BULK, USB\Class_08&SubClass_06&Prot_50
+</p>
+</blockquote>
+
+
+
+<h2>DOS:</h2>
+
+<p>
+DOS per se has no knowledge of USB.
+BIOS vary over what they accept.
+We've seen some accept only old drives,
+which suggests they don't accept anything as generic,
+but just have a list of blessed devices.
+Can that really be true?
+</p>
+
+
+
+<h2>Mac:</h2>
+
+<p>
+Maybe Mac accepts:
+</p>
+
+<blockquote>
+<p>
+<strong>x 08 xx (00|01|50)</strong>
+</p>
+</blockquote>
+
+<p>
+Gurus who know, if only we could get them to answer, hang out at
+<a href="http://lists.apple.com/mhonarc/ata-scsi-dev/">
+http://lists.apple.com/mhonarc/ata-scsi-dev/</a>
+</p>
+
+<p>
+We've heard the MacOS X matching rules
+are text you can see only if you use the GUI,
+and the MacOS rules before that were inconsistently structured binary code.
+</p>
+
+</body>
+</html>

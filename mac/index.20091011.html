@@ -1,0 +1,349 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+  <style type="text/css">
+body { font-family: sans-serif; }
+pre { font-family: monospace; }
+  </style>
+  <title>PLScsi for Mac</title>
+</head>
+<body>
+<p>Updated on Sunday, October 11, 2009 by <a
+ href="mailto:p.lavarre@ieee.org?Subject=members.aol.com/plscsi/mac/">Pat
+LaVarre</a><br>
+</p>
+<h1><a href="http://www.bswd.com/cornucop.htm">Storage/</a> <a
+ href="../">PLScsi/</a> Mac/</h1>
+<hr>
+<p>
+<a href="http://tinyco.de/2009/02/04/writing-a-mac-osx-usb-device-driver-with-scsi-pass-through.html">http://tinyco.de/2009/02/04/writing-a-mac-osx-usb-device-driver-with-scsi-pass-through.html</a>
+is the only open source example I know
+of someone who's gone and fixed the Mac kernel
+to support Windows DeviceIoControl SCSI_PASS_THROUGH_DIRECT
+like it should natively.
+</p>
+<p>
+The old text below discusses how running the kernel as misdelivered by Apple
+lets you match that Windows service
+only when your device self-identifies as
+T10.org PeripheralDeviceType (PDT) x05 Dvd/Cd
+and otherwise NOT!
+</p>
+<p>
+Kudos to Apple's (reasonably free reasonably public) ata-scsi-dev list
+for bringing the TinyCo.de work to my attention.
+</p>
+<p>
+Send me e-mail to tell me you actually exist, making time to read this page,
+and I might get around to formatting it nicely. So far in my own life
+I haven't made the time to develop Mac OS X kernel patches myself,
+so long as we agree to discount
+mostly obsolete Open Mac Boot Forth exercises.
+</p>
+<hr>
+<p>Updated on Thursday, July 15, 2004 by <a
+ href="mailto:p.lavarre@ieee.org?Subject=members.aol.com/plscsi/mac/">Pat
+LaVarre</a><br>
+</p>
+<p> Welcome, bienvenido, bienvenue!&nbsp; Per your kind encouragement,<br>
+</p>
+<p>We have the 2004-07-14: </p>
+<p style="margin-left: 40px;"><a href="gcsmac.tar.gz">gcsmac.tar.gz</a></p>
+<p>That's plscsi almost working on the Mac for "authoring" devices.<br>
+</p>
+<p>Known issues appear in blog if you search for "Mac" among the: <a
+ href="http://plavarre.blog-city.com/read/579210.htm">plscsi issues</a><br>
+</p>
+<p>"Almost working" here now means only the gccscsi layer: as yet back
+port completed of the command-line parsing.&nbsp; Also no examples yet,
+apart from op x12 "INQUIRY".<br>
+</p>
+<p>Nastiest remaining technical issue is the naming of devices.&nbsp;
+Mac OS X naturally gives no name to the device: it's just the n-th
+"authoring" device found.&nbsp; Possibly we should learn to make the
+free BSD disc name work, such as /dev/disk2.<br>
+</p>
+<p>Second nastiest remaining technical issue are the significant side
+effects of the open/ close in the launch-open-ioctl-close-exit sequence
+that's fundamental to the idea of plscsi at the command line.&nbsp; In
+Mac OS X, open works only if preceded by diskutil unmount (that's
+"unmount" not "umount"), and close provokes automount, ouch.<br>
+</p>
+<p>[Note: You got this update to this web page courtesy the bug in
+Mozilla Composer that often substitutes file: links for relative http:
+links.&nbsp; The PLScsi/ link here above was broken that way.]<br>
+</p>
+<hr style="width: 100%; height: 2px;">
+<p>Per the progress blogged at: </p>
+<p style="margin-left: 40px;"><a
+ href="http://plavarre.blog-city.com/read/531013.htm">to plscsi for Mac
+OS X from "autut"</a> </p>
+<p>Mac OS X by design passes SCSI thru to "authoring" devices without
+root privilege, yet to no other devices despite root privilege, for
+reasons that <a href="http://lists.apple.com/mhonarc/ata-scsi-dev/">ata-scsi-dev</a>
+finds ineffable.&nbsp; We now have plscsi working well enough on the Mac
+to hope to discover what a Mac OS X "authoring" device is in terms of
+t10.org primitives. </p>
+<p>Our first guess: to connect without kext, a device has to claim PDT
+x05 = MMC and then report DVD/ CD writable in legacy mode page
+x2A.&nbsp; That definition would make an "authoring" device out of any
+standard device that writes CD-R, CD-RW, DVD-R, DVD-RW, or
+DVD-RAM.&nbsp; But that definition would exclude DVD+RW and other MMC
+that didn't also write one of those other kinds of discs, but maybe no
+such devices exist.</p>
+<hr>
+<p> Seen 2004-03-27: </p>
+<pre>$ # _1 _2 _3 _4 _5 _6 _7 _8 _9 _A _B _C _D _E _F<br>$ <br>$ ./inq<br>"PIONEER " "DVD-RW  DVR-104 " "A227"<br>$ <br>$ ./inq s0<br>x 12 00 00 00 24 00<br>x 05 80 00 32 5B 00 00 00 50 49 4F 4E 45 45 52 20 44 56 44 2D 52 57 20 20 44 56 52 2D 31 30 34 20 41 32 32 37<br>"PIONEER " "DVD-RW  DVR-104 " "A227"<br>$ <br>$ ./rc s0<br>x 25 00 00 00 00 00 00 00 00 00<br>x 70 00 02 00 00 00 00 0E 00 00 00 00 3A 00 00 00 00 00<br>file plscsi.c func yesx line 401<br>$ <br>$ # insert disk, wait for mount on Desktop<br>$ <br>$ diskutil unmount "/Volumes/Virtual PC 5.0"/<br>Volume /Volumes/Virtual PC 5.0/ unmounted<br>$ <br>$ ./rc s0<br>x 25 00 00 00 00 00 00 00 00 00<br>x 00 00 25 1E 00 00 08 00<br>$ <br>$ ./dn s0<br>sp_open: -8 = -x8<br>$ <br>$ diskutil unmount "/Volumes/Virtual PC 5.0"/<br>Volume /Volumes/Virtual PC 5.0/ unmounted<br>$ <br>$ ./dn s0<br>x 1B 00 00 00 00 00<br>$ <br></pre>
+<hr>
+<p>As of now, our latest success was passing -i x24 -y "12 00:00:00 24
+00", to an ATAPI DVD-RW and a USB DVD-RAM, thru a Mac OS X 10.3.2,
+without having installed the Developer's disc needed to rebuild the code:<br>
+<span style="font-family: courier new,courier,monospace;"><br>
+<span style="font-weight: bold;">$ ./spinq 0</span><br
+ style="font-weight: bold;">
+<span style="font-weight: bold;">HL-DT-STDVDRAM GSA-4081BA100</span><br
+ style="font-weight: bold;">
+<span style="font-weight: bold;">$ ./spinq 1</span><br
+ style="font-weight: bold;">
+<span style="font-weight: bold;">PIONEER DVD-RW&nbsp; DVR-104 A227</span><br
+ style="font-weight: bold;">
+<span style="font-weight: bold;">$ ./spinq 2</span><br
+ style="font-weight: bold;">
+<span style="font-weight: bold;">sp_open: -4 = -x4</span><br
+ style="font-weight: bold;">
+<span style="font-weight: bold;">$ </span><br
+ style="font-weight: bold;">
+<span style="font-weight: bold;">$ # unplug the USB DVD-RAM, leaving
+only the ATAPI DVD-RW</span><br style="font-weight: bold;">
+<span style="font-weight: bold;">$ </span><br
+ style="font-weight: bold;">
+<span style="font-weight: bold;">$ ./spinq 0</span><br
+ style="font-weight: bold;">
+<span style="font-weight: bold;">PIONEER DVD-RW&nbsp; DVR-104 A227</span><br
+ style="font-weight: bold;">
+<span style="font-weight: bold;">$ ./spinq 1</span><br
+ style="font-weight: bold;">
+<span style="font-weight: bold;">sp_open: -4 = -x4</span><br
+ style="font-weight: bold;">
+<span style="font-weight: bold;">$ </span><br
+ style="font-weight: bold;">
+<span style="font-weight: bold;">$ uname -srm</span><br
+ style="font-weight: bold;">
+<span style="font-weight: bold;">Darwin 7.2.0 Power Macintosh</span><br
+ style="font-weight: bold;">
+<span style="font-weight: bold;">$ </span><br
+ style="font-weight: bold;">
+<span style="font-weight: bold;">$ date</span><br
+ style="font-weight: bold;">
+<span style="font-weight: bold;">Sat Mar 20 07:19:20 MST 2004</span><br
+ style="font-weight: bold;">
+<span style="font-weight: bold;">$ </span><br
+ style="font-weight: bold;">
+</span></p>
+<hr style="width: 100%; height: 2px;">
+<p><br>
+</p>
+<p>Saturday, January 24, 2004 </p>
+<p>My experiments in restructuring these pages to work with less
+blinking and scrolling may soon yield fruit.&nbsp; Meanwhile,<br>
+</p>
+<p>Ouch I see I haven't updated this page for months, though I have
+been blogging.<br>
+</p>
+Newer than the info of this page is our hope of SCSI pass thru, maybe
+since Mac OS X 10.2 or so, for virtually unplugged PDT x05 DVD/ CD
+devices:<br>
+<br>
+<a href="http://plavarre.blog-city.com/read/424243.htm">scsi pass thru
+privilege denied by Apple</a><br>
+<br>
+Perhaps also relevant are:<br>
+<br>
+<a href="http://plavarre.blog-city.com/read/427642.htm">msft
+usb-storage faq found again</a><br>
+<br>
+<a href="http://plavarre.blog-city.com/read/434922.htm">bInterfaceSubClass
+x06 Transparent SCSI, defined</a><br>
+<br>
+<a href="http://plavarre.blog-city.com/read/427705.htm">Cypress USB2HS
+in Apple iPod</a><br>
+<br>
+<a href="http://plavarre.blog-city.com/read/423329.htm">programmable
+disc editor</a><br>
+<br>
+<a href="http://plavarre.blog-city.com/read/428753.htm">Apple Mac OS X
+man pages searchable</a><br>
+<br>
+<a href="http://plavarre.blog-city.com/read/450589.htm">Google to fix
+blog noise problem</a><br>
+<br>
+<hr style="width: 100%; height: 2px;"><br>
+<p>Updated on Wednesday, November 12, 2003 by <a
+ href="mailto:p.lavarre@ieee.org?Subject=members.aol.com/plscsi/mac/">Pat
+LaVarre</a><br>
+</p>
+<h1><a href="http://www.bswd.com/cornucop.htm">Storage/</a> <a href="..">PLScsi/</a>
+Mac/</h1>
+<p>Welcome, bienvenido, bienvenue!&nbsp; Sorry to say, as yet:</p>
+<p>"Write once, talk anywhere" for SCSI means any desktop or laptop
+that is Not a Mac.</p>
+<p style="font-weight: bold;">Please write us <strong>to encourage our
+port of PLScsi to Mac OS X</strong>.</p>
+<p>Share your interest! Share your knowledge!&nbsp; Fun mysteries lie
+near here.<br>
+</p>
+<table style="text-align: left; width: 100%;" border="0" cellspacing="2"
+ cellpadding="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">
+      <p>&nbsp;</p>
+      <p>Other Mac Pages:<br>
+      </p>
+      <p><a href="http://members.aol.com/plforth/moforth/">plforth/moforth/</a>&nbsp;with&nbsp;Pong&nbsp;on&nbsp;Mac</p>
+      <p><a href="../tools/pldd/">tools/pldd/</a>&nbsp;seen&nbsp;running&nbsp;on&nbsp;Mac</p>
+      <p><a href="../tools/knoppix/">tools/knoppix/</a>&nbsp;may&nbsp;be&nbsp;Linux&nbsp;for&nbsp;Mac</p>
+      <p><a href="http://www.hmug.org/MKLX.html">hmug re Linux for Mac</a> </p>
+      <p><br>
+See Also:</p>
+      <p><a
+ href="http://www.google.com/search?q=link:members.aol.com/plscsi/mac/">
+links&nbsp;to&nbsp;this&nbsp;page</a></p>
+      <p><a href="index.200311.html">previous&nbsp;edition</a><br>
+      </p>
+      <p><a
+ href="http://www.google.com/search?q=link:members.aol.com/plscsi/mac.html">links
+to previous edition</a><br>
+      </p>
+      <p><a
+ href="http://developer.apple.com/documentation/DeviceDrivers/Conceptual/AccessingHardware/index.html">Apple
+re Accessing Hardware</a><br>
+      </p>
+      <p><a href="http://search.lists.apple.com/ata-scsi-dev?q=STUC">Apple
+ata-scsi-dev re STUC</a><br>
+      </p>
+      <p> <a href="http://developer.apple.com/qa/qa2001/qa1179.html">Apple
+QA1179</a><br>
+      </p>
+      <p> </p>
+      </td>
+      <td style="vertical-align: top;">
+      <p>&nbsp;</p>
+      </td>
+      <td style="vertical-align: top;">
+      <h1>1. Summary</h1>
+      <p>Lately, kindly, offline we were asked to answer:</p>
+      <p><a href="http://www.google.com/search?q=mac+plscsi+upgrade">http://www.google.com/search?q=mac+plscsi+upgrade</a></p>
+      <p>&gt; if only PLScsi supported the Mac,<br>
+&gt; we would have DVRFlash for Mac too).</p>
+      <p><span style="font-weight: bold;">1.</span> Thank you for
+encouraging our effort to port PLScsi to the Mac.</p>
+      <p><span style="font-weight: bold;">2.</span> We wrote PLScsi, we
+have only Mac's at home, we want PLScsi to work on Mac.</p>
+      <p><span style="font-weight: bold;">3.</span> Apple does not want
+PLScsi to work on Mac.</p>
+      <p><span style="font-weight: bold;">4.</span> We lose, and you do
+too, even as late as Mac OS X 10.3.<br>
+      <br>
+      </p>
+      <hr style="width: 100%; height: 2px;">
+      <h1>2. Why Only the Mac Doesn't Work</h1>
+      <p>In creating Mac OS X, Apple reworked the I/O of free
+BSD.&nbsp; That rework excluded the free BSD ioctl SCIOCCOMMAND, whoops.
+ </p>
+      <p>Via similar ioctl, when root-privileged, we see SCSI pass thru
+working in all of Linux, Win XP/2K, Win ME/9X, Dos and Mac OF (Open
+Firmware boot Forth.&nbsp; Always we try ATAPI and USB, as yet we have
+tried FireWire only in Win/Dos (: noone has yet donated an iPod to us.
+:) </p>
+      <p>We hear Linux boots from CD on Mac, we wish we knew how.&nbsp;
+We know Mac OF boots from Command+Option+O+F on Mac.&nbsp; Rebooting
+outside of Mac OS X may violate your Apple warranty, just as
+roll-your-own firmware upgrade may violate your drive warranty.</p>
+      <p>Maybe true Mac "Darwin" geeks can patch Mac OS X with a "kext"
+to allow root privileged pass through.&nbsp; We do not know how.</p>
+      <p>Noone knowledgeable has chosen to explain clearly why Apple
+exclude SCSI pass thru privilege from root privilege.&nbsp; We know we
+do not understand.<br>
+      </p>
+      <p>We see root-privileged Mac OS X Terminal commands widely
+published that in fact overwhelm file permission security and closely
+resemble commands that smash your hard drive, e.g.:<br>
+      <br>
+      </p>
+      <div style="margin-left: 40px; font-weight: bold;"> sudo dd
+if=/dev/disk0 bs=512 skip=0 count=1 | hexdump -C </div>
+      <p>By faith we assume the Mac OS X design to omit SCSI pass thru
+has some coherent technical rationale.&nbsp; We have requested and
+promptly received, time and time again, free expert help from Apple
+engineers of Apple's ata-scsi-dev newsgroup, yet the help we receive we
+find technically incomprehensible.&nbsp; We do not understand, we do not
+know why.<br>
+      </p>
+      <p>A less concise presentation of our utter mystification appears
+in the previous edition of this page.<br>
+      </p>
+      <hr style="width: 100%; height: 2px;">
+      <h1>3. SCSI Pass Thru Design<br>
+      </h1>
+      <p>Some people say pass through, some people say pass thru, some
+people say bridge.</p>
+      <p>Suppose, to bridge design, we try to apply the Internet design
+principle:<br>
+      </p>
+      <div style="margin-left: 40px;">Be liberal in what you accept, be
+conservative in what you send.<br>
+      </div>
+      <p> In bridge design, we have to choose.&nbsp; We can choose to
+trust an opaque bridge to translate the command, or we can choose to
+pass trouble thru a transparent bridge.&nbsp; An opaque bridge is not
+liberal in what it accepts.&nbsp; A transparent bridge is not
+conservative in what sends.&nbsp; Ouch.&nbsp; We conclude:<br>
+      </p>
+      <p style="margin-left: 40px;">Bridges by definition cannot be
+well-designed.</p>
+      <p>Accordingly, here we collect ways in which SCSI pass thru
+crashes operating systems.<br>
+      </p>
+      <p>Early 2.4 Linux crashes if you try Inquiry for zero:<br>
+      </p>
+      <p style="margin-left: 40px;">-y "12 00:00:00 00 00"<br>
+      </p>
+      <p>Linux folk corrected Linux immediately, naturally.<br>
+      </p>
+      <p>Win 2K crashes if you try mode sense of a header at a time
+with a device for which Windows incorrectly translate to op x5A Mode
+Sense (10) from op x1A Mode Sense (6):</p>
+      <div style="margin-left: 40px;">-i 4 -y "1A 00:3F:00 04 00"<br>
+      </div>
+      <p>Microsoft corrected Windows immediately after we found a
+sponsor to pay Microsoft to listen to us, years after we found hints of
+the trouble, six months after we constructed a short demo.<br>
+      </p>
+      <p>Against the theory that bridges can't work well, we have one
+confusing counterexample.<br>
+      <br>
+Certain USB/ ATAPI PIO bridges actually do work well in practice.&nbsp;
+With those, the host begins by passing to the bridge a complete
+description of how the host would have spoken ATAPI PIO.&nbsp; The
+bridge at least once invisibly negotiates max PIO mode and thereafter
+transparently reproduces how the host would have treated a
+direct-attached device.&nbsp; And that system works.</p>
+      <p>By contrast, bridges to ATAPI DMA don't work quite so
+well.&nbsp; The standard description of how the host would have spoken
+ATAPI PIO doesn't mention how the ATAPI DMA host would have miscounted
+bytes with a direct attached device, so the bridge can't reproduce that
+behaviour exactly. <br>
+      </p>
+      <p> </p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p> Posted by <a
+ href="mailto:p.lavarre@ieee.org?Subject=members.aol.com/plscsi/mac/">Pat
+LaVarre</a> </p>
+</body>
+</html>

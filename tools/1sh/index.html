@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+  <style type="text/css">
+body { font-family: sans-serif; }
+pre { font-family: monospace; }
+  </style>
+  <title>PLScsi Tools 1sh</title>
+</head>
+<body>
+Updated on Sunday, September 14, 2003<br>
+<p><a href="http://members.aol.com/plscsi/">PLScsi</a> </p>
+<p style="margin-left: 40px;"><a href="../index.html">Tools</a></p>
+<p> </p>
+<p style="margin-left: 80px;">1sh<br>
+</p>
+<p>We wrote this trivial app to demo we can reuse the same C code to
+connect to the keyboard in Linux or Mac OS X.<br>
+</p>
+<span style="font-weight: bold;"></span>
+<p style="margin-left: 80px;"> </p>
+<table style="text-align: left; width: 100%;" border="0" cellspacing="2"
+ cellpadding="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;"> <a
+ href="http://www.google.com/search?q=link:members.aol.com/plscsi/tools/1sh/">links&nbsp;to&nbsp;this&nbsp;page</a><br>
+      <br>
+      <a href="1sh.tar.bz2">1sh.tar.bz2</a><br>
+      <a href="1sh.zip">1sh.zip</a><br>
+      <a href="1sh.c.txt">1sh.c.txt</a><br>
+      <br>
+      <a href="http://www.google.com/search?q=man+pages+termios">google&nbsp;man&nbsp;pages&nbsp;termios</a><br>
+      <a href="http://www.google.com/search?q=man+pages+tcsetattr">google&nbsp;man&nbsp;pages&nbsp;tcsetattr</a>
+      <p> </p>
+      </td>
+      <td style="vertical-align: top;">
+      <p> </p>
+      <p><span style="font-weight: bold;">NAME</span><br>
+      </p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">1sh</span>
+- make stdin editable and recall its history<br>
+      </p>
+      <p><span style="font-weight: bold;">SYNOPSIS</span><br>
+      </p>
+      <pre style="margin-left: 40px;"><big><span
+ style="font-weight: bold;">1sh</span> [options] | command</big><br></pre>
+      <p><span style="font-weight: bold;">DESCRIPTION</span><br>
+      </p>
+      <p style="margin-left: 40px;">1sh buffers, edits, and echoes to
+/dev/tty each of the lines of the standard input of the rest of a pipe.<br>
+      </p>
+      <p>&nbsp;&nbsp;&nbsp; <span style="font-weight: bold;">Options<br>
+      </span></p>
+      <p style="margin-left: 40px;">(none yet, choice of emacs vs. vi
+likely)<span style="font-weight: bold;"><br>
+      </span></p>
+      <p><span style="font-weight: bold;">EDITING KEYSTROKES<br>
+      </span></p>
+      <p style="margin-left: 40px;">Added:</p>
+      <p style="margin-left: 80px;">Ctrl+C = discard line<br>
+      </p>
+      <p style="margin-left: 80px;">Ctrl+G = beep</p>
+      <div style="margin-left: 80px;"> </div>
+      <p style="margin-left: 40px;">Something like usual:<br>
+      </p>
+      <p style="margin-left: 80px;">Ctrl+D = Ctrl+Z = end of input<br>
+      </p>
+      <div style="margin-left: 80px;"> </div>
+      <p style="margin-left: 80px;">Ctrl+M = Ctrl+J = end of line<br>
+      </p>
+      <p style="margin-left: 80px;">Ctrl+H = Ctrl+? = backspace/
+delete/ rubout<br>
+      </p>
+      <p style="margin-left: 80px;">Ctrl+Q = Ctrl+V = quote</p>
+      <p><span style="font-weight: bold;">EXAMPLES</span><br>
+      </p>
+      <pre style="margin-left: 40px;"><big>$ 1sh | cat<br>...<br>^D<br>$<br>$ 1sh | dc<br>3 k<br>22<br>7<br>/ p<br>3.142<br>^D<br>$</big><br></pre>
+      <span style="font-weight: bold;">COUNTER-EXAMPLES</span><br>
+      <pre style="margin-left: 40px;"><big>$ # bash command substitution<br>$<br>$ FD=&gt;(dc) bash<br>$<br>$ echo '3 k' &gt;&gt;$FD<br>$ echo '22' &gt;&gt;$FD<br>$ echo '7' &gt;&gt;$FD<br>$ echo '/ p' &gt;&gt;$FD ; sleep 1<br>3.142<br>$<br>$ ^D<br>exit<br>$</big><br></pre>
+      <p><span style="font-weight: bold;">BUGS<br>
+      </span></p>
+      <p style="margin-left: 40px;">One char per keystroke echoes,
+never two like ^G nor nine like ^blanks meaning ^I Tab.<br>
+      </p>
+      <p style="margin-left: 40px;">Ctrl+D means EOF always, rather
+than having to be stuttered if not beginning a line.<br>
+      </p>
+      <p style="margin-left: 40px;">No keystroke yet means scroll or
+search the command history.<br>
+      </p>
+      <p style="margin-left: 40px;">As yet, only the low 7 bits of each
+input byte echoes and passes thru.<br>
+      </p>
+      <p style="margin-left: 40px;">Lines as short as 1001 chars,
+though less wide that all memory, do not pass thru cleanly.<br>
+      </p>
+      <p style="margin-left: 40px;">`1sh` does not launch as slowly,
+distort output as severely, nor edit as powerfully as `emacs -nw -f
+eshell`.<br>
+      </p>
+      <p><span style="font-weight: bold;">SEE ALSO</span><br>
+      </p>
+      <p style="margin-left: 40px;">bash command substitution<br>
+      </p>
+      <div style="margin-left: 40px;"> emacs -nw -f eshell<br>
+      <br>
+tee /dev/tty<br>
+      </div>
+      <br>
+      <span style="font-weight: bold;">WHY THE NAME 1SH</span><br>
+      <br>
+      <div style="margin-left: 40px;">We chose the name 1sh:<br>
+      <br>
+      <div style="margin-left: 40px;">because Google says the names ash
+.. zsh are already taken,<br>
+      <br>
+because often we choose 1sh as the 1st filter of a pipe, and<br>
+      <br>
+because suddenly we appreciated the terrible pun:<br>
+      <br>
+      </div>
+      <div style="font-style: italic; margin-left: 80px;">One Shell to
+rule them all, One Shell to find them,<br>
+      </div>
+      <div style="margin-left: 40px;"> </div>
+      <div style="margin-left: 80px;"><span style="font-style: italic;">One
+Shell to bring them all and in the darkness bind them.</span><br>
+      </div>
+      <br>
+We offer a grin and our apologies to fans of <span
+ style="text-decoration: underline;">The Fellowship of the Ring</span>,
+"The Shadow of the Past", p.59 in our edition.<br>
+      </div>
+      <br>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p> Posted by <a href="mailto:p.lavarre@ieee.org">Pat LaVarre</a> </p>
+</body>
+</html>

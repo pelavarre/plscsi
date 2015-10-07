@@ -1,0 +1,387 @@
+/* lddio.c
+ *
+ * Implement seek/ read/ write in Linux per "pldd.h".
+ *
+ * Bugs include:
+ *
+ *	Try SG_IO only if /dev/sg begins the device name.
+ *	Respond indeterminately above (1 << 63) bytes per file.
+ *	Hang when asked to exceed size of block device.
+ *	Pass only block-aligned access thru Scsi.
+ *	Limit bytes per block and per i/o to UINT_MAX = max size_t.
+ *
+ * See also: http://lxr.linux.no/source/Documentation/CodingStyle
+ */
+
+#define _LARGEFILE64_SOURCE
+// #define FILE_OFFSET_BITS 64
+
+#include <limits.h>
+#include <scsi/scsi.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/time.h>
+#include <time.h>
+#include <unistd.h>
+
+#include "pldd.h"
+
+static int dd_verbose; /* true to trace cdb/ file read/ write. */
+
+struct sp_file /* seek/ read/ write via sp_say */
+{
+	int spfd;
+	int bytes; /* per block */
+	long long offset; /* in bytes */
+};
+
+struct dd_file /* seek/ read/ write file/ block dev/ SG_IO dev */
+{
+	struct sp_file * spf;
+	FILE * fi;
+};
+
+/* Say to trace cdb/ file read/ write, or not. */
+
+void dd_set_verbose(int v) {
+	dd_verbose = v;
+}
+
+/* Dump but begin the first line with a prefix. */
+
+static void dd_dump(char const * prefix, char const * chars, int length) {
+	fprintf(stderr, "%s", prefix);
+	sp_dump(chars, length);
+}
+
+/* Query bytes per block. */
+
+static int sp_read_capacity(struct dd_file * ddf)
+{
+	struct sp_file * spf = ddf->spf;
+	char cdb[10];
+	char chars[8];
+	int bytes = 0;
+	int rc = 0;
+	memset(&chars[0], 0, sizeof chars);
+	memset(&cdb[0], 0, sizeof cdb);
+
+	cdb[0] = READ_CAPACITY; /* x25 */
+	if (dd_verbose) dd_dump("cdb: ", &cdb[0], sizeof cdb);
+	rc = sp_say(spf->spfd, &cdb[0], sizeof cdb, NULL, chars, sizeof chars);
+	if (rc != 0) {
+		fprintf(stderr, "sp_read_capacity: %d = 0x%X\n", rc, rc);
+		exit(__LINE__);
+	}
+	if (dd_verbose) dd_dump(":in: ", &chars[0], sizeof chars);
+
+	bytes = ((chars[4] & 0xFF) << 0x18) |
+		((chars[5] & 0xFF) << 0x10) |
+		((chars[6] & 0xFF) << 0x08) |
+		((chars[7] & 0xFF) << 0x00);
+	return bytes;
+}
+
+/* Refuse to pass misaligned i/o thru Scsi. */
+
+static struct sp_file * sp_rwaudit(struct dd_file * ddf,
+	size_t sz, size_t max_blocks)
+{
+	struct sp_file * spf = ddf->spf;
+	int bytes = spf->bytes;
+	long long offset = spf->offset;
+	if (bytes == 0) {
+		bytes = spf->bytes = sp_read_capacity(ddf);
+	}
+	if ((offset % bytes) != 0) {
+		fprintf(stderr, "lddio.sp_rwaudit: "
+			"offset %lld = 0x%llX not a multiple of %d = 0x%X\n",
+			offset, offset, bytes, bytes
+			);
+		exit(__LINE__);
+	}
+	if ((sz % bytes) != 0) {
+		fprintf(stderr, "lddio.sp_audit: "
+			"length %d = 0x%X not a multiple of %d = 0x%X\n",
+			sz, sz, bytes, bytes
+			);
+		exit(__LINE__);
+	}
+	sz /= bytes;
+	if ((sz < 0) || (max_blocks < sz)) {
+		fprintf(stderr, "lddio.sp_audit: "
+			"length %d = 0x%X exceeds %d = 0x%X blocks\n",
+			sz, sz, max_blocks, max_blocks
+			);
+		exit(__LINE__);
+	}
+	return spf;
+}
+
+/* Decide where next to read/ write via sp_say. */
+
+void sp_seek_set(struct dd_file * ddf, long long offset)
+{
+	ddf->spf->offset = offset;
+}
+
+/* Read via sp_say. */
+
+size_t sp_read(char * chars, size_t sz, struct dd_file * ddf)
+{
+	struct sp_file * spf = sp_rwaudit(ddf, sz, 0xFFFF);
+	int bytes = spf->bytes;
+	int first = (int) (spf->offset / bytes);
+	int length = (int) (sz / bytes);
+	int rc = 0;
+	char cdb[10];
+	memset(&cdb[0], 0, sizeof cdb);
+	cdb[0] = READ_10; /* x28 */
+	cdb[2] = LIL(first, 3);
+	cdb[3] = LIL(first, 2);
+	cdb[4] = LIL(first, 1);
+	cdb[5] = LIL(first, 0);
+	cdb[7] = LIL(length, 1);
+	cdb[8] = LIL(length, 0);
+	spf->offset += sz;
+	if (dd_verbose) dd_dump("cdb: ", &cdb[0], sizeof cdb);
+	rc = sp_say(spf->spfd, &cdb[0], sizeof cdb, NULL, chars, (int) sz);
+	if ((0 < rc) && (rc < sz)) {
+		return (sz - rc);
+	}
+	if (rc != 0) {
+		return 0;
+	}
+	return sz;
+}
+
+/* Write via sp_say. */
+
+size_t sp_write(char const * chars, size_t sz, struct dd_file * ddf)
+{
+	struct sp_file * spf = sp_rwaudit(ddf, sz, 0xFFFF);
+	int bytes = spf->bytes;
+	int first = (int) (spf->offset / bytes);
+	int length = (int) (sz / bytes);
+	int rc = 0;
+	char cdb[10];
+	memset(&cdb[0], 0, sizeof cdb);
+	cdb[0] = WRITE_10; /* x2A */
+	cdb[2] = LIL(first, 3);
+	cdb[3] = LIL(first, 2);
+	cdb[4] = LIL(first, 1);
+	cdb[5] = LIL(first, 0);
+	cdb[7] = LIL(length, 1);
+	cdb[8] = LIL(length, 0);
+	spf->offset += sz;
+	if (dd_verbose) dd_dump("cdb: ", &cdb[0], sizeof cdb);
+	rc = sp_say(spf->spfd, &cdb[0], sizeof cdb, (char *) chars, NULL, (int) sz);
+	if ((0 < rc) && (rc < sz)) {
+		return (sz - rc);
+	}
+	if (rc != 0) {
+		return 0;
+	}
+	return sz;
+}
+
+/* Alias stdin, always return the same alias. */
+
+struct dd_file * dd_in(void)
+{
+	static struct dd_file dd_in_ddf;
+	struct dd_file * ddf = &dd_in_ddf;
+	ddf->fi = stdin;
+	return ddf;
+}
+
+/* Alias stdout, always return the same alias. */
+
+struct dd_file * dd_out(void)
+{
+	static struct dd_file dd_in_ddf;
+	struct dd_file * ddf = &dd_in_ddf;
+	ddf->fi = stdout;
+	return ddf;
+}
+
+/* Compare the left of two strings. */
+
+static int starts_with(char const * st, char const * prefix)
+{
+	int length = (int) strlen(prefix);
+	if ((size_t) length <= strlen(st)) {
+		if (memcmp(st, prefix, length) == 0) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+/* Open a file, block device, or SG_IO device. */
+
+static struct dd_file * dd_open(char const * fn, char * mode)
+{
+	FILE * fi = NULL;
+	struct dd_file * ddf = calloc(1, sizeof *ddf);
+	if (ddf == NULL) {
+		perror("calloc");
+//		free(ddf);
+		exit(-__LINE__);
+	}
+
+	/* Open an SG_IO device. */
+
+	if (starts_with(fn, "/dev/sg")) {
+		int spfd = 0;
+		spfd = sp_open(fn);
+		if (spfd != 0) {
+			struct sp_file * spf = calloc(1, sizeof *spf);
+			if (spf == NULL) {
+				perror("calloc");
+				sp_close(spfd);
+//				free(spf);
+				free(ddf);
+				exit(-__LINE__);
+			}
+			ddf->spf = spf;
+			spf->spfd = spfd;
+			return ddf;
+		}
+	}
+
+	/* Open a file or a block device. */
+
+	fi = fopen64(fn, mode);
+	if (fi != NULL) {
+		ddf->fi = fi;
+		return ddf;
+	}
+
+	/* Else give up. */
+
+	perror("fopen64");
+	free(ddf);
+	exit(-__LINE__);
+}
+
+/* Open an input. */
+
+struct dd_file * dd_open_rb(char const * fn)
+{
+	return dd_open(fn, "rb");
+}
+
+/* Open an output. */
+
+struct dd_file * dd_open_wb(char const * fn)
+{
+	return dd_open(fn, "wb");
+}
+
+/* Close an open input or output. */
+
+void dd_close(struct dd_file * ddf)
+{
+	if (ddf != NULL) {
+		struct sp_file * spf = ddf->spf;
+		FILE * fi = ddf->fi;
+		ddf->spf = NULL;
+		ddf->fi = NULL;
+		if (spf != NULL) {
+			int spfd = spf->spfd;
+			if (spfd != 0) {
+				sp_close(spfd);
+			}
+			free(spf);
+		}
+		if (fi != NULL) {
+			int rc = 0;
+			rc = fclose(fi);
+			if (rc != 0) {
+				perror("fclose");
+				exit(-__LINE__);
+			}
+		}
+		free(ddf);
+	}
+}
+
+/* Decide where next to read/ write a file or block device. */
+
+void dd_seek_set(struct dd_file * ddf, long long offset)
+{
+	struct sp_file * spf = ddf->spf;
+	if (offset == 0) return; /* ignore seek failure if possible */
+	if (spf != NULL) {
+		sp_seek_set(ddf, offset);
+	} else {
+		FILE * fi = ddf->fi;
+		int rc = 0;
+		rc = fseeko64(fi, offset, SEEK_SET);
+		if (rc != 0) {
+			perror("fseeko64");
+			exit(-__LINE__);
+		}
+	}
+}
+
+/* Read a file or block device. */
+
+size_t dd_read(char * chars, size_t sz, struct dd_file * ddf)
+{
+	struct sp_file * spf = ddf->spf;
+	if (sz == 0) return 0; /* ignore failure to read 0 if possible */
+	if (spf != NULL) {
+		return sp_read(chars, sz, ddf);
+	} else {
+		FILE * fi = ddf->fi;
+		size_t iosz = 0;
+		if (dd_verbose) fprintf(stderr, "read %d = 0x%X bytes\n", sz, sz);
+		iosz = fread(chars, 1, sz, fi);
+		if (iosz != sz) {
+			if (ferror(ddf->fi)) {
+				perror("fread");
+			}
+		}
+		return iosz;
+	}
+}
+
+/* Write a file or block device. */
+
+size_t dd_write(char const * chars, size_t sz, struct dd_file * ddf)
+{
+	struct sp_file * spf = ddf->spf;
+	if (sz == 0) return 0; /* ignore failure to write 0 if possible */
+	if (spf != NULL) {
+		return sp_write(chars, sz, ddf);
+	} else {
+		FILE * fi = ddf->fi;
+		size_t iosz = 0;
+		if (dd_verbose) fprintf(stderr, "write %d = 0x%X bytes\n", sz, sz);
+		iosz = fwrite(chars, 1, sz, fi);
+		if (iosz != sz) {
+			perror("fwrite");
+		}
+		return iosz;
+	}
+}
+
+/* Sample the time of day. */
+
+int dd_getms(void) {
+	static struct timeval zero_tv;
+	struct timeval tv = zero_tv;
+	int rc = gettimeofday(&tv, NULL);
+	long s = tv.tv_sec;
+	long us = tv.tv_usec;
+	long long ms = 0;
+	if (rc != 0) exit(rc);
+	ms = s; ms *= 1000; ms += (us / 1000);
+	return (int) ms;
+}
+
+/* end of file */
+

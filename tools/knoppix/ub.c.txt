@@ -1,0 +1,284 @@
+/**
+ * ub.c
+ * Tuesday, March 11, 2003
+ *
+ * Read/write physical memory addresses in Linux,
+ * using at least the syntax of Dos plxmon.
+ *
+ * Run on Windows too, but with a dummy store.
+ */
+
+/** Help link. */
+
+#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#ifdef _WIN32
+typedef int off_t;
+#else
+#include <fcntl.h> // open
+#include <sys/mman.h> // mmap
+#include <sys/types.h>
+#include <unistd.h> // close
+#endif
+
+/** Decide units. */
+
+#define KiB (0x400)
+
+/** Decide the command line prompt. */
+
+#define PROMPT "\nub: "
+
+/** Focus on one virtual address span. */
+
+static volatile unsigned char * theBytes = NULL;
+static int theBytesLength = (64 * KiB);
+
+/** Link dynamically to a physical address span. */
+
+volatile unsigned char * map(off_t offset, int length) {
+#ifdef _WIN32
+        void * vo = calloc(1, length);
+        volatile unsigned char * uchars = vo;
+        return uchars;
+#else
+        int fd = open("/dev/mem", O_RDWR);
+        if (0 < fd) {
+                void * vo = mmap(
+                        NULL, length, PROT_READ | PROT_WRITE,
+                        MAP_FILE | MAP_SHARED, fd, offset);
+                volatile unsigned char * uchars = vo;
+//              (void) close(fd);
+                return uchars;
+        }
+        return NULL;
+#endif
+}
+
+/** Map the virtual address span to the physical addresses of choice. */
+
+static void ub(int addr) {
+//      printf("UB = %X\n", addr);
+        theBytes = map(addr, theBytesLength);
+}
+
+/** Display bytes. */
+
+static void db(int addr, int length) {
+//      printf("DB UB+%X L %X\n", addr, length);
+        printf("x");
+        while (0 < length--) {
+                unsigned char uch = theBytes[addr++];
+                printf(" %02X", uch);
+        }
+        puts("");
+}
+
+/** Enter bytes. */
+
+static void eb(int addr, int value, int length) {
+//      printf("EB UB+%X %X // L %X\n", addr, value, length);
+        while (0 < length--) {
+                theBytes[addr++] = ((unsigned char) (value >> (length * 8)));
+        }
+}
+
+/** Quit. */
+
+static void quit(void) {
+        exit(0);
+}
+
+/** Help. */
+
+static void help(void) {
+        fprintf(stderr,
+"\n"
+"Number radix is hex.\n"
+"\n"
+"? Q QUIT\n"
+"DB UB+$addr L 1\n"
+"EB UB+$addr $value\n"
+"ECHO $line\n"
+"H HELP\n"
+"UB = $addr\n"
+        );
+}
+
+/** Ask to display bytes. */
+
+static void enterDb(char * args) {
+        int addr = 0;
+        int length = 0;
+        char ch = '\0';
+        if (sscanf(args, "UB+%X L %X%c", &addr, &length, &ch) == 2) {
+                if (theBytes == NULL) {
+                        fprintf(stderr, "UB = $addr\n");
+                        return;
+                        }
+                if ((0 <= addr) && (addr < theBytesLength)) {
+                        db(addr, length);
+                        return;
+                }
+        }
+        fprintf(stderr, "DB UB+$addr L 1\n");
+}
+
+/** Ask to enter bytes. */
+
+static void enterEb(char * args) {
+        int addr = 0;
+        int value = 0;
+        char ch = '\0';
+        if (sscanf(args, "UB+%X %X%c", &addr, &value, &ch) == 2) {
+                char * chars = strchr(args, ' ');
+                if (chars != NULL) {
+                        ++chars;
+                        int twiceLength = strlen(chars);
+                        int length = ((twiceLength + 1) / 2);
+                        if (theBytes == NULL) {
+                                fprintf(stderr, "UB = $addr\n");
+                                return;
+                                }
+                        if ((0 <= addr) && (addr < theBytesLength)) {
+                                eb(addr, value, length);
+                                return;
+                        }
+                }
+                return;
+        }
+        fprintf(stderr, "EB UB+$addr $value\n");
+}
+
+/** Ask to set base address. */
+
+static void enterUb(char * args) {
+        if (*args == '=') ++args;
+        if (*args == ' ') ++args;
+        int addr = 0;
+        char ch = '\0';
+        if (sscanf(args, "%X%c", &addr, &ch) == 1) {
+                ub(addr);
+                return;
+        }
+        printf("UB = $addr\n", args);
+}
+
+/** Echo. */
+
+static void echo(char * args) {
+        printf("%s\n", args);
+}
+
+/** Step beyond the verb . */
+
+static char * pastWord(char * chars) {
+        int index = strcspn(chars, " =");
+        if (chars[index] == ' ') ++index;
+        return &chars[index];
+}
+
+/** Recognise a verb. */
+
+static int verbIs(char * chars, char * key) {
+        int length = strlen(key);
+        if (length <= strlen(chars)) {
+                if (memicmp(chars, key, length) == 0) {
+                        char ch = chars[length];
+                        if ((ch == '\0') || (ch == ' ') || (ch == '=')) {
+                                return 1;
+                        }
+                }
+}
+        return 0;
+}
+
+/** Interpret an unknown command. */
+
+static void swallow(char * chars) {
+        fprintf(stderr, "Unintelligible verb: <<%s>>\n", chars);
+}
+
+/** Enter one command. */
+
+static void enter(char * chars) {
+
+        char * from = chars;
+        while (*from != '\0') {
+                *from = toupper(*from);
+                ++from;
+        }
+
+        char * eol = strstr(chars, "//");
+        if (eol != NULL) *(char *)eol = '\0';
+
+        char * args = pastWord(chars);
+        if (verbIs(chars, "?")) help();
+        else if (verbIs(chars, "DB")) enterDb(args);
+        else if (verbIs(chars, "EB")) enterEb(args);
+        else if (verbIs(chars, "ECHO")) echo(args);
+        else if (verbIs(chars, "H")) help();
+        else if (verbIs(chars, "HELP")) help();
+        else if (verbIs(chars, "Q")) quit();
+        else if (verbIs(chars, "QUIT")) quit();
+        else if (verbIs(chars, "UB")) enterUb(args);
+        else swallow(chars);
+}
+
+
+/** Prompt for another command. */
+
+static void prompt(void) {
+        fprintf(stderr, PROMPT);
+}
+/** Enter each line of stdin, with a blank appended. */
+
+static void interact(void) {
+
+        int nul = '\0';
+        int cr = '\x0D';
+        int lf = '\x0A';
+        int sp = ' ';
+
+        char line[0x200];
+        int max = ((sizeof line) - 10);
+        int index = 0;
+
+        prompt();
+        for (;;) {
+                int ii = getchar();
+                if (ii < 0) break;
+                if ((ii == cr) || (ii == lf)) {
+                        line[index++] = nul;
+                        enter(line);
+                        prompt();
+                        index = 0;
+                } else {
+                        if (index < max) {
+                               line[index++] = ((char) ii);
+                        }
+                }
+}
+
+        quit();
+}
+
+/** Run from the command line. */
+
+int main(int argc, char * argv[]) {
+        int index = 0;
+        --argc; ++argv;
+        for (index = 0; index < argc; ++index) {
+                char * chars = argv[index];
+                fprintf(stderr, PROMPT "%s\n", chars);
+                enter(chars);
+}
+        fprintf(stderr, "\nType HELP or QUIT or another command and press Enter.\n");
+        interact();
+        return 0;
+}
+
+/** End file. */

@@ -1,0 +1,761 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+  <style type="text/css">
+body { font-family: sans-serif; }
+pre { font-family: monospace; }
+  </style>
+  <title>PLScsi Tutorial</title>
+</head>
+<body>
+<h1><a href="..">PLScsi/</a> Tutorial<br>
+</h1>
+<p>Updated on Tuesday, October 14 2003</p>
+<table style="text-align: left; width: 100%;" border="0" cellspacing="2"
+ cellpadding="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">
+      <p>&nbsp;</p>
+      <p>See Also:<br>
+      </p>
+      <p><a
+ href="http://www.google.com/search?q=link:members.aol.com/plscsi/tutorial/">links&nbsp;to&nbsp;this&nbsp;page</a><br>
+      </p>
+      <p></p>
+      <p><a href="../tutorial.html">previous edition</a></p>
+      <p><a href="../tools/">tools/</a>&nbsp;<a href="../tools/pldd/">pldd/</a></p>
+      <p><a href="../tools/">tools/</a>&nbsp;<a href="../tools/gccscsi/">gccscsi/</a></p>
+      <p> </p>
+      </td>
+      <td style="vertical-align: top;">
+      <p>&nbsp;</p>
+      </td>
+      <td style="vertical-align: top;">
+      <h1>Introduction</h1>
+      <p>Welcome to the plscsi tutorial, presented in 6 chapters and 1
+appendix.<br>
+      </p>
+      <p>Please write <a href="mailto:p.lavarre@ieee.org">Pat LaVarre</a>
+if you have questions.<br>
+      </p>
+      <p>We actually first wrote these words as the email replies to a
+series of delightfully clarifying questions sent to us by Andr&eacute;
+Wilmus in September, 2003.&nbsp; By email <span
+ style="font-style: italic;">ofrecemos una traducci&oacute;n
+espa&ntilde;ola</span>, and by email <span style="font-style: italic;">nous
+offrons une traduction fran&ccedil;aise</span>.&nbsp; Alta Vista <a
+ href="http://world.altavista.com/">Babel Fish</a>, a free service for
+translating among some natural languages, began both translations for us.<br>
+      </p>
+      <p>This tutorial walks you thru the questions many people ask
+when first trying out plscsi.<br>
+      <br>
+By definition, each plscsi command line asks:<br>
+      </p>
+      <div style="margin-left: 40px;">
+      <p>1) to copy CDB Out</p>
+      </div>
+      <p style="margin-left: 40px;"> 2) to copy Data In, to copy Data
+Out, or to copy No Data at all<br>
+      </p>
+      <p style="margin-left: 40px;">3) to copy Status In, and to copy
+Auto Sense In after any autosensable failure<br>
+      </p>
+      <p>The traditional host-centred SCSI convention defines what we
+mean by the words In and Out.&nbsp; That convention says to copy In is
+to copy in to the host from the device.&nbsp; Also to copy Out is to
+copy out from the host to the device.<br>
+      </p>
+      <hr style="width: 100%; height: 2px;">
+      <h1>Contents</h1>
+      <p>Six chapters:<br>
+      </p>
+      <p style="margin-left: 40px;">1. All About You<br>
+      <br>
+2. SCSI Devices Named How<br>
+      <br>
+3. The First Three Commands To Try<br>
+      </p>
+      <p style="margin-left: 40px;">4. Reading Your First Block<br>
+      <br>
+5. Decrypting Success<br>
+      <br>
+6. Decrypting Failure</p>
+      <p>One appendix:</p>
+      <p style="margin-left: 40px;">A.1. More CDB's Found Defined Where</p>
+      <p style="margin-left: 40px;">A.2. Decrypting Capacity</p>
+      <p style="margin-left: 40px;">A.3. More Blocks Per Command Line</p>
+      <p style="margin-left: 40px;">A.4. Correct CDB Lengths</p>
+      <p style="margin-left: 40px;">A.5. Whole Commands</p>
+      <p style="margin-left: 40px;">A.6. Less Auto Sense</p>
+      <hr style="width: 100%; height: 2px;">
+      <h1>1. All About You</h1>
+      <p>Sorry you found PLScsi difficult enough to want a tutorial,
+thank you for finding the time to work thru this tutorial.<br>
+      <br>
+We're not sure what to tell you, because we do not know what you do and
+do not already understand.<br>
+      </p>
+      <p>If you write for further help, please then share the answers
+to one of (or more of) the Nine questions:<br>
+      <br>
+      <span style="font-weight: bold;">1) What do you want your DVD/
+CD/ HDD/ RMB to do?</span><br>
+      <br>
+      <span style="font-weight: bold;">2) How did you find PLScsi?</span><br>
+      <br>
+      <span style="font-weight: bold;">3) What plscsi command did you
+try that gave you unexpected results?</span><br>
+      <br>
+      <span style="font-weight: bold;">4) Did you begin with `plscsi
+-w`?&nbsp; What result did you get?</span><br>
+      <br>
+      <span style="font-weight: bold;">5) Where are you trying to learn
+plscsi</span>: on Linux 2.6/ 2.4, Win XP/ 2K, Win ME/ 9X, Dos, Mac OF,
+what<span style="font-weight: bold;">?<br>
+      </span></p>
+      <p><span style="font-weight: bold;">6) </span><span
+ style="font-weight: bold;">Have you already backed up your hard drive</span>,
+for fear of plscsi crashing your operating system as you requested
+while you were learning to say what you mean<span
+ style="font-weight: bold;">?</span><br>
+      <br>
+      <span style="font-weight: bold;">7) Do you already know many
+CDB's, </span>for example that -x "1B 00:00:00 02 00" means Eject,
+sometimes described as Stop Unit LoEj<span style="font-weight: bold;">?</span><br>
+      <br>
+      <span style="font-weight: bold;">8) Have you already tried pldd?</span>&nbsp;
+pldd, plscsi, and gccscsi work at progressively lower levels of the
+operating system.&nbsp; The lower the level you target, the more easily
+you can make a mistake that crashes your operating system.&nbsp; In
+October 2003, pldd was freely available for Linux, Win 2K/XP, and Mac
+OS X.<br>
+      <br>
+      <span style="font-weight: bold;">9) Are you a C programmer
+yourself?&nbsp;</span> If so then you may prefer gccscsi - a macro
+language for writing short C programs that talk SCSI, programs compiled
+by the free C compilers of Linux/ Windows/ Dos.<br>
+      </p>
+      <hr style="width: 100%; height: 2px;">
+      <h1>2. SCSI Devices Named How</h1>
+What do we mean by such syntax as /dev/sg9 and \\.\A: and 9.1.0?<br>
+      <br>
+These are example device names.<br>
+      <br>
+We don't know what the name of your device is.&nbsp; The command
+`plscsi -w` should tell you the name of all your connected devices that
+accept SCSI pass thru.&nbsp; In Win 2K/XP, the Disk Manager of My
+Computer --&gt; Properties --&gt; Manage draws a picture of how you
+have connected devices.&nbsp; In Mac OS X, the Apple System Profiler of
+Apple --&gt; About This Mac --&gt; More Info draws that picture.<br>
+      <br>
+Linux uses /dev/sg* names.&nbsp; Often /dev/sg[a-z] alias
+/dev/sg/[0-9]*.<br>
+      <br>
+Win 2K/XP uses the names \\.\A: through \\.\Z: for DVD/ CD and HDD/
+RMB.&nbsp; Also Win 2K/XP uses the name \\.\TAPE0 for the first tape
+drive, etc. (notice no trailing colon).<br>
+      <br>
+Win 95/98/ME and Dos uses names like 9.1.0, names unrelated to drive
+letters.<br>
+      <br>
+Mac OS X doesn't include a published SCSI pass thru interface
+yet.&nbsp; pldd works with filenames and raw block devices such as the
+/dev/disk0 that often is your boot drive (analogous to Windows \\.\C:).<br>
+      <br>
+And we have more to say about WIn 2K/XP ...<br>
+      <br>
+\\ is a Windows convention for beginning a path name that is not an
+ordinary file name.&nbsp; Ordinarily .\ is a suffix you can add to any
+folder name without changing its meaning.&nbsp; Ordinarily xyz\.\ is the
+same as xyz\, but we think Iwe remember here you will find that \\.\
+works and that \\ does not.<br>
+      <br>
+Win 2K/XP adds the four char prefix \\.\ to make a SCSI pass thru
+device name out of a drive letter.&nbsp; More than one device name can
+mean the same HDD (hard disk drive).&nbsp; For example, C: D: E: might
+be the three partitions of your boot HDD.&nbsp; If so, then the first
+block of C:, the first block of D:, and the first block of E: are all
+different.&nbsp; But the first block of \\.\C: and the first block of
+\\.\D: and the first block of \\.\E: are all the same block,
+specifically the first block of C:.&nbsp; Learning this fact on your
+own can hurt, especially if C: is your boot drive.<br>
+      <br>
+More clear than mud, yet?&nbsp; Please write to tell us if not!<br>
+      <br>
+      <hr style="width: 100%; height: 2px;">
+      <h1>3. The First Three Commands To Try<br>
+      </h1>
+      <p>We believe you can start after listing available devices:<br>
+      </p>
+      <div style="margin-left: 40px; font-weight: bold;">
+      <pre><big>plscsi -w<br></big></pre>
+      </div>
+      <p>The same device names listed by plscsi -w work in pldd and in
+gccscsi.<br>
+      </p>
+      <p>You may wish to select a single device via such techniques as:</p>
+      <pre style="margin-left: 40px;"><big>export plscsi=/dev/sg9</big></pre>
+      <pre style="margin-left: 40px;"><big>set PLSCSI=\\.\A:<br></big></pre>
+      <pre style="margin-left: 40px;"><big>set PLSCSI=9.1.0<br></big></pre>
+      <pre style="margin-left: 40px;"><big>setenv plscsi /dev/disk0</big><br></pre>
+      <p>plscsi -w should print such suggested command lines separately
+from the commentary which says more about which names select which
+devices, but earlier versions did not.<br>
+      </p>
+      <p>Apart from plscsi -w, we recommend you start with:</p>
+      <div style="margin-left: 40px; font-weight: bold;">
+      <pre><big>plscsi -vx "12 00:00:00 24 00" -i x24</big></pre>
+      </div>
+      <p>This is a more explicit way of asking plscsi to do what plscsi
+does by default, as plscsi -wv and plscsi -v and plscsi -- will tell you.<br>
+      </p>
+      <p>Op x12 is INQUIRY.&nbsp; Among the x24 bytes of Data copied In
+you should see the name of your device.</p>
+      <p>The ':' colons are meaningless commentary, you can use ' '
+blanks if you prefer.</p>
+      <p>Maybe next you try:</p>
+      <pre style="margin-left: 40px; font-weight: bold;"><big>plscsi -vx "00 00:00:00 00 00"</big></pre>
+      <p>Op x00 is TEST UNIT READY.&nbsp; We recommend this command
+because playing with this command can teach you what success and failure
+look like.&nbsp; This command will succeed if retried enough while the
+disc is present and spun up, but will fail when the disc is absent,
+arriving, or leaving.&nbsp; Also this command copies No Data, by
+design, that is this command copies only Cdb Out and Status and Auto
+Sense In.<br>
+      </p>
+      <p>Maybe next you try:</p>
+      <pre style="margin-left: 40px; font-weight: bold;"><big>plscsi -vx "25 00 00:00:00:00 00 00:00 00" -i 8</big></pre>
+      <p>Op x25 is READ CAPACITY.&nbsp; We recommend this command
+because it reports the maxLba (i.e. the count of blocks minus one) and
+the bytes per block.<br>
+      <br>
+We use ':' colon commentary in place of ' ' blank commentary to help us
+get the length of such a cdb correct - ten bytes - and to help us
+remember such facts as the lba of op x28 appearing in bytes 2:3:4:5,
+not bytes 1:2:3:4 and not bytes 3:4:5:6.<br>
+      </p>
+      <hr style="width: 100%; height: 2px;">
+      <h1>4. Reading Your First Block<br>
+      </h1>
+      <p>After working thru the simpler exercises above, you may be
+ready to try tackling the more complex job of reading one block.<br>
+      <br>
+The trouble with reading blocks is that first you and the drive have to
+negotiate the count of bytes per block.&nbsp; Often you can cheat: you
+can assume a count and see that it works.&nbsp; Most DVD/ CD wake up
+saying&nbsp; each read block holds 2 KiB = x800 bytes.&nbsp; Most HDD/
+RMB wake up saying each read block holds 0.5 KiB = x200 bytes.<br>
+      <br>
+With drives like UDF CD-RW, often we begin with:<br>
+      </p>
+      <pre style="margin-left: 40px; font-weight: bold;"><big>plscsi -vx "28 00 00:00:00:10 00 00:01 00" -i x800</big></pre>
+      <p>In pldd syntax, that same command is:</p>
+      <pre style="margin-left: 40px; font-weight: bold;"><big>pldd if=/dev/sg9 of bs=2k count=1<br></big></pre>
+      <p>The first byte of the cdb, also known as cdb[0], is the
+"opcode", nicknamed "op".<br>
+      </p>
+      <p>Op x28 is READ (10).&nbsp; In this example, the first block
+address is cdb[2:3:4:5] = x00:00:00:10 = 16.&nbsp; The count of blocks
+is cdb[7:8] = x00:01.&nbsp; At 2 KiB = x800 bytes per block, x00:01
+blocks is x800 bytes, therefore we say -i x800.<br>
+      <br>
+We're curious to know if these commands work for you or not.&nbsp; I
+hear DVD/ CD make reading difficult.</p>
+      <p>In particular we've heard that we may have to issue op x5A
+Mode Sense 10 to copy soft switches of the device In and op x55 Mode
+Select 10 to copy soft switches Out.&nbsp; Learning to copy soft
+switches goes quickly.&nbsp; Learning what the switches mean and what
+the switches should say, that takes longer.<br>
+      </p>
+      <hr style="width: 100%; height: 2px;">
+      <h1>5. Decrypting Success</h1>
+      <p> </p>
+      <p>An example of success after asking to read one block from a
+DVD/ CD is:</p>
+      <pre style="margin-left: 40px;"><big>&gt; plscsi -vx "28 08 00:00:00:00 00 00:01 00" -i x800<br>x 00000000 28 08 00:00:00:10 00 00:01 00 .. .. .. .. .. .. "(H@@@P@@A@"<br>x 00000000 00:00:00:00 00:00:00:00 00:00:00:00 00:00:00:00 "@@@@@@@@@@@@@@@@"<br>...<br>x 000007F0 00:00:00:00 00:00:00:00 00:00:00:00 00:00:00:00 "@@@@@@@@@@@@@@@@"<br>// 0 = plscsi.main exit int<br>&gt;<br></big></pre>
+      <p>If you see something enough like this, congratulations!&nbsp;
+You are reading single blocks!<br>
+      <br>
+You're also tracing the blocks you read to the screen.&nbsp; If you'd
+rather store the blocks to a file, you could instead say something like:<br>
+      </p>
+      <div style="margin-left: 40px;">
+      <p> plscsi -x "28 00 00:00:00:10 00 00:01 00" -i 0x800 -t x10.bin</p>
+      </div>
+      <p>In that example, we've changed the selected lba = cdb[2:3:4:5]
+= x0000:0010 = x10.<br>
+      </p>
+      <p>You should get the same results, no matter which syntax you
+choose from among:</p>
+      <div style="margin-left: 40px;">
+      <p> -i 0x800<br>
+-i x800<br>
+-ix800<br>
+-i2048<br>
+...</p>
+      </div>
+      <p> Another equivalent syntax is:<br>
+      </p>
+      <div style="margin-left: 40px;">
+      <p> plscsi -x "28 00 00:00:00:10 00 00:01 00" -i x800 -t ""
+&gt;x10.bin</p>
+      </div>
+      <p> We bother to mention this equivalence because this equivalence
+lets you use the | pipe char ('\x7C'), if already you know how to use
+that | pipe char in a command line, for example:<br>
+      </p>
+      <p style="margin-left: 40px;"> plscsi -x "28 00 00:00:00:10 00
+00:01 00" -i x800 -t "" | hexdump -C<br>
+      </p>
+      <p>Of ever you do choose to view data via plscsi -v, then
+you&nbsp; may wish to understand:<br>
+      </p>
+      <p>plscsi -v does trace all the data, but plscsi compresses the
+display of some kinds of less interesting trace data.&nbsp; In email, a
+"..." ellipsis can mean merely "omitted", but here plscsi prints "..."
+ellipsis only to mean duplicate lines omitted.&nbsp; This works much
+like the "*" convention of linux hexdump -C, except that plscsi omits
+only the duplicate lines in the middle, not also the last duplicate line.<br>
+      </p>
+      <p>More specifically, in the example here above, plscsi prints
+lots of "00" to tell us us explicitly that the x10 bytes at offset x0
+and the x10 bytes at offset x7F0 are zero, but then plscsi prints "..."
+to tell us the x10 bytes at the offsets x 10 20 ... 7E0 (a total of x7E0
+= x800 - x20 bytes) are also zero.<br>
+      <br>
+More clear than mud, yet?</p>
+      <p> </p>
+      <hr style="width: 100%; height: 2px;">
+      <h1>6. Decrypting Failure</h1>
+      <p> An example of failure after asking to read one block from a
+DVD/ CD is:</p>
+      <pre style="margin-left: 40px;"><big>&gt; plscsi -vx "28 00 00:00:00:00 00 00:01 00" -i x800<br>x 00000000 28 00 00:00:00:00 00 00:01 00 .. .. .. .. .. .. "(@@@@@@@A@"<br></big><big>x 00000000 AE:AE:AE:AE AE:AE:AE:AE AE:AE:AE:AE AE:AE:AE:AE "................"<br>...<br>x 000007F0 AE:AE:AE:AE AE:AE:AE:AE AE:AE:AE:AE AE:AE:AE:AE </big><big>"................"</big><big><br></big><big>// x800 (2048) residue</big><br><big>x 00000000 70:00:05:00 00:00:00:12 00:00:00:00 64:00 .. .. "p@E@@@@d@@@@!@"<br>// x 5 64 sense<br>// -x0002 = -2 = plscsi.main exit int<br><br>&gt;</big><br></pre>
+      <p><span style="font-style: italic;"></span></p>
+      <p> VERY helpful to have you send to us precisely what you see.<br>
+      </p>
+      <p>All this rubbish is meaningful to Me, since I typed the source
+code.<br>
+      </p>
+      <p>We hear CD's come divided into data and not-data, and that an
+x28 block read fails if addressed to where not-data appears on the
+disk.&nbsp; But we really really really do Not know that, we know very
+little of DVD/ CD as yet.</p>
+      <p>We see the plscsi -v command your entered was:</p>
+      <pre style="margin-left: 40px;"><big>plscsi -vx "28 00 00:00:00:00 00 00:01 00" -i x800<br></big></pre>
+      <p></p>
+      <p>We see PLScsi traced the 10 bytes of CDB copied Out:<br>
+      </p>
+      <pre style="margin-left: 40px;"><big>x ... 28 00 00:00:00:00 00 00:01 00 ...</big></pre>
+      <p>We see PLScsi traced the content of the Data buffer after
+trying to copy Data In:<br>
+      </p>
+      <pre style="margin-left: 40px;"><big>x ... AE:AE:...<br></big></pre>
+      <p>We see PLScsi mention a failure to copy In x800 of the -i x800
+Data In bytes you requested:<br>
+      </p>
+      <pre style="margin-left: 40px;"><big>// x800 (2048) residue</big><br></pre>
+      <p>We see PLScsi traced the x12 bytes of Auto Sense copied In:</p>
+      <pre style="margin-left: 40px;"><big>x ... 70:00:05:00 00:00:00:12 00:00:00:00 64:00 ...</big></pre>
+      <p>We see the PLScsi summary of the Auto Sense bytes copied In is:<br>
+      </p>
+      <pre style="margin-left: 40px;"><big>// x 5 64 sense<br></big></pre>
+      <p>We remember auto sense bytes have a structure often specified
+together with op x03 Request Sense.&nbsp; The x70 byte means the
+following bytes are "Current".&nbsp; Current bytes apply to the command
+that failed, not some earlier command, unless SK is 6 "unit
+attention".&nbsp; The x12 byte at offset 7 means as many as eighteen
+(i.e. x12) meaningful bytes could follow, though plscsi tries to make
+sense of only the six bytes that actually do follow.&nbsp; The "5 ...
+64:00" nybble and bytes are the SK ASC ASCQ ("sense key", "additional
+sense code", "additional sense code qualifier".<br>
+      </p>
+      <p>We remember this example summary implicitly refers to such
+English as Fuji5r15.pdf:</p>
+      <p style="margin-left: 40px;">A-1 Error Reporting ...<br>
+A-1.2 Error Tables ...<br>
+Table 499 - All Error Codes (Sheet 7 of 8)<br>
+...<br>
+5 = Sense Key<br>
+64 = ASC<br>
+00 = ASC Q<br>
+ILLEGAL MODE FOR THIS TRACK = Description<br>
+CD Read = Type</p>
+      <p>We see the PLScsi summary of all of this is:<br>
+      </p>
+      <div style="margin-left: 40px;">
+      <pre><big>// -x0102 = -258 = plscsi.main exit int</big></pre>
+      </div>
+      <p> We have not completed the design of exit codes for PLScsi, but
+in the version of PLScsi shown here, the x0100 bitmask here again says
+we asked to more data bytes than you managed to copy.&nbsp; The x0002
+bitmask here again says the command failed with auto sense.&nbsp; Also
+we're told x0102 = 258, not that we care</p>
+      <hr style="width: 100%; height: 2px;">
+      <h1>A.1. More CDB's Found Defined Where</h1>
+      <p>As of September, 2003 ...</p>
+      <p>The web trail we follow to discover CDB's for DVD and for CD
+is:<br>
+      </p>
+      <div style="margin-left: 40px;"><a
+ href="http://members.aol.com/plscsi/">http://members.aol.com/plscsi/</a></div>
+      <p style="margin-left: 40px;"><a
+ href="http://www.bswd.com/cornucop.htm">http://www.bswd.com/cornucop.htm</a><br>
+      </p>
+      <div style="margin-left: 40px;">SFF-8090i v5, Rev. 1.5 of
+29-May-03: Mt. Fuji Commands for Multimedia Devices, incl. DVD-R/RW<br>
+      <a href="ftp://ftp.seagate.com/sff/INF-8090.PDF">ftp://ftp.seagate.com/sff/INF-8090.PDF</a><br>
+      </div>
+      <p>We think of INF-8090 as almost the "oldest available
+original", though we think we remember INF-8020 is more original.<br>
+      <br>
+We hear the newest but least stable DVD/ CD specificiation may be:<br>
+      </p>
+      <div style="margin-left: 40px;"><a
+ href="ftp://ftp.avc-pioneer.com/Mtfuji5/Spec/Fuji5r15.pdf">ftp://ftp.avc-pioneer.com/Mtfuji5/Spec/Fuji5r15.pdf</a><br>
+      </div>
+      <p>In our copyt, page 381 of 614 includes "Table 272 - READ (10)
+Command Descriptor Block".<br>
+      </p>
+      <p>Please write to <a href="mailto:p.lavarre@ieee.org">Pat
+LaVarre</a> if you want help finding CDB's for HDD and for RMB
+too.&nbsp; We do possess a hard copy of SCSI-1 we can use to research
+historical questions.&nbsp; ANSI T10 publishes final draft editions of
+the SPC and SBC command sets for HDD and for RMB, alongside the oldest
+available original SCSI-2, at:<br>
+      </p>
+      <p style="margin-left: 40px;"><a
+ href="http://www.t10.org/scsi-3.htm">http://www.t10.org/scsi-3.htm</a></p>
+      <p> </p>
+      <hr style="width: 100%; height: 2px;">
+      <h1>A.2. Decrypting Capacity</h1>
+      <p>Among the first three commands we suggested trying, we include
+op x25 Read Capacity because by that command, you discover bytes per
+block and you can begin to guess the maxLba.&nbsp; But even that most
+basic of SCSI commands includes a pitfall by design.<br>
+      </p>
+      <p>On paper, despite the name READ CAPACITY, T10 actually
+requires that op to copy In a max Lba, not the disk capacity equal to
+the count of blocks that many other ops copy In, including SCSI op x23
+Read Format Capacities and Ata op xEC Identify.<br>
+      </p>
+      <p style="margin-left: 40px;">Fuji5r15.pdf</p>
+      <p style="margin-left: 40px;">"14.20 READ CAPACITY command"</p>
+      <p style="margin-left: 40px;">"The returned logical block address
+and the block length in bytes are those of the last logical block on
+the logical unit."</p>
+      <p>That is, on paper, the device copies in the Lba of the last
+block of the disk, not the Lba that points just past that block.&nbsp;
+In practice we hear many devices report maxLba + 1 instead.&nbsp; Bugs
+happen in device firmware too.&nbsp; Linux USB Storage defines the
+connect option US_FL_FIX_CAPACITY to help overcome this popular
+misunderstanding.<br>
+      </p>
+      <p>We once heard that people prefer the newer op x23, but we
+still find drives that support only op x25, not op x23.<br>
+      </p>
+      <hr style="width: 100%; height: 2px;">
+      <h1>A.3. More Blocks Per Command Line<br>
+      </h1>
+      <p style="font-style: italic;">[ Editing incomplete here!&nbsp;
+If you write <a href="mailto:p.lavarre@ieee.org">Pat LaVarre</a> to tell
+us you got this far, then we'll finish faster.]</p>
+      <p style="font-weight: bold;">You say you want to use plscsi.<br>
+      </p>
+      <p><span style="font-weight: bold;">Are you sure you want to do
+more than read/write blocks?</span><br>
+      </p>
+      <p>We ask for Four reasons:<br>
+      </p>
+      <p><span style="font-weight: bold;">1)</span><br>
+      </p>
+      <p>pldd only knows how to copy the 2 KiB/block = x800 byte/block
+of DVD/ CD and the 0.5 KiB = x200 byte/block of HDD/ RMB.&nbsp; <span
+ style="font-weight: bold;">If that's all you want to do, then the
+extra options of plscsi may only confuse you pointlessly.</span><br>
+      </p>
+      <p><span style="font-weight: bold;">2)</span><br>
+      </p>
+      <p><span style="font-weight: bold;"></span></p>
+      <p><span style="font-weight: bold;">With one pldd command line,
+you can ask to try sending many CDB's.&nbsp; With one plscsi command
+line, you send one CDB,</span> except for the -y and -n options that
+repeat that CDB unchanged.&nbsp; With pldd, the parameter bs= specifies
+the data bytes per CDB, and the parameter count= specifies how many
+CDB's to send.<br>
+      </p>
+      <p>That difference in design <span style="font-weight: bold;">may</span>
+matter to you if you <span style="font-weight: bold;">discover Windows
+misbehaving when you exceed 64 KiB per CDB.&nbsp;</span>&nbsp; I agree
+you should be able to copy xFFFF blocks ( = 128 MiB / 2 KiB = 32 MiB /
+0.5 KiB) with one CDB.&nbsp; Maybe thru Linux you can, but thru Windows
+anything much above 64 KiB ( = x20 * 2 KiB = x80 * 0.5 KiB) causes
+trouble in the host, even if the drive is ok.&nbsp; Rumour tells me
+drives are often broken here too, because Windows makes them hard to
+test here.&nbsp; Last I checked, Linux worked up to about 8 MiB per CDB.</p>
+      <p style="font-weight: bold;">3)</p>
+      <p><span style="font-weight: bold;">pldd -v ..., if it works,
+will have shown you some device names and CDB's that work.&nbsp;</span>
+Also, when your intent actually is to shatter a read or write into a
+series of CDB's with just a few bytes per CDB, often you'll find pldd
+runs faster than plscsi. </p>
+      <p>You could then duplicate those CDB's in plscsi with the
+appropriate -i and -o options.&nbsp; Having duplicated these CDB's, you
+could then change these CDB's.<br>
+      </p>
+      <p><span style="font-weight: bold;">4)</span><br>
+      </p>
+      <p><span style="font-weight: bold;">Examples ...</span><br>
+      </p>
+      <p>With pldd, to read block x10:</p>
+      <div style="margin-left: 40px;">
+      <pre><big>pldd.exe -v if=\\.\</big><big>A</big><big>: of=x10.bin bs=2k skip=x10 count=1</big></pre>
+      </div>
+      <p>With pldd, to read 16 blocks starting with block x450:<br>
+      </p>
+      <div style="margin-left: 40px;">
+      <pre><big>pldd.exe -v if=\\.\</big><big>A</big><big>: of=x450.bin bs=32k sbs=2k skip=x450 count=1</big></pre>
+      </div>
+      <p>With pldd, to read 5 * 16 blocks starting with block x450:<br>
+      </p>
+      <div style="margin-left: 40px;">
+      <pre><big>pldd.exe -v if=\\.\</big><big>A</big><big>: of=x450.bin bs=32k sbs=2k skip=x450 count=5</big></pre>
+      </div>
+      <p>The -v option should tell you you have achieved the effect:<br>
+      </p>
+      <pre style="margin-left: 40px;"><big>plscsi -x "28 00 00:00:04:50 00 00:10 00" -i x8000<br>plscsi -x "28 00 00:00:04:60 00 00:10 00" -i x8000<br>plscsi -x "28 00 00:00:04:70 00 00:10 00" -i x8000<br>plscsi -x "28 00 00:00:04:80 00 00:10 00" -i x8000<br>plscsi -x "28 00 00:00:04:90 00 00:10 00" -i x8000<br></big></pre>
+      <p>Suppose you do choose to read blocks via plscsi rather than
+pldd.&nbsp; You might then try something like:<br>
+      </p>
+      <div style="margin-left: 40px;">
+      <pre><big>plscsi -x "28 00 00:00:04:50 00 00:50 00" -i x28000</big></pre>
+      </div>
+      <p>This command probably won't work in Windows, because you're
+asking for x2:8000 bytes/CDB i.e. more than x1:0000 = 64 KiB/CDB = (x20
+* 2 KiB) per CDB.&nbsp; In Windows, you're supposed to throw away
+thruput by shattering streams of read/write into tiny 64 KiB pieces.<br>
+      </p>
+      <p>What should work in Windows is something like:</p>
+      <div style="margin-left: 40px;">
+      <pre><big>pldd -v if=\\.\R: of=x450.bin bs=x10000 count=3</big></pre>
+      </div>
+      <p>Notice plscsi/pldd only throw away colons found in CDB's, e.g.
+we have to say bs=x10000, we cannot say bs=x1:0000.<br>
+      </p>
+      <p>That pldd -v option will tell you this command tried a
+sequence of CDB's:<br>
+      </p>
+      <div style="margin-left: 40px;">
+      <pre><big>plscsi -x "28 00 00:00:04:50 00 00:20 00" -i x10000<br>plscsi -x "28 00 00:00:04:70 00 00:20 00" -i x10000<br>plscsi -x "28 00 00:00:04:90 00 00:20 00" -i x10000</big></pre>
+      </div>
+      <p>If you choose x1:0000 bytes/CDB = 64 KiB/CDB like this, then
+with pldd you can't read just xA0 = 160 KiB = x2:8000 bytes.&nbsp;
+Instead you have to read x3:0000 bytes.<br>
+      </p>
+      <hr style="width: 100%; height: 2px;">
+      <h1>A.4. Correct CDB Lengths</h1>
+Most standard CDB's contain a specific number of bytes - most often
+six, ten, twelve, or sixteen bytes, but sometimes hundreds of bytes.<br>
+      <br>
+SCSI connections and devices vary in how they respond if you ask to
+copy Out more or less than a whole CDB.<br>
+      <br>
+gccscsi will pass thru whatever you give it.&nbsp; plscsi requires the
+-p option (also known as --please) to pass thru anything other than a
+standard length.&nbsp; T10 publishes standard lengths for each opcode:
+six bytes for ops x00..1F, ten bytes for ops x20..3F, and so on.<br>
+      <br>
+Some SCSI connections tolerate as many as twelve or sixteen bytes in
+place of six or ten, especially if you zero the extra padding.&nbsp;
+Some SCSI connections pad with zeroes if you ask to Copy Out too few
+bytes, others pad with garbage.<br>
+      <br>
+Classic parallel SCSI connections tend to require precisely the correct
+length.<br>
+      <br>
+      <hr style="width: 100%; height: 2px;">
+      <h1>A.5. Whole Commands</h1>
+      <p style="font-style: italic;">[ Editing incomplete here!&nbsp;
+If you write <a href="mailto:p.lavarre@ieee.org">Pat LaVarre</a> to tell
+us you got this far, then we'll finish faster.]</p>
+      <p>I vehemently agree the CDB should unambiguously say how many
+bytes of data to copy which way.&nbsp; I deeply regret that in fact the
+CDB does not.&nbsp; I imagine we inherited this defect in protocol from
+the IBM mainframes of the 1960's.</p>
+      <p>plscsi works at a level below knowing that x28 means READ
+(10), because SCSI does not promise you that x28 means READ (10),
+although for DVD/ CD/ HDD/ RMB x28 usually does.<br>
+      </p>
+      <p>Consequently, to plscsi you have to specify more than the CDB
+via the -x option, you also have to say how many bytes of data you want
+to copy which way, via such options as -i and -o.&nbsp; At the level of
+plscsi, the CDB alone is not the whole command, not unless you mean to
+ask to copy no bytes of data.<br>
+      <br>
+      </p>
+1)<br>
+      <br>
+Scsi differs from other protocols by neglecting to reserve a particular
+bit of the CDB to always tell us which way we are copying data.<br>
+      <br>
+Specifically whether CDB[0] = x28 means read or write or something else
+varies according to the kind of device you have addressed and the mode
+the device is in.&nbsp; Yes, apart from bugs, in the default mode of
+HDD/ DVD/ CD, CDB[0] = x28 READ (10).<br>
+      <br>
+More formally, every SCSI device should agree CDB[0] = x12 means
+Inquiry (though in practice I hear some FireWire HDD always
+disagree).&nbsp; The low five bits of the first byte of Data copied In
+via an Inquiry command are the pdt (Peripheral Data Type).&nbsp; pdt x00
+= HDD/ RMB and pdt x05 = DVD/ CD both say that CDB[0] = x28 thereafter
+means READ (10), unless you put the drive into a vendor-specific mode
+that redefines x28.<br>
+      <br>
+2)<br>
+      <br>
+So let's suppose you somehow grew confident that you know which way the
+device will ask to copy data in response to a particular CDB.&nbsp; Well
+now,<br>
+      <br>
+Next you have to ask how many bytes will the device ask to copy.<br>
+      <br>
+Scsi also makes this is ambiguous.<br>
+      <br>
+In particular, a standard op x28 READ(10) CDB says how many "blocks" to
+copy, without bothering to define how long a "block" is.&nbsp; How long
+a "block" is varies by drive, by disk, by opcode, by mode, etc.&nbsp; CD
+usually start out with a block = 2 KiB.&nbsp; But you can ask to include
+ecc, not just data, and other kinds of bits too.<br>
+      <br>
+      <p><br>
+&gt; &gt; plscsi -vx "28 04 50 00 00 00 00 00 10 00"<br>
+&gt; &gt; ... rude if compared to:<br>
+&gt; &gt; plscsi -vx "28 04 50 00 00 00 00 00 10 00" -i x800<br>
+      <br>
+Correction, sorry.&nbsp; Both of those are rude.&nbsp; A copy of x10
+blocks of x800 bytes each is x8000 bytes, not x800 bytes.<br>
+      </p>
+      <p><br>
+      </p>
+      <p>plscsi -vx "28 04 50 00 00 00 00 00 10 00"<br>
+is rude if compared to:<br>
+plscsi -vx "28 04 50 00 00 00 00 00 10 00" -i x800.<br>
+      <br>
+In the first case, we're sending a cdb to copy data, but in the same
+breath we're implicitly telling plscsi Not to copy data, because we have
+specified no -i and no -o option.&nbsp; We're contradicting ourselves.
+This kind of thing tends to confuse Windows enough to crash it.&nbsp; In
+the Usb Mass standard, this particular kind of contradiction is termed
+Hn &lt; Di i.e. if the device thinks that the cdb meant to copy Data In
+then the host is asking to copy No Data but the device is asking to copy
+Data In and life goes downhill from there.</p>
+      <p><br>
+Notice you could deeply confuse, maybe even crash Windows if your -i
+x24 interpretation of the CDB in fact did not agree with the device's
+interpretation of the CDB.&nbsp; Serial FireWire &amp; USB connections
+copy the -i x24 Out to the device, so the device gets a chance to notice
+disagreements in interpretation, and a few devices in fact are that
+smart.&nbsp; But parallel SCSI &amp; parallel ATAPI connections copy
+only the CDB Out.&nbsp; Those protocols by design assume that the host
+&amp; the device perfectly coordinate all interpretations of
+CDB's.&nbsp; Violating that assumption is how FireWire HDD that choke
+over op x12 cause so much trouble.<br>
+      <br>
+      <br>
+      </p>
+      <hr style="width: 100%; height: 2px;">
+      <h1>A.6. Less Auto Sense</h1>
+      <p>If you trace the bus while you use plscsi, sometimes you will
+see two commands rather than one.<br>
+      </p>
+      <p>This occurs if the first command fails with an "auto sensable"
+status, such as a classic parallel SCSI x02 Check Condition or an
+ATAPI&nbsp; x03 Status In of x01 ERR.&nbsp; After an auto sensable
+status, the host automagically injects a second command, specifically
+op x03 Request Sense.</p>
+      <p>This fact violates the spirit of plscsi: you completely
+control only the first command, not the possibly automagic second
+command.</p>
+      <p>This fact arises because auto sense has to happen below plscsi
+to work reliably.&nbsp; Somewhere below plscsi we need code to
+guarantee exclusive access to the device long enough to keep the auto
+sense together with the CDB to which the auto sense refers.&nbsp; We
+need exclusive access because op x03 Request Sense by definition refers
+to the op that immediately preceded it and op x03 by definition "reads
+and clears".<br>
+      </p>
+      <p>For example, suppose we have two threads in the host that send
+commands that fail: cdb1 and cdb2.&nbsp; Say the auto sense for each is
+as1 and as2.&nbsp; The only sequences that work are&nbsp; &lt;cdb1 as1
+cdb2 as2 &gt; and &lt; cdb2 as2 cdb1 as1&gt;.&nbsp; Mixed sequences
+like &lt;cdb1 cdb2 as1 as2&gt; get wrongs answers.&nbsp; In that
+instance, cdb2 overwrites the sense of cdb1, as1 gets the error details
+for cdb2 rather than cdb1, and as2 gets the zeroed sense left behind
+when as1 read and cleared sense.<br>
+      </p>
+      <p> Clear so far?<br>
+      </p>
+      <p>Now, because auto sense happens below plscsi, we can't easily
+control auto sense.<br>
+      </p>
+      <p>plscsi cannot see if auto sense occurs via op x03 Request
+Sense as in classic parallel SCSI, ATAPI, USB, etc. or via some other
+mechanism as in 1394/ Apple FireWire/ Sony iLink, etc.&nbsp; plscsi
+never traces the auto sense CDB that plscsi does not see.<br>
+      </p>
+      <p>In an autosense CDB, byte 4 is the max count of auto sense
+bytes to copy In across the bus.&nbsp; plscsi can't see that
+either.&nbsp; plscsi can only specify the max count of auto sense bytes
+to copy In to plscsi.&nbsp; Some SCSI bus drivers round that count up
+to xFF, so that a bus trace always shows all the auto sense bytes that
+op x03 implicitly clears after reading some or all of them.&nbsp; Some
+SCSI bus drivers round the count off to align the count, or to match a
+conventional choice, to avoid surprising the device.&nbsp; Conventional
+choices for that byte include the x0E of Win 9X/ME and the x12 of Win
+2K/XP.<br>
+      </p>
+      <p>The plscsi option -X sense x$XX exists to let you try asking
+to copy different lengths of auto sense bytes into plscsi.&nbsp; We say
+plscsi "should" define an option to let you misalign your auto sense
+data on purpose, just as plscsi already defines the -a $page $offset to
+let you misaligned your data on purpose.</p>
+      <p>The -X sense x$XX option may not work well: despite our
+academic interest, we don't find much use for that option in the real
+world.&nbsp; We find many hosts choke over any but standard lengths.</p>
+      <p>If you want to experiment as we have, we recommend you begin
+with "unsolicited sense" i.e. explicitly choose to send an op x03 e.g.
+plscsi -pvx "03 00:00:00 10 00" -i x10.&nbsp; Indeed, before that, we
+recommend you begin with op x12 Inquiry e.g. plscsi -vx "12 00:00:00 10
+00" -i x10.&nbsp; Once you understand those results, you have a chance
+of understanding what -X sense x$XX will tell you.&nbsp; On the other
+hand, we do know of hosts that transparently pass thru standard lengths
+of auto sense but choke over unsolicited sense.<br>
+      </p>
+      <p>Remember, hosts tend to have trouble with lengths other than a
+multiple of the word size of your motherboard.&nbsp; For example, we
+imagine if you study auto sense carefully, you will discover that with
+32 bit motherboards often you are copying in x10 bytes rather than x0E,
+or x14 rather than x12.&nbsp; We say plscsi "should" make this
+rounding-up more obvious.<br>
+      <br>
+Specific hosts often support undocumented ways of turning off auto
+sense.&nbsp; As the length of auto sense bytes to copy In to plscsi, we
+can try negative numbers, positive numbers in excess of xFF, and zero
+itself.&nbsp; While indeed on paper the cdb -x "03 00:00:00 00 00" is
+meaningful, zero auto sense isn't very meaningful: zero auto sense asks
+to clear all sense data after reading zero bytes of sense data.&nbsp;
+Consequently some hosts reserve length zero to mean do not auto sense.<br>
+      </p>
+      <p>Write to tell us if in fact one or more of the above "should"s
+actually do matter to you, and we will get around to messing with them
+in less years than otherwise.</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p>Posted by <a href="mailto:p.lavarre@ieee.org">Pat LaVarre</a> </p>
+</body>
+</html>

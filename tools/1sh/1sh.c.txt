@@ -1,0 +1,279 @@
+/* ish.c
+ *
+ * Copy an editable stdin to stdout.
+ */
+
+#define VERSION "Sunday, September 14, 2003"
+
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <termios.h>
+#include <unistd.h>
+
+#define T() fprintf(stderr, "line %d file %s\n", __LINE__, __FILE__)
+
+#define lengthof(A) ((int) (((sizeof (A)) / sizeof (A)[0])))
+
+/** Name code. */
+
+typedef void (*act)(void);
+
+/** Define each input. */
+
+static act acts[0x80];
+
+/** Permit forward references. */
+
+static void define_acts(void);
+
+/** Connect input, output, and echo. */
+
+static int in_fd = -1;
+static int out_fd = -1;
+static int echo_fd = -1;
+
+/** Say how to disconnect input. */
+
+static int tty_in;
+static struct termios exit_tty;
+
+/** Cache input up to eol. */
+
+static int self;
+static char text[1002];
+static int index = 0;
+static int max_index = ((lengthof(text)) - 2);
+
+/** Shut down. */
+
+static void exit_cleanly(int rc)
+{
+	if (tty_in) {
+		struct termios * tty = &exit_tty;
+		if (tcsetattr(in_fd, TCSADRAIN, tty) != 0) {
+			perror("tcsetattr");
+		}
+	}
+	if (rc != 0) {
+		fflush(stdout);
+		fprintf(stderr, "ish: %d\r\n", rc);
+	}
+	exit(rc);
+}
+
+/** Start up. */
+
+static void enter(void)
+{
+	struct termios * tty = &exit_tty;
+	int fd = fileno(stdin);
+	tty_in = isatty(fd);
+	if (tty_in) {
+		if (tcgetattr(fd, tty) != 0) {
+			perror("tcgetattr");
+			exit_cleanly(1); /* no input */
+		} else {
+			struct termios auto_tty = *tty;
+			tty = &auto_tty;
+			in_fd = fd;
+			cfmakeraw(tty);
+			tty->c_oflag = exit_tty.c_oflag;
+			if (tcsetattr(in_fd, TCSADRAIN, tty) != 0) {
+				perror("tcsetattr");
+				exit_cleanly(2); /* input not raw */
+			}
+		}
+	}
+	out_fd = fileno(stdout);
+	echo_fd = open("/dev/tty", O_WRONLY); /* open without close */
+	if (echo_fd < 0) {
+		perror("open");
+		exit_cleanly(3); /* no input echo */
+	}
+	define_acts();
+}
+
+/** Echo a string. */
+
+static void echo_raw(char * st)
+{
+	write(echo_fd, &st[0], strlen(st));
+}
+
+/** Echo one char. */
+
+static void echo(int i) {
+	char echoes[1] = { '\0' };
+	i &= 0x7F;
+	if ((i < 0x20) || (0x7E < i)) {
+		i = 0x40 ^ i;
+	}
+	echoes[0] = (char) i;
+	write(echo_fd, &echoes[0], 1);
+}
+
+/** Flush the cached input line. */
+
+static void flush_input_line(void)
+{
+	write(out_fd, &text[0], index);
+	index = 0;
+	fflush(stdout);
+}
+
+/** End input, like emacs C-c C-d = eshell-send-eof-to-process. */
+
+static void eof(void)
+{
+	if (0 < index) {
+		echo_raw("\n");
+	}
+	flush_input_line();
+	exit_cleanly(0);
+}
+
+/** Fetch an input. */
+
+static int fetch(void)
+{
+	int i = fgetc(stdin);
+	if (i < 0) {
+		eof();
+	}
+	return i;
+}
+
+/** Echo a bell. */
+
+static void bel(void)
+{
+	echo_raw("\a");
+}
+
+/** Add a char, like emacs self-insert-command. */
+
+static void grow(void)
+{
+	if (index < max_index) {
+		int i = self;
+		echo(i);
+		text[index++] = (char) i;
+		return;
+	}
+	bel();
+}
+
+/** Make sense of meaningless input. */
+
+static void nop(void) {
+	bel();
+	self &= 0x7F;
+	grow();
+}
+
+/** End line, like emacs RET = eshell-send-input. */
+
+static void eol(void)
+{
+	echo_raw("\n");
+	text[index++] = '\n';
+	flush_input_line();
+}
+
+/** Remove a char, like emacs delete-backward-char. */
+
+static void shrink(void)
+{
+	if (0 < index) {
+		echo_raw("\b \b");
+		--index;
+		return;
+	}
+//	nop();
+}
+
+/** Discard the cached input line. */
+
+static void empty(void)
+{
+	while (0 < index) {
+		shrink();
+	}
+}
+
+/** Execute an input. */
+
+static void execute(int i)
+{
+	self = i;
+	if ((0 <= i) && (i <= lengthof(acts))) {
+		(*acts[i])();
+	} else {
+		nop();
+	}
+}
+
+/** Quote an input. */
+
+static void quote(void)
+{
+	self = fetch();
+	grow();
+}
+
+/** Distinguish data from control input. */
+
+static void define_data(void)
+{
+	int i = 0;
+	for (i = 0x00; i < 0x20; ++i) {
+		acts[i] = nop;
+	}
+	for (i = 0x20; i < lengthof(acts); ++i) {
+		acts[i] = grow;
+	}
+	acts['\x7F'] = nop;
+}
+
+/* Map to Ctrl+K from K. */
+
+static int ctrl(int i) {
+	if (i == ' ') return 0x00;
+	return ('@' ^ i);
+}
+
+/** Define every possible input. */
+
+static void define_acts(void)
+{
+	define_data();
+	acts[ctrl('C')] = empty;	/* x03 ETX SIGINT */
+	acts[ctrl('D')] = eof;		/* x04 EOT EOF */
+	acts[ctrl('G')] = bel;		/* x07 BEL */
+	acts[ctrl('H')] = shrink;	/* x08 BS */
+	acts[ctrl('J')] = eol;		/* x0A LF */
+	acts[ctrl('M')] = eol;		/* x0D CR */
+	acts[ctrl('Q')] = quote;	/* x11 ETB XON */
+	acts[ctrl('V')] = quote;	/* x16 SYN */
+	acts[ctrl('Z')] = eof;		/* x1A SUB SIGTSTP */
+	acts[ctrl('?')] = shrink;	/* x7F DEL */
+}
+
+/** Run from the command line. */
+
+int main(int argc, char *argv[])
+{
+	--argc; ++argv;
+	if (argc != 0) return 0;
+	enter();
+	for (;;) {
+		fflush(stdout);
+		execute(fetch());
+	}
+	return 1;
+}
+
+/* end of file */
+

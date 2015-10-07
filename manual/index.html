@@ -1,0 +1,241 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+  <style type="text/css">
+body { font-family: sans-serif; }
+pre { font-family: monospace; }
+  </style>
+  <title>PLScsi - Manual</title>
+</head>
+<body>
+<p>Friday, May 21, 2004 </p>
+<h1><a href="http://www.bswd.com/cornucop.htm">Storage/</a> <a
+ href="file:///Users/pat/Desktop/plscsi/">PLScsi/</a> Manual/</h1>
+<p>(Written in the style of a Unix command-line man page ...)<span
+ style="font-weight: bold;"><br>
+</span></p>
+<p><span style="font-weight: bold;">NAME</span> </p>
+<p style="margin-left: 80px;"><span style="font-weight: bold;">plscsi</span>
+- talk SCSI at the command line </p>
+<p><span style="font-weight: bold;">SYNOPSIS</span> </p>
+<pre style="margin-left: 80px;"><big><span style="font-weight: bold;">plscsi</span> [-w|devicenames] [options] -x "$command"</big></pre>
+<p><span style="font-weight: bold;">DESCRIPTION</span> </p>
+<p style="margin-left: 80px;"> plscsi copies commands, data, status,
+and auto sense between
+the host and one or more devices. </p>
+<p><span style="font-weight: bold;">BUGS </span></p>
+<p style="margin-left: 80px;">Below we say "should" where we have
+discovered we want our code to do something other than what it actually
+does. </p>
+<p><span style="font-weight: bold;">OPTIONS</span> </p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">-w</span></p>
+<p> </p>
+<p style="margin-left: 80px;"> Try all the well-known path names
+now connected to SCSI devices, same as --whichever.</p>
+<p> </p>
+<p style="font-weight: bold; margin-left: 40px;"> -v</p>
+<p> </p>
+<p style="margin-left: 40px;"> </p>
+<p> </p>
+<p style="margin-left: 80px;">Trace all the SCSI talk, same as
+--verbose, opposite of -q and --quiet.&nbsp; Should be less redundant
+with Unix `hexdump -C`.<br>
+</p>
+<p> </p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;"> -x
+"$command"</span> </p>
+<p> </p>
+<p style="margin-left: 80px;">Specify what command descriptor
+block (CDB) bytes to copy out to each device, quotes optional. </p>
+<p> </p>
+<p style="font-weight: bold; margin-left: 40px;"> -p </p>
+<p> </p>
+<p style="margin-left: 80px;"> Pass thru commands known to crash
+certain operating systems, such as unusual CDB length and mode sense of
+header.&nbsp; Pass thru commands known to destroy disks, such as x04
+Format.&nbsp; Same as <span style="font-weight: bold;">--please</span>.</p>
+<p> </p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">-t
+$filename</span></p>
+<p> </p>
+<p style="margin-left: 40px;"> </p>
+<p> </p>
+<p style="margin-left: 80px;"><span style="font-weight: normal;">Copy
+data bytes in to a file, often /dev/null.&nbsp; Maybe the cryptic
+concise -t . should mean copy to stdout, meanwhile -t "" works.</span><span
+ style="font-weight: normal;">&nbsp; Probably the default should be to
+stdout, rather than to /dev/null.&nbsp; Some Unix define such aliases
+as
+/dev/stdout and /dev/fd/1 to mean stdout.&nbsp; Same as <span
+ style="font-weight: bold;">--to</span> $filename. </span></p>
+<p> </p>
+<p style="font-weight: bold; margin-left: 40px;"> -i $length</p>
+<p> </p>
+<p style="margin-left: 40px;"> </p>
+<p> </p>
+<p style="margin-left: 80px;"><span style="font-weight: normal;">Copy
+data bytes in from each device.&nbsp; -i . </span><span
+ style="font-weight: normal;">should </span><span
+ style="font-weight: normal;">mean copy in as many bytes as -f or
+-fx.&nbsp; Same as <span style="font-weight: bold;">--in</span>
+$length. </span></p>
+<p> </p>
+<p style="margin-left: 40px;"><span style="font-weight: normal;"></span></p>
+<p> </p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">-f
+$filename</span></p>
+<p> </p>
+<p style="margin-left: 40px;"> </p>
+<p> </p>
+<p style="margin-left: 80px;">Copy data bytes out from a file,
+often /dev/zero or /dev/urandom.<span style="font-weight: normal;">&nbsp;
+Maybe the cryptic concise -f</span><span style="font-weight: normal;">
+. </span><span style="font-weight: normal;">should </span><span
+ style="font-weight: normal;">mean copy </span><span
+ style="font-weight: normal;">from stdin, meanwhile -f "" works.&nbsp;
+</span><span style="font-weight: normal;"><span
+ style="font-weight: normal;">Probably the default should be from
+stdin, rather than from /dev/zero translated to \xAE.&nbsp; </span></span><span
+ style="font-weight: normal;">Some Unix define such aliases as
+/dev/stdin and /dev/fd/0 (distinct from
+the /dev/fd0 floppy) to mean stdin.&nbsp; </span>Same as <span
+ style="font-weight: bold;">--from</span> $file. </p>
+<p> </p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">-fx
+"$hex"</span></p>
+<p> </p>
+<p style="margin-left: 40px;"> </p>
+<p> </p>
+<p style="margin-left: 80px;">Should mean copy data bytes out
+from a string of hex.&nbsp; Meanwhile, you can use the -f $filename
+option, after you prepare a file with a tool of your choosing such as
+the otherwise undocumented --loop option, for example:</p>
+<pre style="margin-left: 120px;"><big>plscsi --loop -v -x \"00 FF FF FE\" -i x101 -t cycle.bin</big></pre>
+<p> </p>
+<p style="font-weight: bold; margin-left: 40px;">-o $length</p>
+<p> </p>
+<p style="margin-left: 40px;"> </p>
+<p> </p>
+<p style="margin-left: 80px;">Copy data bytes out to each
+device.&nbsp; -o . should mean copy out all the bytes of -f or -fx.
+Same
+as <span style="font-weight: bold;">--out</span> $length. </p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">-h</span>
+</p>
+<p style="margin-left: 80px;"> Print help.&nbsp; Same as <span
+ style="font-weight: bold;">--help</span>.</p>
+<p style="margin-left: 80px;"><span style="font-weight: bold;"></span></p>
+<span style="font-weight: bold;">OBSCURE OPTIONS</span>
+<p> </p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">-c </span></p>
+<p style="margin-left: 80px;"><span style="font-weight: bold;"></span>Compare
+the data bytes copied in to the data bytes copied out and complain of
+differences found.&nbsp; Same as -<span style="font-weight: bold;">-compare</span>.<span
+ style="font-weight: bold;"> </span></p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">-d
+$length</span> </p>
+<p> </p>
+<p style="margin-left: 80px;">Allot and -v trace more than just
+the -i $length or -o $length of data.&nbsp; Same as <span
+ style="font-weight: bold;">--data</span> $length. </p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">-a
+$page $offset</span> </p>
+<p style="margin-left: 80px;">Mis/align the data to a $page size
+in bytes by an $offset in bytes.&nbsp; Same as <span
+ style="font-weight: bold;">--align</span>.&nbsp; Should be redundant,
+because every specified length should be specified as
+$length.$page.$offset.<br>
+</p>
+<p style="margin-left: 80px;"> </p>
+<p> </p>
+<p> </p>
+<p> </p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;"> </span></p>
+<p> </p>
+<p> </p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">-y </span></p>
+<p> </p>
+<p style="margin-left: 80px;"> Repeat til the command
+succeeds.&nbsp; Same as <span style="font-weight: bold;">--yes</span>.
+</p>
+<p> </p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">-n </span></p>
+<p> </p>
+<p style="margin-left: 80px;"> Repeat til the command fails,
+except should tolerate copying less than all data bytes while the count
+of bytes copied does not change.&nbsp; Same as <span
+ style="font-weight: bold;">--no</span>. </p>
+<p><span style="font-weight: bold;">PLATFORM SPECIFIC OPTIONS</span> </p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">-X
+$filename </span></p>
+<p> </p>
+<p style="margin-left: 80px;"> Speak only thru the specified
+shared library, such as Linux lscsio.so or Windows Wnaspi32.dll.</p>
+<p style="font-weight: bold; margin-left: 40px;">-X sense $length</p>
+<p style="margin-left: 80px;">Limit the count of auto sense bytes
+copied in from each device. </p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">-X
+time $s $ns</span> </p>
+<p style="margin-left: 80px;">Should be the legacy way of spelling `-X
+within $s.$ns`.<br>
+</p>
+<p style="font-weight: bold; margin-left: 40px;">-X within $s.$ns </p>
+<p style="font-weight: bold; margin-left: 80px;"><span
+ style="font-weight: normal;"> Time out and cancel if more than
+seconds &amp; nanoseconds elapse.&nbsp; </span><span
+ style="font-weight: normal;">Should be the one way of spelling this
+option, but isn't yet, so for now use `-X
+time $s $ns`.&nbsp; The default has been 28 hours i.e. try not to
+cancel, which works well in Windows, where Ctrl+C and Ctrl+Alt+Del and
+such cancel well on demand.&nbsp; Some say Linux works better with a
+default more like 5 seconds, except with slow devices, because
+otherwise Ctrl+C doesn't work well.</span><span
+ style="font-weight: normal;"><br>
+</span></p>
+<p style="font-weight: bold; margin-left: 40px;"><span
+ style="font-weight: normal;"><span style="font-weight: bold;">-X late
+$s.$ns</span> </span></p>
+<p style="margin-left: 80px;"><span style="font-weight: normal;">Complain
+of slow time after the fact without trying to cancel to reduce
+time.&nbsp; Eventually gives the
+same info, but works better across platforms, than the
+cancel after time out of `-X within $s.$ns`.&nbsp; Should work but
+doesn't.</span></p>
+<p style="font-weight: bold;"> PLATFORM DISTINGUISHING OPTIONS</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">-X
+aspi</span> </p>
+<p style="margin-left: 80px;">Speak only thru Windows ASPI </p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;"></span></p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">-X csp</span>
+</p>
+<p style="margin-left: 80px;">Speak only thru Linux
+CDROM_SEND_PACKET.&nbsp; Should work but doesn't.<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;"></span></p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">-X
+dos</span> </p>
+<p style="margin-left: 80px;">Speak only thru DOS ASPI</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;"></span></p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">-X
+sgio</span></p>
+<p style="margin-left: 40px;"> </p>
+<p style="margin-left: 80px;">Speak only thru Linux ioctl SG_IO</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">-X
+spt</span> </p>
+<p style="margin-left: 80px;">Speak only thru Windows
+DeviceIoControl IOCTL_SCSI_PASS_THROUGH </p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">-X
+sptd</span> </p>
+<p style="margin-left: 80px;">Speak only thru Windows
+DeviceIoControl IOCTL_SCSI_PASS_THROUGH_DIRECT </p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;">-X
+sptx</span> </p>
+<p style="margin-left: 80px;">Speak only thru Windows
+DeviceIoControl, -X Spt if &lt;= 16KiB, else -X Sptd </p>
+<p>Posted by <a
+ href="mailto:p.lavarre@ieee.org?Subject=members.aol.com/plscsi/manual/">Pat
+LaVarre</a> </p>
+</body>
+</html>

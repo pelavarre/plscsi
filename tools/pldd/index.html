@@ -1,0 +1,525 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+  <style type="text/css">
+body { font-family: sans-serif; }
+pre { font-family: monospace; }
+  </style>
+  <title>PLScsi Tools pldd</title>
+</head>
+<body>
+<h1><a href="../../">PLScsi/</a>&nbsp;&nbsp;<a href="../">Tools/</a>&nbsp;&nbsp;pldd/</h1>
+<p><span style="font-weight: bold;"></span></p>
+<p>Updated on Friday, July 13, 2004<br>
+</p>
+<p><span style="font-weight: bold;"></span></p>
+<p><span style="font-weight: bold;">Features coming soon</span> (write
+to encourage us, if you care):<br>
+</p>
+<p style="margin-left: 40px;">Mac OS X<br>
+</p>
+<p style="margin-left: 40px;"><span style="font-weight: bold;"></span>Pseudo-random
+bit source (more thruput than Linux/ Mac and entirely new in Windows).</p>
+<p><span style="font-weight: bold;">News: </span>Linux pldd since July
+2004 attempts ioctl SG_IO on any /dev/ name, to make device names like
+/dev/hdd and /dev/scd0 work, which first became possible in Linux 2.6.</p>
+<p></p>
+<table style="text-align: left; width: 100%;" border="0" cellspacing="2"
+ cellpadding="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">
+      <p>Free Download: </p>
+      <p><a href="pldd.tar.gz">pldd.tar.gz</a> for&nbsp;Linux<br>
+      </p>
+      <p><a href="pldd.zip">pldd.zip</a>&nbsp;in&nbsp;case&nbsp;you&nbsp;dislike&nbsp;.tar.bz2<br>
+      </p>
+      <p><a href="pldd.exe">pldd.exe</a>&nbsp;for&nbsp;Win&nbsp;2K/&nbsp;XP</p>
+      <p>&nbsp;</p>
+      <p>See Also:<br>
+      </p>
+      <p><a href="http://plavarre.blog-city.com/read/596492.htm">open
+issues</a><br>
+      </p>
+      <p><a
+ href="http://www.google.com/search?q=link:members.aol.com/plscsi/tools/pldd/">links&nbsp;to&nbsp;this&nbsp;page</a></p>
+      <p><a href="../knoppix/">knoppix</a>&nbsp;faq</p>
+      <p> <a href="http://www.google.com/search?q=pldd+of+usr+proc+bin">pldd&nbsp;of&nbsp;usr&nbsp;proc&nbsp;bin</a>
+at google </p>
+      <p><a href="http://www.torque.net/sg/">linux&nbsp;sg&nbsp;utils</a>&nbsp;home&nbsp;page<br>
+      </p>
+      <p>&nbsp;</p>
+      <p>Free Preview:</p>
+      <p><a href="lddio.c.txt">lddio.c.txt</a></p>
+      <p><a href="wddio.cpp.txt">wddio.cpp.txt</a>&nbsp;</p>
+      <p>&nbsp;</p>
+      <p>Free Help re Unix:</p>
+      <p><a href="http://www.google.com/search?q=man+pages+dd">man&nbsp;pages&nbsp;dd</a>&nbsp;at&nbsp;google</p>
+      <p><a href="http://www.google.com/search?q=man+pages+cmp">man&nbsp;pages&nbsp;cmp</a>
+at&nbsp;google</p>
+      <p><a href="http://www.google.com/search?q=man+pages+null">man&nbsp;pages&nbsp;null</a>&nbsp;at&nbsp;google</p>
+      <p><a href="http://www.google.com/search?q=man+pages+urandom">man&nbsp;pages&nbsp;urandom</a>&nbsp;at&nbsp;google</p>
+      <p><a href="http://www.google.com/search?q=man+pages+zero">man&nbsp;pages&nbsp;zero</a>&nbsp;at&nbsp;google</p>
+      <p>&nbsp;</p>
+      <p>Free Help re Scsi Pass Thru:<br>
+      </p>
+      <p><a href="../">tools/</a> <a href="../gccscsi/">gccscsi</a></p>
+      <p><a href="wscsi.dll">wscsi.dll</a>&nbsp;for&nbsp;Win&nbsp;2K/&nbsp;XP</p>
+      <p>&nbsp;</p>
+      <p>Free Help re Linux C: </p>
+      <p><a href="http://www.google.com/search?q=man+pages+fopen64">man&nbsp;pages&nbsp;fopen64</a>&nbsp;at&nbsp;google</p>
+      <p><a href="http://www.google.com/search?q=man+pages+fseeko64">man&nbsp;pages&nbsp;fseeko64</a>&nbsp;at&nbsp;google</p>
+      <p><a
+ href="http://groups.google.com/groups?q=nlo.lists.kernelnewbies">kernelnewbies</a>&nbsp;archive&nbsp;at&nbsp;google</p>
+      <p><a href="http://marc.theaimsgroup.com/?l=kernelnewbies">kernelnewbies</a>&nbsp;archive&nbsp;at&nbsp;marc</p>
+      <p>&nbsp; </p>
+      <p>Free gcc/g++ for Windows:</p>
+      <p><a href="../mingw/">mingw</a>&nbsp;win&nbsp;gcc/g++&nbsp;faq</p>
+      <p>&nbsp;</p>
+      <p>Free Help re Microsoft C:</p>
+      <p><a
+ href="http://www.google.com/search?as_q=C+__int64+site:msdn.microsoft.com">msdn.microsoft&nbsp;C&nbsp;__int64</a>&nbsp;at&nbsp;google</p>
+      <p><a
+ href="http://www.google.com/search?as_q=%25I64+site:msdn.microsoft.com">msdn.microsoft&nbsp;%I64</a>&nbsp;at&nbsp;google</p>
+      <p><a
+ href="http://www.google.com/search?as_q=GetStdHandle+site:msdn.microsoft.com">msdn.microsoft&nbsp;GetStdHandle</a>&nbsp;at&nbsp;google</p>
+      <p><a
+ href="http://www.google.com/search?as_q=CreateFile+site:msdn.microsoft.com">msdn.microsoft&nbsp;CreateFile</a>&nbsp;at&nbsp;google</p>
+      <p><a
+ href="http://www.google.com/search?as_q=LARGE_INTEGER+site:msdn.microsoft.com">msdn.microsoft&nbsp;<small>LARGE_INTEGER</small></a>&nbsp;at&nbsp;google</p>
+      <p><a
+ href="http://www.google.com/search?as_q=SetFilePointer+site:msdn.microsoft.com">msdn.microsoft&nbsp;SetFilePointer</a>&nbsp;at&nbsp;google</p>
+      <p><a
+ href="http://www.google.com/search?as_q=ReadFile+site:msdn.microsoft.com">msdn.microsoft&nbsp;ReadFile</a>&nbsp;at&nbsp;google</p>
+      <p><a
+ href="http://www.google.com/search?as_q=WriteFile+site:msdn.microsoft.com">msdn.microsoft&nbsp;WriteFile</a>&nbsp;at&nbsp;google<br>
+      </p>
+      <p><a
+ href="http://www.google.com/search?as_q=GetTickCount+site:msdn.microsoft.com">msdn.microsoft&nbsp;GetTickCount</a>&nbsp;at&nbsp;google<br>
+      </p>
+      <p><a
+ href="http://www.google.com/search?q=site%3Amsdn.microsoft.com+SetConsoleCtrlHandler">msdn.microsoft
+SetConsoleCtrlHandler</a> at google<br>
+      </p>
+      <p><br>
+      </p>
+      </td>
+      <td style="vertical-align: top;">
+      <p>&nbsp;</p>
+      </td>
+      <td style="vertical-align: top;">
+      <p>Please do <span style="font-weight: bold;">back up your hard
+drive before you run pldd</span>, rather than having pldd demonstrate
+your need to backup more often. </p>
+      <hr style="width: 100%; height: 2px;">
+      <h1>1. Readme</h1>
+      <p>Our <span style="font-weight: bold;">pldd is a rewrite of dd</span>,
+the standard Unix tool for copying the bytes of files and block
+devices.&nbsp; With our pldd, you may:</p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">seek/
+read/ write TiB via Scsi pass thru</span>, and</p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">work
+in hex and seek to lba's</span>, and</p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">say
+late is wrong.</span></p>
+      <p>All that works because our pldd understands more than the
+standard man dd options: </p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">if=
+skip= of= seek= bs= count= --version --help</span></p>
+      <p>pldd works today in Linux 2.6/ 2.4 and Windows XP/ 2K.
+&nbsp;pldd and plscsi are layers built on top of gccscsi. &nbsp;gccscsi
+now exists also for Mac OS X "authoring devices" and more robustly inMac
+OF (Open Firmware) (boot Forth), Win 9X/ME, and Dos. &nbsp;Bizarrely
+enough, the Mac OS X gccscsi demo appears at the plscsi/mac page, not at
+the gccscsi page. &nbsp;Please do write to encourage us if you want to
+see pldd and plscsi and gccscsi work in more contexts.</p>
+      <p>pldd has more than standard options. &nbsp;After the fact we
+note that in -l we may have reinvented the standard man dd option <span
+ style="font-weight: bold;">noerror</span>,but then also in pldd we see:<br>
+      </p>
+      <p style="margin-left: 40px;">the prefixes <span
+ style="font-weight: bold;">0x </span>and <span
+ style="font-weight: bold;">x </span>mean <span
+ style="font-weight: bold;">hex</span>, rather than the default decimal</p>
+      <p style="margin-left: 40px;">the suffixes <span
+ style="font-weight: bold;">k m g t</span> mean <span
+ style="font-weight: bold;">Ki Mi Gi Ti</span> i.e. kebi mebi gibi tebi<br>
+      </p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">sbs=</span>
+means <span style="font-weight: bold;">bytes per block for skip= and
+seek=</span>, overriding the default sbs=bs</p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">ms=</span>
+means <span style="font-weight: bold;">limit milliseconds per copy of
+bs=</span>, instead of the default indefinite (or 28 hour) wait</p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">-l</span>,
+prototyped as -f, means <span style="font-weight: bold;">list troubles</span>,
+which means copy past error or eof, which makes sense only in
+combination with count=, first implemented as -f</p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">-v</span>
+means <span style="font-weight: bold;">verbose</span>, which for Scsi
+pass thru means print the CDB's</p>
+      <p>We regret, as yet:</p>
+      <p style="margin-left: 40px;">we have written pldd only for Linux
+and for Win 2K/SP and some for Mac OS X, and</p>
+      <p style="margin-left: 40px;"> we copy with only one thread, not
+two, and</p>
+      <p style="margin-left: 40px;"> we support only the options of
+standard dd that we use, and</p>
+      <p style="margin-left: 40px;"> Linux/ Mac OS X/ Solaris disagree
+over which dd suffixes mean Ki Mi Gi Ti, and</p>
+      <p style="margin-left: 40px;"> SCSI pass thru doesn't work unless
+the hdd/ dvd/ cd op x25 READ_CAPACITY works.<br>
+      </p>
+      <p>In practice we have never yet discovered a SCSI pass thru that
+does support op x28/2A READ_10/ WRITE_10 without also supporting op x25
+READ_CAPACITY to determine bytes per block. &nbsp;If you do discover
+such a thing, please write <a
+ href="mailto:p.lavarre@ieee.org%0A%0APlease%20do%20back%20up%20your%20hard%20drive%20before%20you%20run%20pldd,%20rather%20than%20having%20pldd%20demonstrate%20your%20need%20to%20backup%20more%20often.%0A%0AOur%20stuff%20more%20or%20less%20works%20in%20Linux%20and%20Win%202K/XP.%20%20Please%20ask%20if%20you%20want%20Win%209X/ME,%20Dos,%20Mac%20OF%20%28Open%20Firmware%29%20%28boot%20Forth%29,%20or%20Mac%20OS%20X.%0A1.%20Readme%0A%0AOur%20pldd%20is%20a%20rewrite%20of%20dd,%20the%20standard%20Unix%20tool%20for%20copying%20the%20bytes%20of%20files%20and%20block%20devices.%20%20With%20our%20pldd,%20you%20may:%0A%0Aseek/%20read/%20write%20TiB%20via%20Scsi%20pass%20thru,%20and%0A%0Awork%20in%20hex%20and%20seek%20to%20lba%27s,%20and%0A%0Asay%20late%20is%20wrong.%0A%0AAll%20that%20works%20because%20our%20pldd%20understands%20not%20only%20the%20standard%20man%20dd%20options:%0A%0Aif=%20skip=%20of=%20seek=%20bs=%20count=%20--version%20--help%0A%0Abut%20also:%0A%0Athe%20prefixes%200x%20and%20x%20mean%20hex,%20rather%20than%20the%20default%20decimal%0A%0Athe%20suffixes%20k%20m%20g%20t%20mean%20Ki%20Mi%20Gi%20Ti%20i.e.%20kebi%20mebi%20gibi%20tebi%0A%0Asbs=%20means%20bytes%20per%20block%20for%20skip=%20and%20seek=,%20overriding%20the%20default%20sbs=bs%0A%0Ams=%20means%20limit%20milliseconds%20per%20copy%20of%20bs=,%20instead%20of%20the%20default%20indefinite%20wait%0A%0A-l%20means%20list%20trouble,%20first%20implementeed%20as%20-f,%20which%20means%20copy%20past%20error%20or%20eof,%20which%20makes%20sense%20only%20in%20combination%20with%20count=,%20rst%20implemented%20as%20-f%0A%0A-v%20means%20verbose,%20which%20for%20Scsi%20pass%20thru%20means%20print%20the%20CDB%27s%0A%0AHowever%20as%20yet:%0A%0Awe%20have%20written%20pldd%20only%20for%20Linux%20and%20for%20Win%202K/SP,%20and%0A%0Awe%20copy%20with%20only%20one%20thread,%20not%20two,%20and%0A%0Awe%20support%20only%20the%20options%20of%20standard%20dd%20that%20we%20use,%20and%0A%0ALinux/%20Mac%20OS%20X/%20Solaris%20disagree%20over%20which%20dd%20suffixes%20mean%20Ki%20Mi%20Gi%20Ti,%20and%0A%0Ayour%20Scsi%20pass%20thru%20must%20support%20the%20hdd/%20dvd/%20cd%20op%20x25%20READ_CAPACITY.%0A%0AWe%20have%20never%20yet%20discovered%20a%20Scsi%20pass%20thru%20that%20does%20support%20op%20x28/2A%20READ_10/%20WRITE_10%20without%20also%20supporting%20op%20x25%20READ_CAPACITY%20to%20determine%20bytes%20per%20block.%20%20If%20you%20do%20discover%20such%20a%20thing,%20please%20write%20to%20tell%20us%20of%20it.%20%20We%20have%20heard%20of%20dvd/cd%20commonly%20getting%20the%20maxLba%20wrong%20in%20the%20READ_CAPACITY%20data,%20but%20we%20have%20never%20heard%20of%20anyone%20getting%20the%20bytes%20per%20block%20wrong.%0A2.%20FAQ%0A2.1%20Why%0A2.1.1.%20Why%20is%20pldd%20still%20running,%20seven%20seconds%20after%20I%20specified%20ms=7000?%0A%0AWhen%20you%20specify%20ms=,%20pldd%20only%20times%20each%20copy%20of%20bs=.%20%20pldd%20does%20not%20timeout%20and%20cancel%20each%20copy.%20%20After%20a%20slow%20copy%20of%20bs=%20completes,%20pldd%20pretends%20it%20saw%20an%20i/o%20error.%20%20pldd%20then%20halts%20the%20whole%20copy%20only%20if%20you%20did%20not%20specify%20-f.%0A2.1.2%20Why%20doesn%27t%20pldd%20say%20K%20=%201000%20and%20Ki%20=%201024%20like%20the%20US%20NIST%20does?%0A%0AWe%20see%20the%20standard%20dd%20of%20Linux/%20Mac%20OS%20X/%20Solaris%20mutually%20disagree%20over%20which%20suffixes%20mean%20Ki%20Mi%20Gi%20Ti%20and%20which%20mean%20K%20M%20G%20T.%20%20Since%20there%20is%20no%20standard,%20we%20have%20added%20our%20easy-to-type%20k%20m%20g%20t%20standard.%0A%0Apldd%20thinks%20the%20suffixes%20k%20m%20g%20t%20mean%20Ki%20Mi%20Gi%20Ti%20i.e.%20x400%20x10:0000%204000:0000%20100:0000:0000%20...%20%20=%201,024%201,048,576%201,073,741,824%201,099,511,627,776%20i.e.%20round%20numbers%20in%20hex%20that%20approximate%20powers%20of%20decimal%201000%20with%20geometric%20inaccuracy.%0A2.1.3.%20Why%20did%20the%20Scsi%20pass%20thru%20fail?%0A%0Apldd%20distinguishes%20Four%20ways%20a%20Scsi%20pass%20thru%20may%20fail:%0A%0A%20%20%201.%0A%0A%20%20%20%20%20%20The%20system%20may%20refuse%20the%20pass%20thru,%20e.g.%20if%20you%20lack%20root%20privilege,%20or%20if%20a%20timeout%20occurs.%0A%20%20%202.%0A%0A%20%20%20%20%20%20The%20system%20may%20claim%20to%20have%20copied%20more%20data%20bytes%20than%20allotted,%20or%20less%20than%20zero%20bytes.%0A%20%20%203.%0A%0A%20%20%20%20%20%20The%20system%20may%20claim%20to%20have%20copied%20more%20auto%20sense%20bytes%20than%20allotted,%20or%20less%20than%20zero%20bytes.%0A%20%20%204.%0A%0A%20%20%20%20%20%20An%20auto%20sensed%20failure%20may%20have%20occurred,%20with%20or%20without%20copying%20all%20data%20bytes%20allotted.%0A%0A2.2%20How%0AQ1.%20How%20do%20I%20see%20the%20CDB%27s%20authored%20by%20pldd?%0A%0ASay%20-v%20when%20if=%20and/or%20of=%20is%20a%20Scsi%20pass%20thru%20device.%0AQ2.%20How%20do%20I%20skip=/%20seek=%20to%20an%20lba?%0A%0ASay%20sbs=%20bytes%20per%20disk%20block.%20%20Likely%20sbs=2k%20for%20dvd/cd%20and%20sbs=512%20for%20hdd.%20%20Saying%20sbs=512%20will%20let%20you%20skip=/%20seek=%20past%20a%20count%20of%200.5%20KiB%20blocks%20even%20on%20a%20dvd/cd%20disc,%20provided%20you%20skip=/%20seek=%20to%20a%20multiple%20of%20four%20%28since%204%20=%202%20Ki%20/%20512%29.%0AQ3.%20How%20do%20I%20read/%20write%20past%20the%20first%20error?%0A%0ASay%20-l%20%28except%20for%20now%20you%20have%20to%20say%20-f%20instead%29%20and%20say%20count=%20how%20many%20times%20you%20do%20wish%20to%20copy%20bs=.%0AQ5.%20How%20do%20I%20say%20late%20is%20wrong?%0A%0ASay%20ms=.%0A2.3%20Where%0AQ1.%20Say%20again%20where%20the%20free%20gcc/g++%20for%20Windows%20is?%0A%0AOf%20the%20many%20too%20many%20MinGW%20packages,%20the%20one%20that%20gives%20you%20just%20gcc/g++%20is%20the%20one%20labelled%20just%20%22MinGW%22.%20%20Perhaps%20because%20of%20spam%20defences,%20we%27re%20told%20our%20feedback%20re%20this%20and%20other%20issues%20hasn%27t%20yet%20reached%20any%20of%20the%20MinGW%20folk.%0A%0A%22Cygwin%22%20has%20more%20history%20as%20a%20free%20gcc/g++%20for%20Windows,%20but%20builds%20.exe%20that%20don%27t%20run%20unless%20you%20also%20install%20a%20Cygwin%20dll.%20%20Also%20as%20yet%20we%20have%20failed%20to%20find%20a%20Cygwin%20install%20that%20works%20without%20a%20network%20connection.%0A3.%20Source%0A%0ADownload%20the%20source%20by%20choosing%20whichever%20you%20prefer%20of%20the%20links%20to%20.tar.bz2%20and%20.zip%20above%20left.%20%20You%20will%20get%20a%20trivial%20Makefile%20for%20Linux,%20and%20equally%20trivial%20mak.bat%20for%20Windows,%20and%20ten%20source%20files.%0A%0AWe%20found%20we%20had%20to%20write%20our%20source%20code%20in%20Three%20incompatible%20dialects%20of%20C:%0A%0AIn%20the%20C%20of%20the%20gcc/g++%20of%20Linux,%20we%20wrote:%0A%0Apldd.h%20=%20help%20all%20the%20.c*%20link%20together%0A%0Aversion.h%20=%20date%20the%20other%20source%20files%0A%0Apldd.c%20=%20run%20from%20the%20command%20line%0A%0Alddio.c%20=%20copy%20TiB%20via%20file%20or%20block%20device,%20or%20Scsi%20pass%20thru%0A%0Alscsi.c%20=%20pass%20thru%20Scsi%0A%0AIn%20the%20C++%20of%20MinGW%20gcc/g++%20for%20Windows,%20we%20wrote:%0A%0Antddscsi.hpp%20=%20help%20link%20Windows%20C%20of%20pass%20thru%20Scsi%0A%0Awddio.cpp%20=%20copy%20TiB%20via%20file%20or%20block%20device,%20or%20Scsi%20pass%20thru%0A%0Awscsi.cpp%20=%20pass%20thru%20Scsi%0A%0AIn%20the%20C++%20of%20Microsoft%20Visual%20Studio%20for%20Windows,%20we%20wrote:%0A%0Apldd.hpp=%20help%20all%20the%20.c*%20link%20together%0A%0Apldd.cpp%20=%20run%20from%20the%20command%20line%0A%0AExecutables%20created%20by%20Linux%20%60make%60%20or%20by%20Windows%20%60mak.bat%60%20include:%0A%0ALinux:%0A%0Apldd%20=%20Linux%20console%20app%0A%0Alscsi.so%20=%20Linux%20shared%20library%0A%0AWin%202K/XP:%0A%0Apldd.exe%20=%20Win%202K/XP%20console%20app%0A%0Awscsi.ddl%20=%20Windows%20shared%20library%0A4.%20Bugs%0A%0AWe%20allude%20cryptically%20to%20our%20known%20bugs%20in%20the%20commentary%20that%20begins%20each%20.h%20or%20.c%20file.%0A%0AIn%20the%20September%2019,%202003%20version%20we%20said:%0A%0Apldd.h/%20pldd.hpp:%0A%0ADefine%20LIL%28I,%20N%29%20incorrectly%20if%20cpu%20is%20big-endian.%0A%0Apldd.c/%20pldd.cpp:%0A%0ALose%20count%20of%20copies%20if%20halted%20via%20Ctrl+C.%0A%0ACopy%20with%20one%20thread,%20not%20two.%0A%0ADie%20when%20bs=%20exceeds%20INT_MAX.%0A%0ADo%20not%20guess%20whether%20K%20M%20T%20G%20means%20Ki%20Mi%20Ti%20Gi%20or%20not.%0A%0AAlways%20exit%280%29.%0A%0Alddio.c/%20wddio.cpp:%0A%0APass%20only%20block-aligned%20access%20thru%20Scsi.%0A%0ALimit%20bytes%20per%20block%20and%20per%20i/o%20to%20UINT_MAX%20=%20max%20size_t.%0A%0Alddio.c:%0A%0ATry%20SG_IO%20only%20if%20/dev/sg%20begins%20the%20device%20name.%0A%0ASpeak%20only%20thru%20Gnu/%20Linux%20signed%2064-bit%20i/o%20and%20SG_IO.%0A%0AHang%20when%20asked%20to%20exceed%20size%20of%20block%20device.%0A%0Awddio.cpp:%0A%0ATry%20SG_IO%20only%20if%20%5C%5C.%5C%20begins%20the%20device%20name.%0A%0ASpeak%20only%20thru%20Windows%20signed%2064-bit%20i/o%20and%20IOCTL_SCSI_PASS_THROUGH.%0A%0Alscsi.c/%20wscsi.cpp:%0A%0ANever%20ask%20to%20time%20out%20in%20less%20than%2028%20hours,%0A%0ANever%20ask%20for%20other%20than%20x12%20sense%20bytes.%0A%0ANever%20return%20sense%20bytes,%20always%20print%20in%20hex%20to%20stderr.%0A%0ARefuse%20to%20pass%20thru%20more%20than%20xFF%20bytes%20of%20CDB.%0A%0ALimit%20bytes%20per%20CDB%20to%20what%20caller%20can%20allocate%20virtually.%0A%0ADon%27t%20bother%20to%20filter%20duplicate%20lines%20from%20dumps.%0A%0Awscsi.cpp:%0A%0ANever%20use%20IOCTL_SCSI_PASS_THROUGH_DIRECT,%20not%20even%20for%20%3E%2016%20KiB%20data.%0A%0ATake%20the%20time%20to%20invoke%20calloc%20and%20free%20once%20per%20cdb.%0A%0A64-bit%20Windows%20may%20choke%20via%20cast%20between%20int%20and%20HANDLE%20thru%20__int64.%0A5.%20Examples%0A5.1%20Read%201%20MiB%20from%20a%20specific%20hex%20LBA.%0A%0A$%20pldd%20-v%20if=/dev/sg0%20bs=1m%20sbs=2k%20skip=0x123%20of=/dev/null%20count=1%0Acdb:%20x%2025%2000%2000%2000%2000%2000%2000%2000%2000%2000%20..%20..%20..%20..%20..%20..%20%22%@@@@@@@@@%22%0Ain::%20x%2000%20CE%2029%20FF%2000%2000%2008%2000%20..%20..%20..%20..%20..%20..%20..%20..%20%22@N%29?@@H@%22%0Acdb:%20x%2028%2000%2000%2000%2001%2023%2000%2002%2000%2000%20..%20..%20..%20..%20..%20..%20%22%28@@@A#@B@@%22%0Afwrite%20x100000%20bytes%0A$%0A%0A5.2%20Write%20past%20end%20of%20disk.%0A%0A$%20pldd%20of=/dev/sg0%20bs=1m%20if=/dev/zero%0A...%0Ax%202A%2000%2000%2028%2000%2000%2000%2002%2000%2000%20..%20..%20..%20..%20..%20..%20%22*@@N*@@@%20@%22%0Ax%20F0%2000%2005%2000%2028%2000%2000%2018%2000%2000%2000%2000%2021%2000%2000%2000%20%22p@E@N*@X@@@@%21@@@%22%0Ax%2000%2000%20..%20..%20..%20..%20..%20..%20..%20..%20..%20..%20..%20..%20..%20..%20%22@@%22%0A5368709120%20=%20x140000000%20bytes%20copied%0A$%0A%0A5.3%20Read%20past%20slow%20spots%20and%20past%20errors.%0A%0A$%20pldd%20-f%20if=/dev/sg0%20bs=1m%20of%20ms=1000%0A...%0Aslow%201.090s%0A3145728%20=%200x300000%20bytes%20copied%0A...%0Ax%2028%2000%2000%2012%2034%2000%2000%2002%2000%2000%20%20..%20..%20..%20..%20..%20..%22%28@@%3C%5E@@B@@%22%0Ax%20F0%2000%2003%2000%2012%2034%2000%2018%2000%2000%2000%2000%2011%2000%2000%2000%20%22p@C@%3C_+X@@@@QB@@%22%0Ax%2000%2000%20%20..%20..%20..%20..%20..%20..%20..%20..%20..%20..%20..%20..%20..%20..%22@@%22%0Aslow%2020.733s%0A2442133504%20=%200x91900000%20bytes%20copied%0A...%0A%0A5.4%20Create%20a%20file%20containing%208%20GiB%20of%20zeroes.%0A%0A$%20pldd%20-v%20if%20bs=1m%20of=dd.bin%20seek=x1FFF%20count=1%0A$%0A%0A6.%20Versus%20Linux%20sg_utils%0A%0AFor%20Windows%20we%20have%20found%20no%20tool%20comparable%20to%20pldd.%0A%0ABut%20for%20Linux%20eventually%20we%20followed%20the%20web%20trail:%0A%0Ahttp://www.tldp.org/HOWTO/SCSI-Generic-HOWTO/sg3_utils.html%0AAppendix%20A.%20Sg3_utils%20package%0Avariants%20of%20the%20Unix%20dd%20command:%20sg_dd,%0Asgp_dd,%20sgq_dd%20and%20sgm_dd,%20...%0A...%0A%0Ahttp://www.torque.net/sg/%0Ahttp://www.torque.net/sg/p/sg3_utils-1.05.tgz%0A$%20tar%20-zx%20...%0A$%20cd%0Asg3_utils-1.05%0A$%20make%0A$%20sudo%20./sg_scan%20-i%20...%0A$%20sudo%20./sg_dd%0Aof=/dev/sg1%20if=/dev/zero%20bs=2k%20bpt=512%20count=1024%20...%0A%0AThe%20sg%20utils%20doc%20says%20sgp_dd%20is%20sg_dd%20except%20sgp_dd%20copies%20by%20reading%20and%20writing%20in%20parallel%20rather%20than%20reading%20and%20writing%20in%20sequence.%0A%0AFor%20how%20we%20use%20*dd,%20pldd%20works%20more%20like%20dd%20and%20sg_dd%20works%20less%20like%20dd%20in%20Three%20significant%20ways:%0A%0A1%29%20In%20dd%20and%20in%20pldd,%20bytes%20per%20copy%20is%20bs=.%20%20In%20sg_dd,%20bytes%20per%20copy%20is%20bs=%20multiplied%20by%20bpt=.%0A%0A2%29%20In%20dd%20and%20in%20pldd,%20an%20unspecified%20count=%20means%20copy%20til%20error.%20%20In%20sg_dd,%20an%20unspecified%20count=%20means%20copy%20up%20to%20the%20maxLba%20reported%20by%20op%20x25%20READ_CAPACITY.%0A%0A3%29In%20dd%20and%20in%20pldd,%20both%20if=%20and%20of=%20may%20be%20files%20or%20block%20devices.%20%20The%20sg%20utils%20doc%20says%20in%20sg_dd%20either%20if=%20or%20of=%20or%20both%20have%20to%20be%20SG_IO%20devices.%0A%0AFor%20how%20we%20use%20*dd,%20the%20remaining%20Six%20loud%20differences%20maybe%20don%27t%20much%20matter:%0A%0A1%29%20pldd%20and%20sg_dd%20use%20-D_LARGEFILE64_SOURCE.%20%20Only%20sg_dd%20uses%20-D_FILE_OFFSET_BITS=64.%20%20Whether%20that%20is%20a%20bug%20in%20our%20pldd%20for%20Linux,%20we%20do%20not%20yet%20know.%0A%0A2%29%20pldd%20sends%20op%20x25%20READ_CAPACITY%20to%20discover%20bytes%20per%20disk%20block.%20%20In%20sg_dd,%20bytes%20per%20disk%20block%20is%20bs=.%0A%0A3%29%20pldd%20understands%20the%20sbs=%20multiplier%20for%20seek=%20and%20skip=,%20distinct%20from%20the%20bs=%20ibs=%20obs=%20of%20dd%20and%20of%20sg_dd.%0A%0A4%29%20pldd%20understands%20the%200x%20and%20x%20prefixes%20for%20hex%20numbers,%20dd%20and%20sg_dd%20do%20not.%20%20The%20many%20*dd%20disagree%20over%20how%20to%20say%20Ki%20Mi%20Gi%20Ti,%20pldd%20understands%20the%20suffixes%20k%20m%20g%20t,%20as%20does%20sg_dd.%0A%0A5%29%20pldd%20and%20sg_dd%20agree%20on%20the%20need%20for%20a%20shorthand%20for%20of=/dev/null.%20%20The%20sg_dd%20shorthand%20is%20of=.,%20the%20pldd%20shorthand%20is%20of%20without%20an%20=%20sign.%0A%0A6%29%20Only%20pldd%20defines%20a%20shorthand%20%28specifically%20if%20without%20an%20=%20sign%29%20to%20mean%20if=/dev/zero.%0A%0AWe%20notice%20none%20of%20the%20*dd%20define%20shorthand%20to%20mean%20/dev/urandom%20or%20/dev/random.%0A7.%20Authors%0A%0APat%20LaVarre%20typed%20the%20source%20code,%20but%0A%0Athanks%20Steve%20Olney%20for%20the%20translation%20to%20Windows%20C++%20from%20Linux%20C,%20and%0A%0Athanks%20John%20McKell%20for%20-v,%20if=%20of=%20block%20device,%20and%20clear%20commentary%20for%20calculating%20exitInt.%0A8.%20Changes%0A%0AFUTURE:%0A%0APlease%20write%20Pat%20LaVarre%20to%20tell%20us%20if%20you%20wish%20already%20we%20also%20supported:%0A%0AWin%202K/SP%20IOCTL_SCSI_PASS_THROUGH_DIRECT%20above%2016%20KiB/cdb%0AWin%209X/ME,%20or%20Dos,%20or%20Mac%20OF%20%28boot%20Forth%29,%20or%20Mac%20OS%20X%0A%0ASaturday,%20September%2027,%202003%0A%0APolish%20the%20html.%20%20Change%20to%20table%20cellpadding=%2210%22%20pixels%20from%20Mozilla%20Composer%20default%20of%20two.%0A%0AThursday,%20September%2025,%202003%0A%0AUpdate%20version.h%20and%20compressed%20.html%20and%20do%20not%20segfault%20Linux%20if%20input%20length%20is%20%3C%20bs%20%28common%20with%20stdin%29.%0A%0ATuesday,%20September%2023,%202003:%0A%0ALet%20../gccscsi%20present%20the%20Links%20and%20Preview%20for%20Scsi%20Pass%20Thru.%20%20Focus%20here%20on%20the%2064-bit%20i/o%20that%20breaks%20thru%20the%202%20to%204%20GiB%20per%20file%20barrier.%0A%0ASaturday,%20September%2020,%202003%0A%0ARun%20in%20Win%202K/XP,%20not%20just%20Linux.%0A%0AThursday,%20September%2018,%202003%0A%0ADefine%20sbs=%20to%20override%20the%20default%20bs=%20bytes%20per%20block%20of%20skip=%20and%20seek=.%0A%0ADefine%20ms=%20to%20limit%20milliseconds%20per%20copy%20of%20bs=.%0A%0ADefine%20-v%20to%20mean%20trace%20cdb/%20file%20read/%20write.%0A%0ADefine%20what%20should%20be%20-l%20but%20is%20-f%20to%20mean%20copy%20past%20error%20or%20eof%20up%20to%20count=,%0A%0AWednesday,%20September%2017,%202003%0A%0ALink%20to%20unrelated%20pldd%20of%20usr%20proc%20bin.%0A%0AChoose%20read/write%20not%20SG_IO%20for%20the%20block%20devices%20of%20Linux%20such%20as%20/dev/scd*.%0A%0ANever%20read/write%20zero%20blocks.%0A%0AClean%20up%20file%20permissions%20in%20the%20.tar.bz2%20compressed%20folder.%0A%0AClean%20up%20whitespace%20in%20source.%0A%0AFriday,%20September%2012,%202003%0A%0ALink%20to%20comparable%20sg_dd%20sgp_dd%20etc.%20of%20sg_utils%20of%20sg%20howto.%0A%0AFetch%20bytes%20per%20block%20via%20op%20x25%20READ_CAPACITY,%20for%20when%20%21=%202%20Ki.%0A%0AComment%20the%20four%20ways%20Scsi%20pass%20thru%20may%20fail.%0A%0ATuesday,%20September%209,%202003:%0A%0APublish%21%0Amailto:p.lavarre@ieee.org">Pat
+LaVarre</a> to tell us of it.&nbsp; We have heard of DVD/ CD commonly
+getting the maxLba off by one in the READ_CAPACITY data, but we have
+never yet heard of anyone getting the bytes per block wrong.<br>
+      </p>
+      <hr style="width: 100%; height: 2px;">
+      <h1>2. FAQ</h1>
+      <h2>2.1 Why</h2>
+      <h3>2.1.1. Why is pldd still running, seven seconds after I
+specified ms=7000?</h3>
+      <p>When you specify ms=, pldd only times each copy of bs=.&nbsp;
+pldd does not timeout and cancel each copy.&nbsp; After a slow copy of
+bs= completes, pldd pretends it saw an i/o error.&nbsp; pldd then halts
+the whole copy only if you did not specify -f.<br>
+      </p>
+      <h3>2.1.2 Why doesn't pldd say K = 1000 and Ki = 1024 like the US
+NIST does?</h3>
+      <p>We see the standard dd of Linux/ Mac OS X/ Solaris mutually
+disagree over which suffixes mean Ki Mi Gi Ti and which mean K M G
+T.&nbsp; Since there is no standard, we have added our easy-to-type k m
+g t standard.</p>
+      <p> pldd thinks the suffixes k m g t mean Ki Mi Gi Ti i.e. x400
+x10:0000 4000:0000 100:0000:0000 ...&nbsp; = 1,024 1,048,576
+1,073,741,824 1,099,511,627,776 i.e. round numbers in hex that
+approximate powers of decimal 1000 with geometric inaccuracy. </p>
+      <h3>2.1.3. Why did the Scsi pass thru fail?</h3>
+      <p>pldd distinguishes Four ways a Scsi pass thru may fail:</p>
+      <ol>
+        <li>
+          <p>The system may refuse the pass thru, e.g. if you lack root
+privilege, or if a timeout occurs.</p>
+        </li>
+        <li>
+          <p>The system may claim to have copied more data bytes
+than&nbsp;allotted, or less than zero bytes.</p>
+        </li>
+        <li>
+          <p>The system may claim to have copied more auto sense bytes
+than&nbsp;allotted, or less than zero bytes.</p>
+        </li>
+        <li>
+          <p>An auto sensed failure may have occurred, with or without
+copying all data bytes allotted.</p>
+        </li>
+      </ol>
+      <h2>2.2 How</h2>
+      <h3>Q1. How do I see the CDB's authored by pldd?</h3>
+      <p> Say <span style="font-weight: bold;">-v</span> when if= and/or
+of= is a Scsi pass thru device.</p>
+      <h3>Q2. How do I skip=/ seek= to an lba?</h3>
+      <p> Say <span style="font-weight: bold;">sbs=</span> bytes per
+disk block.&nbsp; Likely sbs=2k for dvd/cd and sbs=512 for hdd.&nbsp;
+Saying sbs=512 will let you skip=/ seek= past a count of 0.5 KiB blocks
+even on a dvd/cd disc, provided you skip=/ seek= to a multiple of four
+(since 4 = 2 Ki / 512).<br>
+      </p>
+      <h3>Q3. How do I read/ write past the first error?</h3>
+      <p> Say <span style="font-weight: bold;">-l</span> (except for now
+you have to say -f instead<span style="font-weight: bold;"></span>) and
+say count= how many times you do wish to copy bs=.</p>
+      <h3>Q5. How do I say late is wrong?</h3>
+      <p> Say <span style="font-weight: bold;">ms=</span>.<br>
+      </p>
+      <hr style="width: 100%; height: 2px;">
+      <h2>3. Source</h2>
+      <p> Download the source by choosing whichever you prefer of the
+links to .tar.bz2 and .zip above left.&nbsp; You will get a trivial
+Makefile for Linux, and equally trivial mak.bat for Windows, and ten
+source files.</p>
+      <p>We found we had to write our source code in Three incompatible
+dialects of C: </p>
+      <p>In the C of the gcc/g++ of Linux, we wrote:<br>
+      </p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">pldd.h</span>
+= help all the .c* link together</p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">version.h</span>
+= date the other source files</p>
+      <p style="margin-left: 40px;"> <span style="font-weight: bold;">pldd.c</span>
+= run from the command line</p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">lddio.c</span>
+= copy TiB via file or block device, or Scsi pass thru</p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">lscsi.c</span>
+= pass thru&nbsp;Scsi </p>
+      <p> In the C++ of MinGW gcc/g++ for Windows, we wrote:<br>
+      </p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">ntddscsi.hpp</span>
+= help link Windows C of pass thru Scsi</p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">wddio.cpp</span>
+= copy TiB via file or block device, or Scsi pass thru</p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">wscsi.<span
+ style="font-weight: bold;">cpp</span></span> = pass thru&nbsp;Scsi </p>
+      <p>In the C++ of Microsoft Visual Studio for Windows, we wrote:<br>
+      </p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">pldd.hpp</span>=
+help all the .c* link together<br>
+      </p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">pldd.cpp</span>
+= run from the command line<br>
+      </p>
+      <p>Executables created by Linux `make` or by Windows `mak.bat`
+include:</p>
+      <p style="margin-left: 40px;">Linux: </p>
+      <p style="margin-left: 80px;"><span style="font-weight: bold;">pldd</span>
+= Linux console app</p>
+      <p style="margin-left: 80px;"><span style="font-weight: bold;">lscsi.so</span>
+= Linux shared library </p>
+      <p style="margin-left: 40px;">Win 2K/XP: </p>
+      <p style="margin-left: 80px;"><span style="font-weight: bold;">pldd.exe</span>
+= Win 2K/XP console app </p>
+      <p style="margin-left: 80px;"><span style="font-weight: bold;">wscsi.ddl</span>
+= Windows shared library </p>
+      <hr style="width: 100%; height: 2px;">
+      <h1>4. Bugs</h1>
+      <p>We allude cryptically to our known bugs in the commentary that
+begins each .h or .c file.</p>
+      <p>In the July 13, 2004 version we may have said: </p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">pldd.h/
+pldd.hpp:</span> </p>
+      <p style="margin-left: 80px;">Define LIL(I, N) incorrectly if cpu
+is big-endian. </p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">pldd.c/
+pldd.cpp:</span> </p>
+      <p style="margin-left: 80px;">Abbreviate if=/dev/zero without
+abbreviating if=/dev/urandom<br>
+      </p>
+      <p style="margin-left: 80px;">Lose count of copies if halted via
+Ctrl+C.</p>
+      <p style="margin-left: 80px;">Copy with one thread, not two.</p>
+      <p style="margin-left: 80px;">Die when bs= exceeds INT_MAX.</p>
+      <p style="margin-left: 80px;">Do not guess whether K M T G means
+Ki Mi Ti Gi or not. </p>
+      <p style="margin-left: 80px;">Always exit(0). </p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">lddio.c/
+wddio.cpp:</span> </p>
+      <p style="margin-left: 80px;">Pass only block-aligned access thru
+Scsi.</p>
+      <p style="margin-left: 80px;"> Limit bytes per block and per i/o
+to UINT_MAX = max size_t.</p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">lddio.c:</span> </p>
+      <p style="margin-left: 80px;">Try SG_IO if and only if /dev/
+begins the device name.</p>
+      <p style="margin-left: 80px;">Speak only thru Gnu/ Linux signed
+64-bit i/o and SG_IO. </p>
+      <p style="margin-left: 80px;">Hang when asked to exceed size of
+block device. </p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">wddio.cpp:</span> </p>
+      <p style="margin-left: 80px;">Try SG_IO only if \\.\ begins the
+device name.</p>
+      <p style="margin-left: 80px;">Speak only thru Windows signed
+64-bit i/o and IOCTL_SCSI_PASS_THROUGH.</p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">lscsi.c/
+wscsi.cpp:</span> </p>
+      <p style="margin-left: 80px;">Never ask to time out in less than
+28 hours,</p>
+      <p style="margin-left: 80px;">Never ask for other than x12 sense
+bytes. </p>
+      <p style="margin-left: 80px;">Never return sense bytes, always
+print in hex to stderr. </p>
+      <p style="margin-left: 80px;">Refuse to pass thru more than xFF
+bytes of CDB. </p>
+      <p style="margin-left: 80px;">Limit bytes per CDB to what caller
+can allocate virtually. </p>
+      <p style="margin-left: 80px;">Don't bother to filter duplicate
+lines from dumps. </p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">wscsi.cpp:</span> </p>
+      <p style="margin-left: 80px;">Never use
+IOCTL_SCSI_PASS_THROUGH_DIRECT, not even for &gt; 16 KiB data.</p>
+      <p style="margin-left: 80px;">Take the time to invoke calloc and
+free once per cdb.</p>
+      <p style="margin-left: 80px;">64-bit Windows may choke via cast
+between int and HANDLE thru __int64.</p>
+      <hr style="width: 100%; height: 2px;">
+      <h1>5. Examples</h1>
+      <p>The examples here appear expressed in terms of the Linux
+device name /dev/sg0. &nbsp;But other SCSI pass thru device names also
+work, such as the \\.\A: and \\.\TAPE0 device names of Windows, also the
+/dev/hdd and /dev/scd0 device names of Linux. &nbsp;`plscsi -w` tries
+(but does not yet wholly succeed) in guessing for you what SCSI pass
+thru device names exist for you. </p>
+      <h2>5.1 Read 1 MiB from a specific hex LBA.</h2>
+      <pre style="margin-left: 40px;"><big>$ pldd -v if=/dev/sg0 bs=1m sbs=2k skip=0x123 of=/dev/null count=1<br>cdb: x 25 00 00 00 00 00 00 00 00 00 .. .. .. .. .. .. "%@@@@@@@@@"<br>in:: x 00 CE 29 FF 00 00 08 00 .. .. .. .. .. .. .. .. "@N)?@@H@"<br>cdb: x 28 00 00 00 01 23 00 02 00 00 .. .. .. .. .. .. "(@@@A#@B@@"<br>fwrite x100000 bytes<br>$</big></pre>
+      <h2>5.2 Write past end of disk.</h2>
+      <pre style="margin-left: 40px;"><big>$ pldd of=/dev/sg0 bs=1m if=/dev/zero<br>...<br>x 2A 00 00 28 00 00 00 02 00 00 .. .. .. .. .. .. "*@@N*@@@ @"<br>x F0 00 05 00 28 00 00 18 00 00 00 00 21 00 00 00 "p@E@N*@X@@@@!@@@"<br>x 00 00 .. .. .. .. .. .. .. .. .. .. .. .. .. .. "@@"<br>5368709120 = x140000000 bytes copied<br>$</big></pre>
+      <h2>5.3 Read past slow spots and past errors.</h2>
+      <pre style="margin-left: 40px;"><big>$ pldd -f if=/dev/sg0 bs=1m of ms=1000<br>...<br>slow 1.090s<br>3145728 = 0x300000 bytes copied<br>...<br>x 28 00 00 12 34 00 00 02 00 00  .. .. .. .. .. .."(@@&lt;^@@B@@"<br>x F0 00 03 00 12 34 00 18 00 00 00 00 11 00 00 00 "p@C@&lt;_+X@@@@QB@@"<br>x 00 00  .. .. .. .. .. .. .. .. .. .. .. .. .. .."@@"<br>slow 20.733s<br>2442133504 = 0x91900000 bytes copied<br>...</big><br></pre>
+      <h2>5.4 Create a file containing 8 GiB of zeroes.</h2>
+      <pre style="margin-left: 40px;"><big>$ pldd -v if bs=1m of=dd.bin seek=x1FFF count=1<br>$</big></pre>
+      <hr style="width: 100%; height: 2px;">
+      <h1>6. Versus Linux sg_utils</h1>
+      <p><span style="font-weight: bold;">For Windows we have found no
+tool comparable to pldd.</span> </p>
+      <p>For Linux, we have found no tool with options comparable to
+the -l -v ms= sbs= of pldd.&nbsp;&nbsp; But in search of the
+dd-compatible subset of pldd we did follow<span
+ style="font-weight: bold;"> </span>the web trail: </p>
+      <pre style="margin-left: 40px;"><big><a
+ href="http://www.tldp.org/HOWTO/SCSI-Generic-HOWTO/sg3_utils.html">http://www.tldp.org/HOWTO/SCSI-Generic-HOWTO/sg3_utils.html</a><br>Appendix A. Sg3_utils package<br>variants of the Unix dd command: sg_dd,<br>sgp_dd, sgq_dd and sgm_dd, ...<br>...<a
+ href="http://www.torque.net/sg/"><br><br>http://www.torque.net/sg/</a><br>http://www.torque.net/sg/p/sg3_utils-1.05.tgz<br>$ tar -zx ...<br>$ cd<br>sg3_utils-1.05<br>$&nbsp;make<br>$ sudo ./sg_scan -i ...<br>$&nbsp;sudo ./sg_dd of=/dev/sg1 if=/dev/zero bs=2k bpt=512 count=1024 ...</big></pre>
+      <p>The sg utils doc says <span style="font-weight: bold;">sgp_dd</span><span
+ style="font-weight: bold;"> </span>is sg_dd except sgp_dd <span
+ style="font-weight: bold;">copies by reading and writing in parallel</span>
+rather than reading and writing in sequence.<br>
+      <span style="font-weight: bold;"><br>
+For how we use *dd, pldd works more like dd</span> and sg_dd works less
+like dd <span style="font-weight: bold;">in Three significant ways:</span> </p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">1)</span>
+In dd and <span style="font-weight: bold;">in pldd, </span><span
+ style="font-weight: bold;"><span style="font-weight: bold;">bytes per
+copy i</span>s bs=</span>.&nbsp; In sg_dd, bytes per copy is bs=
+multiplied by bpt=.</p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">2)
+ </span>In dd and <span style="font-weight: bold;">in pldd, an
+unspecified count= means copy til error.&nbsp; </span>In sg_dd, an
+unspecified count= means copy up to the maxLba reported by op x25
+READ_CAPACITY. </p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">3)</span>In
+dd and <span style="font-weight: bold;">in pldd, both if= and of= may
+be files or block devices.</span>&nbsp; The sg utils doc says in sg_dd
+either if= or of= or both have to be SG_IO devices.</p>
+      <p>For how we use *dd, the remaining <span
+ style="font-weight: bold;">Six loud differences </span>maybe don't
+much matter: </p>
+      <p style="margin-left: 40px;">1) pldd and sg_dd use
+-D_LARGEFILE64_SOURCE. &nbsp;Only sg_dd uses -D_FILE_OFFSET_BITS=64.
+&nbsp;Whether that is a bug in our pldd for Linux, we do not yet know.</p>
+      <p style="margin-left: 40px;"> 2) pldd sends op x25 READ_CAPACITY
+to discover bytes per disk block. &nbsp;In sg_dd, bytes per disk block
+is bs=.</p>
+      <p style="margin-left: 40px;"> 3) pldd understands the sbs=
+multiplier for seek= and skip=, distinct from the bs= ibs= obs= of dd
+and of sg_dd.</p>
+      <p style="margin-left: 40px;"> 4) pldd understands the 0x and x
+prefixes for hex numbers, dd and sg_dd do not. &nbsp;The many *dd
+disagree over how to say Ki Mi Gi Ti, pldd understands the suffixes k m
+g t, as does sg_dd.</p>
+      <p style="margin-left: 40px;"> 5) pldd and sg_dd agree on the need
+for a shorthand for of=/dev/null.&nbsp; The sg_dd shorthand is of=., the
+pldd shorthand is of without an = sign.</p>
+      <p style="margin-left: 40px;"> 6) Only pldd defines a shorthand
+(specifically if without an = sign) to mean if=/dev/zero. </p>
+      <p>We notice none of the *dd define shorthand to mean
+/dev/urandom or /dev/random. </p>
+      <hr style="width: 100%; height: 2px;">
+      <h1>7. Authors</h1>
+      <p><a href="mailto:p.lavarre@ieee.org">Pat LaVarre</a>&nbsp;typed
+the source code, but</p>
+      <p style="margin-left: 40px;">thanks Steve Olney for the
+translation to Windows C++ from Linux C, and</p>
+      <p style="margin-left: 40px;"> thanks John McKell for -v, if= of=
+block device, and clear commentary for calculating exitInt. </p>
+      <hr style="width: 100%; height: 2px;">
+      <h1>8. Changes</h1>
+      <p><span style="font-weight: bold;">FUTURE</span>:&nbsp; Please
+write <a href="mailto:p.lavarre@ieee.org">Pat LaVarre</a> to tell us if
+you wish already we also supported:</p>
+      <p style="margin-left: 40px;">Win 2K/SP
+IOCTL_SCSI_PASS_THROUGH_DIRECT above 16 KiB/cdb<br>
+      </p>
+      <p style="margin-left: 40px;">Win 9X/ME, or Dos, or Mac OF (boot
+Forth), or Mac OS X<br>
+      </p>
+      <p><span style="font-weight: bold;">Friday, July 13, 2004<br>
+      </span></p>
+      <p style="margin-left: 40px;">Revise <span
+ style="font-weight: bold;">Linux</span> to try ioctl with <span
+ style="font-weight: bold;">device names that began working</span> only
+in Linux 2.6/ 2.5. &nbsp;Offer <span style="font-weight: bold;">.tar.gz</span>
+rather than .tar.bz2 for Linux/ Mac.<br>
+      </p>
+      <p style="margin-left: 40px;">Update <span
+ style="font-weight: bold;">Mac OS X SCSI pass thru</span> status.
+&nbsp;Mention <span style="font-weight: bold;">features coming soon</span>.</p>
+      <p style="margin-left: 40px;">Mention <span
+ style="font-weight: bold;">more example</span> SCSI pass thru <span
+ style="font-weight: bold;">device names. &nbsp;</span>Separate the offer
+of a Windows .dll for download from the <span
+ style="font-weight: bold;">pldd.exe </span>that<span
+ style="font-weight: bold;"> always has run without .dll. </span><br>
+      </p>
+      <p>Thursday, October 9, 2003<br>
+      </p>
+      <p style="margin-left: 40px;">Mention dd noerror, the <span
+ style="font-weight: bold;">Mac OS X</span> rewrite, and Google glitch
+of thinking gccscsi is here.</p>
+      <p style="margin-left: 40px;">Link to msdn.microsoft
+SetConsoleCtrlHandler at Google<br>
+      </p>
+      <p>Saturday, September 27, 2003</p>
+      <p style="margin-left: 40px;">Link to man pages cmp and to
+msdn.microsoft GetTickCount.<br>
+      </p>
+      <p style="margin-left: 40px;">Polish the html.&nbsp; Move mingw
+faq to ../mingw/.<br>
+      </p>
+      <p> Thursday, September 25, 2003</p>
+      <p style="margin-left: 40px;">Update version.h and compressed
+.html and do not segfault Linux if input length is &lt; bs (common with
+stdin). </p>
+      <p>Tuesday, September 23, 2003:<br>
+      </p>
+      <p style="margin-left: 40px;">Let ../gccscsi present the Links
+and Preview for Scsi Pass Thru.&nbsp; Focus here on the 64-bit i/o that
+breaks thru the 2 to 4 GiB per file barrier. </p>
+      <p> <span style="font-weight: bold;">Saturday, September 20, 2003 </span></p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;"> </span>Run
+in <span style="font-weight: bold;">Win 2K/XP</span>, not just Linux.</p>
+      <p><span style="font-weight: bold;">Thursday, September 18, 2003 </span></p>
+      <p style="margin-left: 40px;"> Define <span
+ style="font-weight: bold;">sbs=</span> to override the default bs=
+bytes per block of skip= and seek=.</p>
+      <p style="margin-left: 40px;"> Define&nbsp;<span
+ style="font-weight: bold;">ms=</span> to limit milliseconds per copy of
+bs=.</p>
+      <p style="margin-left: 40px;"> Define&nbsp;<span
+ style="font-weight: bold;">-v</span> to mean trace cdb/ file read/
+write.</p>
+      <p style="margin-left: 40px;"> Define what should be <span
+ style="font-weight: bold;">-l</span> but is -f to mean copy past error
+or eof up to count=,<br>
+      </p>
+      <p>Wednesday, September 17, 2003<span style="font-weight: bold;"> </span></p>
+      <p style="margin-left: 40px;">Link to <span
+ style="font-weight: bold;">unrelated</span> pldd of <span
+ style="font-weight: bold;">usr proc bin.</span></p>
+      <p style="margin-left: 40px;"> Choose read/write not SG_IO for the
+block devices of Linux such as /dev/scd*.</p>
+      <p style="margin-left: 40px;"> Never read/write zero blocks. </p>
+      <p style="margin-left: 40px;">Clean up file permissions in the
+.tar.bz2 compressed folder.</p>
+      <p style="margin-left: 40px;"> Clean up whitespace in source. </p>
+      <p><span style="font-weight: bold;">Friday, September 12, 2003</span></p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;"> </span>Link
+to <span style="font-weight: bold;">comparable sg_dd sgp_dd</span> etc.
+of sg_utils of sg howto.</p>
+      <p style="margin-left: 40px;"> Fetch bytes per block via op x25
+READ_CAPACITY, for when != 2 Ki.</p>
+      <p style="margin-left: 40px;"> Comment the four ways Scsi pass
+thru may fail.</p>
+      <p><span style="font-weight: bold;"> Tuesday, September 9, 2003:</span></p>
+      <p style="margin-left: 40px;">Publish! </p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p> Posted by <a href="mailto:p.lavarre@ieee.org">Pat LaVarre</a> </p>
+</body>
+</html>

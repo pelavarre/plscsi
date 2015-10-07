@@ -1,0 +1,145 @@
+/* gccscsi.c
+ *
+ * Quick & dirty single-threaded Scsi talk for Linux, Win, Dos, Mac OF ...
+ *
+ * Bugs include:
+ *
+ *	gs_exit not yet included in all exit via <stdlib.h> atexit
+ */
+
+#include "gccscsi.h"
+
+#define GS_CHARS_LENGTH_MIN (1 * Mi)
+
+/** Collect parms. */
+
+int gs_int = 0;
+int gs_verbose = 0;
+
+int gs_sp = 0;
+int gs_in_length = 0;
+int gs_out_length = 0;
+
+char * gs_chars = NULL;
+int gs_chars_length = 0;
+int gs_chars_index = 0;
+
+int gs_height = 0;
+int gs_width = 0;
+
+/** Read & clear some parms. */
+
+void gs_zero_say(void)
+{
+	gs_int = 0;
+//	gs_verbose = 0;
+//	gs_sp = 0;
+	gs_in_length = 0;
+//	gs_chars = NULL;
+//	gs_chars_length = 0;
+	gs_chars_index = 0;
+}
+
+/** Shut down. */
+
+void gs_exit(char const * filename, int line)
+{
+	int sp = gs_sp;
+	if ((filename != NULL) && (line != 0)) {
+		fprintf(stderr, "file %s line %d\n", filename, line);
+	}
+	if (sp != 0) {
+		sp_close(sp);
+	}
+	if (gs_chars != NULL) {
+		free(gs_chars); gs_chars = NULL;
+	}
+	exit(-line);
+}
+
+void gs_enter(char const * name)
+{
+#ifdef _WIN32
+	char alias[] = "\\\\.\\A:";
+//	if (strlen(name) == 1) { alias[4] = name[0]; name = alias; }
+	if ((strlen(name) == 2) && (name[1] == ':')) { alias[4] = name[0]; name = alias; }
+#endif
+
+	gs_chars_length = GS_CHARS_LENGTH_MIN;
+	gs_chars = (char *) calloc(1, gs_chars_length);
+	if (gs_chars == NULL) gs_exit(__FILE__, __LINE__);
+
+	gs_sp = sp_open(name);
+	if (gs_sp == 0) {
+		fprintf(stderr, "gs_enter: sp_open: %s\n", name);
+		gs_exit(__FILE__, __LINE__);
+	}
+}
+
+/* Guess cdb length. */
+
+static void gs_permit_length(int length)
+{
+	if (gs_chars_length < length) {
+		char * chars = (char *) realloc(gs_chars, length);
+		if (chars == NULL) gs_exit(__FILE__, __LINE__);
+		gs_chars = chars;
+		memset(&gs_chars[gs_chars_length], '\0', length - gs_chars_length);
+		gs_chars_length = length;
+	}
+}
+
+/* Guess cdb length. */
+
+static int gs_guess_cdb_length(int op)
+{
+	switch (op & 0xE0) {
+		case 0x00: return 6;
+		case 0x20: return 10;
+		case 0x40: return 10;
+		case 0x60: gs_exit(__FILE__, __LINE__);
+		case 0x80: gs_exit(__FILE__, __LINE__);
+		case 0xA0: return 12;
+		case 0xC0: gs_exit(__FILE__, __LINE__);
+		case 0xE0: gs_exit(__FILE__, __LINE__);
+	}
+	gs_exit(__FILE__, __LINE__);
+	return -1;
+}
+
+/** Speak Scsi. */
+
+int gs_say(char const * cdb)
+{
+	int rc = -__LINE__;
+	int cdb_length = gs_guess_cdb_length(cdb[0] & 0xFF);
+	int length = 0;
+	if (gs_verbose) {
+		sp_dump(&cdb[0], cdb_length);
+	}
+	if (0 < gs_in_length) {
+		length = gs_in_length;
+		gs_permit_length(length);
+		rc = sp_say(gs_sp, &cdb[0], cdb_length, NULL, &gs_chars[0], length);
+		if (0 < rc) length -= rc;
+		if (gs_verbose && (gs_in_length < 0x800)) {
+			sp_dump(&gs_chars[0], length);
+		}
+	} else if (0 < gs_out_length) {
+		length = gs_out_length;
+		if (gs_verbose && (gs_out_length < 0x800)) {
+			sp_dump(&gs_chars[0], length);
+		}
+		gs_permit_length(length);
+		rc = sp_say(gs_sp, &cdb[0], cdb_length, &gs_chars[0], NULL, length);
+		if (0 < rc) length -= rc;
+	} else {
+		rc = sp_say(gs_sp, &cdb[0], cdb_length, NULL, NULL, 0);
+	}
+	gs_zero_say();
+	gs_chars_index = length;
+	return rc;
+}
+
+/* end of file */
+

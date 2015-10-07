@@ -1,0 +1,32 @@
+<html>
+<head>
+<style type="text/css">   body { font-family: sans-serif; }   pre { font-family: monospace; }   </style>
+<title>PLScsi - Authors</title>
+</head>
+<body>
+<p>Sunday, May 23, 2010</p>
+<h1> <a href="http://www.bswd.com/cornucop.htm">Storage/</a> <a href="../">PLScsi/</a> Authors/ </h1>
+
+<p>Pat LaVarre typed the source code and thanks:</p>
+<ul>
+<li><p>Joel Pick for discovering a 64-bit Linux g++ that refused to compile plscsi without an -m32 hint </p></li>
+<li><p>Paul Smith for connecting /dev/stdin and /dev/stdout </p></li>
+<li><p>Luben Tuikov for proposing a gccscsi interpreter </p></li>
+<li><p>Luben Tuikov for explaining Linux conventions in coding style and zipping </p></li>
+<li><p>Jack Bombeeck for explaining Linux `ls -l /dev/sg[0123]` device discovery </p></li>
+<li><p>Tommy Knowlton for figuring out how DeviceIoControl works in Win NT/2K/XP </p></li>
+<li><p>Tommy Knowlton for sharing the ScsiTaskUserClient example from Mac OS</p></li>
+</ul>
+
+<p>Pat also thanks people unknown for so creatively interpreting the INCITS/ANSI T10/T13 SCSI standards:</p>
+<ul>
+<li><p>the ANSI T10 &amp; T13 committee members who share stories of confusion</p></li>
+<li><p>the Microsoft programmer of SCSI hosts who first chose to discard the offset 4 AdditionalLength field of SPC op x12 Inquiry data</p></li>
+<li><p>the Microsoft programmer of SCSI devices who first zeroed the offset 4 AdditionalLength field of SPC op x12 Inquiry data</p></li>
+<li><p>the Connectix programmer of SCSI devices who first zeroed the offset 7 AdditionalLength field of SPC op x03 RequestSense data</p></li>
+</ul>
+
+<p>(Posted by <a href="mailto:p.lavarre@ieee.org?Subject=plscsi/authors/">Pat LaVarre</a>)</p>
+
+</body>
+</html>

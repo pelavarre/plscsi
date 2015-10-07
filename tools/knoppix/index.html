@@ -1,0 +1,372 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+  <style type="text/css">
+body { font-family: sans-serif; }
+pre { font-family: monospace; }
+  </style>
+  <title>PLScsi Tools Knoppix</title>
+</head>
+<body>
+<h1><a href="../../">PLScsi/</a>&nbsp; <a href="../">Tools/</a>&nbsp;
+Knoppix/<br>
+</h1>
+<p> Updated on Saturday, September 27, 2003<br>
+</p>
+<table style="text-align: left; width: 100%;" border="0" cellspacing="2"
+ cellpadding="10">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">
+      <p><br>
+      </p>
+      <p>See Also: </p>
+      <p><a
+ href="http://www.google.com/search?q=link:members.aol.com/plscsi/tools/knoppix/">links&nbsp;to&nbsp;this&nbsp;page</a> </p>
+      <p><a
+ href="http://groups.google.com/groups?q=LaVarre%2BTorvalds%2BSummary">to&nbsp;kernel.org&nbsp;from&nbsp;Pat</a><br>
+      </p>
+      <p><a href="http://www.knoppix.net/">knoppix&nbsp;linux</a></p>
+      <p><a href="http://www.lugnet.com/robotics/rcx/">robots&nbsp;by&nbsp;lego</a></p>
+      <p><a href="http://groups.google.com/">usenet</a></p>
+      <p>unix newbies </p>
+      <p><br>
+      </p>
+      <p>Linux Help: </p>
+      <p><a href="http://www.tux.org/lkml/">linux-kernel&nbsp;faq</a></p>
+      <p><a href="http://lxr.linux.no/source/">lxr&nbsp;linux&nbsp;source&nbsp;index</a></p>
+      <p><a href="http://www.kernel.org/">kernel.org&nbsp;linux&nbsp;source</a></p>
+      <p><a href="http://kernelnewbies.org/">kernel&nbsp;newbies</a> </p>
+      <p><a href="http://groups.google.com/groups?q=fa.linux.kernel">linux-kernel</a>&nbsp;google&nbsp;archive</p>
+      <p><a href="http://marc.theaimsgroup.com/?l=linux-kernel">linux-kernel</a>
+marc archive</p>
+      <p><a href="http://groups.google.com/groups?q=mlist.linux.scsi">linux-scsi</a>&nbsp;google&nbsp;archive</p>
+      <p><a href="http://marc.theaimsgroup.com/?l=linux-scsi">linux-scsi</a>
+marc archive<br>
+      </p>
+      <p> </p>
+      <p><br>
+      </p>
+      <p>Compilers/ Interpreters:<br>
+      </p>
+      <p><a href="http://www.google.com/search?q=man+pages+bash">man
+pages bash</a> at google</p>
+      <p><a href="http://www.google.com/search?q=man+pages+dc">man
+pages dc</a> at google</p>
+      <p><a href="http://gcc.gnu.org/">gcc</a> home page</p>
+      <p><a href="http://www.jwdt.com/%7Epaysan/gforth.html">gforth</a>
+home page</p>
+      <p><a href="http://java.sun.com/">javac</a> home page<br>
+      </p>
+      <p><a href="http://www.google.com/search?q=man+pages+perl">man
+pages perl</a> at google</p>
+      <p><a href="http://www.google.com/search?q=man+pages+wget">man
+pages wget</a> at google</p>
+      <p><br>
+      </p>
+      </td>
+      <td style="vertical-align: top;">
+      <p>&nbsp;</p>
+      </td>
+      <td style="vertical-align: top;">
+      <h1>1. Why I Like Knoppix</h1>
+      <p> Google of Usenet tells me how to use <span
+ style="font-weight: bold;">Knoppix Linux</span> to help me develop
+peripheral devices, like <span style="font-weight: bold;">hard disk
+drives </span>for pay and <span style="font-weight: bold;">remote-controlled
+Lego robots</span> for fun.&nbsp; Either noone knows how to make Mac OS
+X &amp; Windows work equally well, or they're not talking much.</p>
+      <h1>2. What Is Knoppix</h1>
+      <p><span style="font-weight: bold;">2.1:</span> Knoppix is <span
+ style="font-weight: bold;">free</span>.<br>
+      </p>
+      <span style="font-weight: bold;"></span>
+      <p><span style="font-weight: bold;">2.</span><span
+ style="font-weight: bold;">2: In Linux I easily find much help for
+messing around with peripheral devices.</span><br>
+      </p>
+      <p>From the thousands of Linux <span style="font-weight: bold;">man
+pages</span>, I recommend<span style="font-weight: bold;"></span><span
+ style="font-weight: bold;"></span> in particular:<br>
+      </p>
+      <p style="margin-left: 40px;">bash bc cat cd cp csh <span
+ style="font-weight: bold;"></span>dc dd df du echo egrep emacs export
+file find grep head id info less ls man more mount perl pwd rm sed set
+setenv sort ssh strings sudo tail tar tee<span style="font-weight: bold;"> </span>tr
+uname vi wget what which whoami</p>
+      <p>Linux <span style="font-weight: bold;">paths</span> I often
+visit include:<br>
+      </p>
+      <p style="margin-left: 40px;">/etc /home /lib/modules /sbin
+/usr/include /usr/sbin</p>
+      <p>Linux man page nuggets I especially value include:<br>
+      </p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">bash</span>
+-v $'\xXX' ; <span style="font-weight: bold;">bzip2 </span>-cdz<span
+ style="font-weight: bold;">; cd</span> -; <span
+ style="font-weight: bold;">chvt</span>; <span
+ style="font-weight: bold;">cmp</span> -l; <span
+ style="font-weight: bold;">cp</span> -a -l<span
+ style="font-weight: bold;">; date </span>-r; <span
+ style="font-weight: bold;">dc</span> -e ; <span
+ style="font-weight: bold;">diff</span> -l -q -r -w ; <span
+ style="font-weight: bold;">du </span>-s; <span
+ style="font-weight: bold;">egrep </span>'|' ; <span
+ style="font-weight: bold;">emacs </span>-nw -f eshell<span
+ style="font-weight: bold;">; grep</span> -n; <span
+ style="font-weight: bold;">find</span> -printf '%l'; <span
+ style="font-weight: bold;">ftp </span>-n; <span
+ style="font-weight: bold;">ls</span> -adlrt;<span
+ style="font-weight: bold;"> man</span> -a -K; <span
+ style="font-weight: bold;">modprobe</span> -r; <span
+ style="font-weight: bold;">ps</span> aux; <span
+ style="font-weight: bold;">tr</span> -s; <span
+ style="font-weight: bold;">sudo</span> -v su; tar -cftvxz; <span
+ style="font-weight: bold;">vim</span> / Ctrl+V Ctrl+I Enter; <span
+ style="font-weight: bold;">visudo</span> <small>NOPASSWD</small>; <span
+ style="font-weight: bold;">zip</span> -r<br>
+      </p>
+      <p>Linux <span style="font-weight: bold;">dc</span> commands I
+use most include:<br>
+      </p>
+      <p style="margin-left: 40px;"># +-*/%^ dc fpnP iok rsl x</p>
+      <p><span style="font-weight: bold;">2.3:</span> <span
+ style="font-weight: bold;">Knoppix Linux, </span><span
+ style="font-weight: bold;">designed to first do no harm, </span><span
+ style="font-weight: bold;">boots from a CD and runs on any Intel PC.</span></p>
+      <p>In particular, Knoppix runs without requiring you to create
+and erase an HDD partition.&nbsp; The HDD partitions you already have
+Knoppix by default mounts as read-only.&nbsp; A right-click menu offers
+"Change read/write mode", which initially means make writeable.&nbsp;
+Bugs include allowing that choice in the menu before mount. </p>
+      <p><span style="font-weight: bold;">2.4:</span> <span
+ style="font-weight: bold;">Knoppix lets me run Linux without requiring
+me to learn how to configure Linux.</span><br>
+      </p>
+      <p>Knoppix plugs 'n plays, using "loadable kernel modules".&nbsp;
+Bugs include (a) not noticing hotplugged hardware until I reboot, and
+(b) aggressively timing out my entry of a bootline after the slow bios
+boot of my pc sent my attention elsewhere, and (c) wrongly suggesting
+that I can't enter an empty bootline without making my US keyboard
+malfunction.</p>
+      <p><span style="font-weight: bold;">2.5: Knoppix </span>accepts
+the `sudo` prefix and<span style="font-weight: bold;"> includes </span>the<span
+ style="font-weight: bold;"> `sudo su` </span>root shell.<br>
+      </p>
+      <p>By default no root password exists for the network to
+exploit.&nbsp; Bugs include not mentioning `sudo su` prominently on the
+Knoppix web site.</p>
+      <p> <span style="font-weight: bold;">2.6: Knoppix makes
+straightforward the rebuilding a .ko loadable kernel module</span> (.o in
+2.4 Linux).<br>
+      </p>
+      <p>For example, we can turn on ( USB support --&gt; USB Mass
+Storage support --&gt; USB Mass Storage verbose debug aka <font
+ size="-1">CONFIG_USB_STORAGE_DEBUG</font>).</p>
+      <p> "Straightforward" here means <span style="font-weight: bold;">maybe
+fifteen minutes once you know how:<br>
+      </span></p>
+      <div style="margin-left: 40px;">
+      <p><span style="font-weight: bold;">(a)</span> Download a full
+kernel source into an ext2 fs of half a gig or more, edit the head of
+the Makefile so <small>KERNELRELEASE</small> equals the `uname -r`,
+tweak the config to produce a linkable kernel module .ko (.o in 2.4
+Linux), make the kernel.&nbsp; <span style="font-weight: bold;">(b)</span>
+Mount another ext2 fs somewhere, copy the relevant /lib/modules/ folder
+into it, substitute the newly made .ko module (.o in 2.4 Linux).&nbsp; <span
+ style="font-weight: bold;">(c) </span> modprobe -r the module, mount
+the fs over the /lib/modules folder, modprobe the module.<span
+ style="font-weight: bold;"></span></p>
+      </div>
+      <h1>3. Features Of Knoppix</h1>
+      <p> <span style="font-weight: bold;">Knoppix 3.2 of May 2003</span>
+included:</p>
+      <p>Linux 2.4.20<br>
+`javac` 1.4.1<br>
+`gcc` 3.2.3<br>
+      </p>
+      <p>adobe acrobat .pdf reader<br>
+open office<br>
+KMail for letting you decide the From: and line width of an email via
+smtp port 25</p>
+      <p>`blockdev` to flush better than `umount`, to get width &amp;
+height of block devices, etc.<br>
+`dd` to <span style="font-weight: bold;">view and copy</span> between
+devices, volumes, and files<br>
+`dmesg` to view the kernel error log, `sudo cat /proc/kmsg` to watch it
+grow<br>
+`hexdump -C` to view binary<br>
+`fdisk` to <span style="font-weight: bold;">edit the partition table</span>
+at LBA 0 of an HDD<br>
+`lsmod` `modprobe` `modprobe -r` to patch the kernel without rebooting<br>
+`losetup` to <span style="font-weight: bold;">create a virtual block
+device </span>out of a file<br>
+`mkfs` to <span style="font-weight: bold;">erase volumes</span> less
+completely but more quickly than `dd if=/dev/zero`<br>
+`zip` and `tar` and `bzip2` to view/create compressed folders</p>
+      <p>$<small>HOME</small><br>
+$<small>LC_ALL</small><br>
+$<small>PATH</small><br>
+$<small>PS1</small><br>
+$prompt<br>
+      </p>
+      <p>/dev/zero<br>
+/dev/loop*<br>
+      </p>
+      <p>/proc/bus/usb<br>
+/proc/dev/sys/cdrom/info<br>
+/proc/ide/<br>
+/proc/ioports<br>
+/proc/pci<br>
+/proc/scsi/<br>
+/proc/kmsg<br>
+      </p>
+      <p>java.io.RandomAccessFile // <span style="font-weight: bold;">create
+large files</span> without waiting to write the contents</p>
+      <p>&lt;scsi/sg.h&gt; <small>SG_IO</small> // <span
+ style="font-weight: bold;">pass thru SCSI </span>commands, though
+maybe only up to MB/cdb<br>
+&lt;sys/io.h&gt; ioperm inb outb inw outw // <span
+ style="font-weight: bold;">pass thru PC I/O port</span> fetch/store<br>
+&lt;sys/mman.h&gt; mmap // <span style="font-weight: bold;">pass thru
+/dev/mem</span> to fetch/store PCI regs</p>
+      <p>Gforth scripting of C available separately.</p>
+      <p>Bugs include allowing SG_IO without requiring root privilege,
+and that resizing a Konsole doesn't reflow broken lines.&nbsp; Just now
+I can't remember if Konsole's lack Edit -&gt; Select All, I specifically
+remember Red Hat terminals do.</p>
+      <h1>4. My Hopes For Knoppix</h1>
+      <p>1. <span style="font-weight: bold;">What already I know of
+the Not obvious </span>uses of<span style="font-weight: bold;"> Knoppix</span>,
+expressed as fragments of shell/ C/ Java code for Linux, includes:</p>
+      <p style="margin-left: 40px;"><a href="bui.sh.txt">build kernel</a>
+in the 2.4 style</p>
+      <p style="margin-left: 40px;"> build kernel in the 2.6 style is
+easy: make help; make mrproper defconfig; make</p>
+      <p style="margin-left: 40px;"> classically concise prompt for bash
+is: export PS1='$ ' ; export -n PS1</p>
+      <p style="margin-left: 40px;"> classically concise prompt for csh
+is: set prompt='% '</p>
+      <p style="margin-left: 40px;"><a href="dus.sh.txt">overwrite
+folders of read-only disks</a> via /dev/loop* of <font size="-1">CONFIG_BLK_DEV_LOOP</font></p>
+      <p style="margin-left: 40px;"> pass thru PC I/O port: <a
+ href="inb.c.txt">fetch</a>, <a href="outb.c.txt">store</a></p>
+      <p style="margin-left: 40px;"> pass thru SCSI cdb's: <a
+ href="../pldd/">via sg_dd etc.</a>, <a
+ href="http://members.aol.com/plscsi/">via sh</a>, <a
+ href="ftp://members.aol.com/plforth/console/fni/">via gcc or gforth or
+javac</a>, <a href="ftp://members.aol.com/plforth/console/scsi/">via
+gui</a></p>
+      <p style="margin-left: 40px;"> pass thru /dev/mem to <a
+ href="ub.c.txt">fetch/ store</a> PCI regs</p>
+      <p style="margin-left: 40px;"> write gigs quickly: <a
+ href="Wri.java.txt">via javac</a>, <a href="wri.c.txt">via gcc</a>
+linux 64-bit i/o, <a href="../pldd/">via sg_dd etc.</a></p>
+      <p>2. Some of those "pass thru SCSI" http links I gave before
+worked for some of you only if you thought to try respelling them as ftp
+links.&nbsp; Sorry about that.&nbsp; Please write to tell me if ever you
+find a seemingly broken link.<br>
+      </p>
+      <p>3. What I wish I knew includes:<br>
+      </p>
+      <p style="margin-left: 40px;">(a) How to round up the block size
+of a loopback device to 2 KiB/block from the default 0.5 KiB/block.<br>
+      </p>
+      <p style="margin-left: 40px;">(b) How to find the source of a
+Linux app and then build my own version.&nbsp; For example, I want to be
+sure that Linux `dd` actually uses asynchronous i/o to fill one buffer
+while draining another.<br>
+      </p>
+      <p style="margin-left: 40px;">(c) Links to a Unix newbies sites
+that guide us as does description "2.4" above.</p>
+      <p style="margin-left: 40px;">(d) Links to other sites written by
+fans of Knoppix.<br>
+      </p>
+      <h1>5. Persistent $HOME Despite Knoppix </h1>
+      <p><span style="font-weight: bold;">In Knoppix, by default every
+crash or reboot erases my ramdisk $HOME.<br>
+      </span></p>
+      <p>Persistent personal home files don't yet work well in Knoppix,
+but they do work.&nbsp; The Knoppix 3.2 menu choice ( <small>KDE</small>
+--&gt; <small>KNOPPIX</small> --&gt; Configure --&gt; Create a
+persistent <small>KNOPPIX</small> home directory ) lets me save my $<small>HOME</small>
+over a partition or in a file.</p>
+      <p style="font-weight: bold;">Bugs include me having to teach
+myself at least Eight quirks:</p>
+      <ol>
+        <li>
+          <p>which /dev/hd* partitions I don't mind losing</p>
+        </li>
+        <li>
+          <p>how to poll the slow progress when my home is a vfat file</p>
+        </li>
+        <li>
+          <p>that I don't want the <small>AES</small> encryption</p>
+        </li>
+        <li>
+          <p>that the unspecific boot line "knoppix home=scan" doesn't
+work for me</p>
+        </li>
+        <li>
+          <p>that mistyping /dev/sda9 when I meant /dev/hda9 runs half
+a boot before failing</p>
+        </li>
+        <li>
+          <p>that `df` will say "Mounted on" /home/knoppix after a boot
+line does work</p>
+        </li>
+        <li>
+          <p>that if the boot line does work then I have to reboot to
+umount /home/knoppix</p>
+        </li>
+        <li>
+          <p>that only /home/knoppix moves to my HDD: the rest of /home
+remains fragile ramdisk</p>
+        </li>
+      </ol>
+      <h1>6. Changes </h1>
+      <p><span style="font-weight: bold;">Future</span>:</p>
+      <p>2003 August Knoppix on Mac appears discussed at</p>
+      <p><a href="http://www.knoppix.net/forum/viewtopic.php?t=3646">http://www.knoppix.net/forum/viewtopic.php?t=3646</a></p>
+      <p><a href="http://debian.tu-bs.de/knoppix/powerPC/">http://debian.tu-bs.de/knoppix/powerPC/</a></p>
+      <p>I actually think I know of a Mac hardware donor, if we can
+find someone to pay postage.</p>
+      <p>2003 August Slashdot suggests, to boot Linux on an Apple Mac
+we try Gentoo:</p>
+      <p><a href="http://www.gentoo.org/doc/en/gentoo-ppc-install.xml">http://www.gentoo.org/doc/en/gentoo-ppc-install.xml</a></p>
+      <p> CD flavor: kde/gnome livecd</p>
+      <p><span style="font-weight: bold;">Saturday, September 27, 2003 </span></p>
+      <p>Add: cd -; chvt; cmp -l; diff -l -q -w; ls -d; ps aux<br>
+      </p>
+      <p>Polish the .html.<br>
+      </p>
+      <p><span style="font-weight: bold;">Saturday, September 13, 2003</span></p>
+      <p>Add: nuggets: bzip2 emacs tar zip </p>
+      <p><span style="font-weight: bold;">Friday, September 12, 2003 </span></p>
+      <p>Add nuggets: date -r, du -s, ls -lart, visudo <small>NOPASSWD'</small></p>
+      <p>Add links: via sg_dd, marc archives not just google, Knoppix
+wget not Red Hat curl </p>
+      <p><span style="font-weight: bold;">Tuesday, September 9, 2003:</span></p>
+      <p>Add: links to this page, Knoppix on Mac, linux-kernel faq,
+linux-kernel google archive, linux-scsi google archive; paths:
+/usr/sbin; tools: blockdev, bzip2, curl, KMail, tar, zip; nuggets: cp -a
+-l, dc -e, diff -r --brief, egrep '|', grep -n, man -a $name, sudo -v
+su, vim / Ctrl+V Ctrl+I Enter</p>
+      <p><span style="font-weight: bold;">Saturday, August 23, 2003:</span></p>
+      <p>Add: du file more perl set setenv tee what whoami /etc
+/lib/modules /sbin "Linux man page nuggets" "adobe acrobat .pdf reader"
+"open office" $ LC_ALL /proc/bus/usb /proc/dev/sys/cdrom/info /proc/kmsg
+" SG_IO ... only upto MB/cdb" "2.6" "classically concise prompt"
+CONFIG_BLK_DEV_LOOP "http ... ftp" "Konsole ... Edit -&gt; Select All"
+"Unix newbies sites" "fans of Knoppix" "mistyping /dev/sda9" Changes </p>
+      <p><span style="font-weight: bold;">Tuesday, June 3, 2003:</span></p>
+      <p>Publish!</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p>Posted by <a href="mailto:p.lavarre@ieee.org">Pat LaVarre</a></p>
+</body>
+</html>

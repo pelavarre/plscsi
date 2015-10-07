@@ -1,0 +1,250 @@
+to Saturday, September 21, 2002 from Monday, July 8, 2002
+
+.h files
+
+        plscsi.h
+
+                add compile-time option to compile SGIO stubs in Windows
+                change to match new scl.cpp
+                change to match new scsi.cpp
+                sort alphabetically by source file
+
+        winsg.h
+
+                add: to pretend to link with Linux SG_IO when compiled for Windows
+
+        dosaspi.h
+        winaspi.h
+        wnaspi32.h
+
+                no change
+
+.cpp files
+
+        scsistub.cpp
+
+                change to match new scsi.cpp i.e. delete now unnecessary stubs
+
+                main:
+
+                        like scl.cpp: change default auto sense to xE from x18
+
+                inquiryPrintln:
+
+                        print op x12 Inquiry data once, not three times
+                        guess that additionalLength = 0 means availableLength = x24
+                        end the line no matter if op x12 Inquiry data unavailable
+
+        plscsi.cpp
+
+                main:
+
+                        change --no to break when residue changes, not merely because residue exists
+                                but still accept --yes --no paired to mean continue forever
+
+                        call sclLimitSay
+                                to require --please to say commonly unintended things
+
+                        like scl.cpp: change default auto sense to xE from x18
+
+                add -h of -X dos -X aspi -X sptx -X spt -X sptd -X sgio
+                add --help to show how to make x00 data, since scl.cpp default is now xAE
+
+                fprintExitInt:
+
+						print 4 or more hex digits before decimal, if negative
+                        print exit int value before main name or explanatory comment
+                        let main name vary as a parameter
+
+        scl.cpp
+
+                sclFrom:
+
+                        fill with xAE before copying data In, rather than x00
+
+                sclLimitSay:
+
+                        require --please or -p for op x1A ModeSense6 of 1 to 7 bytes
+                                since Win 2K then crashes in translating to op x5A ModeSense10
+                        suggest -p as well as --please
+                        fetch cdb0, cdb4 only if cdbLength adequate
+
+                sclSay:
+
+                        trust the caller to call sclLimitSay
+                                to require --please to say commonly unintended things
+
+                        move calls of scsiLimitSense scsiLimitTime to sclOpenLimited
+								ignore scsiLimitSense failure if no explicit -X sense $n
+								ignore scsiLimitTime failure if no explicit -X time $s $ns
+
+                sclOpenLimited: add to
+
+                        combine scsiOpen scsiLimitSense scsiLimitTime
+                                since scsiOpen no longer does
+
+                sclGetNullFile: move to scl.cpp from scsi.cpp
+
+                sclOpenPingable: move to scl.cpp: was scsiOpenNext of scsi.cpp
+
+                sclOpenNext:
+
+                        change to match scsi.cpp:
+                                say sclOpenPingable sclOpenLimited
+                                        instead of scsiOpen scsiOpenNext
+
+                sclReadXyz:
+
+                        pass -X options thru to scsiSwallowArg
+
+                sclGuess:
+
+                        use the same guessed command as sclPing
+
+                device naming
+
+                        for each of device name args, --loop, --whichever
+                                forget all preceding
+                                except allow names after names and after --whichever
+
+                fromVerboseSwitch:
+
+                        comment the unused switches: -begjkmrsuz
+
+                sclPing: move to scl.cpp from scsi.cpp
+
+                generally, print in more commonly useful ways, specifically:
+
+                        sclInquiryPrintln:
+
+                                suppose x24 available bytes (but complain)
+                                        if availableLength reported is min or beyond max
+                                                in particular if additionalLength is zero
+                                                        as it is in Win2K Scsi/Ata
+                                complain after printing op x12 Inquiry data, not before
+
+                        sclSensePrint:
+
+                                suppose xE available bytes
+                                        if availableLength reported is min or beyond max
+                                                in particular if additionalLength is zero
+                                                        as it is in Connectix VirtualPC Aspi/Cdrom
+
+                        sclHexPrintln:
+
+                                print "..." in place of the middle of a run of identical lines
+
+                        sclCdbPrintln:
+
+                                add to group bytes of 6, 10, 12 byte Cdb's in the standard ways:
+                                        XX XX:XX:XX XX XX // 6
+                                        XX XX XX:XX:XX:XX XX XX:XX XX // 10
+                                        XX XX XX:XX:XX:XX XX XX:XX:XX:XX XX // 12
+
+                        sclBeforePrintln:
+
+                                don't trust the caller to call only if !theVerboseBit
+
+                        sclAfterPrintln:
+
+                                don't trust the caller to call only if !theVerboseBit
+                                always call sclSensePrintln
+
+                        sclSensePrintln: add to
+
+                                trace sense data if copied In, no matter if !theVerboseBit
+                                trace residue if sense data copied In
+                                        since then the traced exitInt won't be equal to residue
+								trace hex content before explanatory English
+
+        scsi.cpp
+
+                move all content up to scl.cpp or down to the specific connection types
+                except still choose by call
+                        1: pass thru to all
+                        2: pass thru til one succeeds
+                        3: pass thru only to the open connection
+
+                scsiSwallowArg: add to pass -X options thru
+
+                end last line before eof to avoid gcc complaint
+
+        sgio.cpp
+
+                move up to scsi.cpp: whether the connection is open
+                move down from scsi.cpp:
+                        theErrFile theExitInt theLength theSenseChars theSenseLength
+                        sgioSetErr sgioLimitSeconds sgioGetLength sgioGetSense sgioSwallowArg
+
+                aspiSwallowArg: add to swallow -X sgio
+                        swallow only -X sgio not -X SGIO nor -X Sgio: no stricmp in gcc lib
+
+        dosaspi.cpp
+
+                delay aspiStartup til first aspiOpen
+                delete aspiClose (was no-op)
+
+                aspiSetCommand: make SRB_BufPointer null if X0_DATA_NOT
+                        since some third-party ASPI plug-in's crash otherwise
+                aspiSay: include SRB_SenseLen when tracing unusual results
+
+                move up to scsi.cpp: whether the connection is open
+                move down from scsi.cpp:
+                        theErrFile theExitInt theLength theSenseChars theSenseLength
+                        aspiSetErr aspiLimitSeconds aspiGetLength aspiGetSense aspiSwallowArg
+
+                aspiSwallowArg: add to swallow -X dos
+
+        winaspi.cpp
+
+                same as dosaspi.cpp except also ...
+
+                change the default to "WNASPI32.DLL" from "WNASPI32"
+                        to match the -X option passed thru
+
+                remove the compile-time option for a static link
+
+                aspiSwallowArg: add to ...
+                
+                        swallow -X aspi
+                        swallow -X $name.dll to change ASPI plug-in name
+
+        sptx.cpp
+
+                newSptx:
+
+                        calloc theSptxCommand separately
+                                mostly to allow realloc by sptxHintMaxLength
+                                also to guarantee calloc alignment
+                                        (maybe better than long alignment)
+
+                sptxHintMaxLength:
+
+                        try to realloc theSptxCommand
+                                when growth needed to permit SPT rather than SPTD
+
+                sptxOpen
+
+                        drop the undocumented idea of / as a prefix 
+                                for distinguish ASPI vs. SPTX names
+
+                sptxSay
+
+                        comment the many SPT data copies more plainly
+
+                move up to scsi.cpp: whether the connection is open
+                move down from scsi.cpp:
+                        theErrFile theExitInt theLength theSenseChars theSenseLength
+                        sptxSetErr sptxLimitSeconds sptxGetLength sptxGetSense sptxSwallowArg
+
+                sptxSwallowArg: add to ...
+                
+                        swallow -X SPT to talk SPT only (not SPTD)
+                        swallow -X SPTD to talk SPTD only (not SPT)
+                        swallow -X SPTX to talk SPT below 16 Ki, SPTD above
+                                as Microsoft KB recommends
+
+        cl.cpp
+        wideint.cpp
+
+                no change

@@ -1,0 +1,83 @@
+/* gccscsi.h
+ *
+ * Quick & dirty single-threaded Scsi talk for Linux, Win, Dos, Mac OF ...
+ *
+ * Bugs include:
+ *
+ * 	ds(devname) doesn't yet move the focus to another device.
+ */
+
+#include <assert.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define LIL(I, N) (((unsigned char *)&(I))[N])
+
+#define Ki (1 << 10) /* = 1024 */
+#define Mi (Ki * Ki)
+#define Gi (Ki * Ki * Ki)
+
+extern void sp_dump(char const * chars, int length);
+
+extern int sp_say(int dev, char const * cdbChars, int cdbLength, char * outChars, char * inChars, int maxLength);
+extern int sp_close(int dev);
+extern int sp_open(char const * name);
+
+extern void gs_enter(char const * name);
+extern void gs_exit(char const * filename, int line);
+extern int gs_say(char const * cdb);
+
+extern int gs_int;
+extern int gs_sp;
+extern int gs_verbose;
+extern int gs_in_length;
+extern int gs_out_length;
+
+extern char * gs_chars;
+extern int gs_chars_length;
+extern int gs_chars_index;
+
+extern int gs_height;
+extern int gs_width;
+
+#define qui() gs_exit(__FILE__, __LINE__) /* quit noisily */
+#define ds(N) gs_enter(N) /* device select */
+
+#define q() (gs_verbose = 0) /* quiet */
+#define v() (gs_verbose = 1) /* verbose */
+#define i(I) (gs_in_length = (I)) /* in */
+#define o(O) (gs_out_length = (O)) /* in */
+#define y(C) \
+    do { \
+        gs_int = gs_say(C); \
+        if (gs_int != 0) gs_exit(__FILE__, __LINE__); \
+        } while (0)
+#define n(C) \
+    do { \
+        gs_int = gs_say(C); \
+        if (gs_int == 0) gs_exit(__FILE__, __LINE__); \
+        } while (0)
+#define yn(C) (gs_say(C))
+
+#define chars() (gs_chars) /* data */
+#define chars_max_length() (gs_chars_length) /* max data length */
+#define chars_length() (gs_chars_index) /* data length in use */
+
+#define if_v() if (gs_verbose) /* if verbose */
+
+#define h_is(H) (gs_height = (H))
+#define h() (gs_height)
+#define w_is(W) (gs_width = (W))
+#define w() (gs_width)
+
+#ifdef __cplusplus
+}
+#endif
+
+/* end of file */
+

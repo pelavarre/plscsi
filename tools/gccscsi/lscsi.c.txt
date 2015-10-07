@@ -1,0 +1,193 @@
+/* lscsi.c
+ *
+ * Implement Scsi pass thru in Linux per "gccscsi.h".
+ *
+ * Talk thru a Linux ioctl SG_IO connection to a device, since Linux
+ * kernel 2.4 i.e. since <scsi/sg.h> version 3.
+ *
+ * Bugs include:
+ *
+ *	Never ask to time out in less than 28 hours,
+ *	Never ask for other than x12 sense bytes.
+ *	Never return sense bytes, always print in hex to stderr.
+ *	Refuse to pass thru more than xFF bytes of CDB.
+ *	Limit bytes per CDB to what caller can allocate virtually.
+ *	Don't bother to filter duplicate lines from dumps.
+ *
+ * See also: http://lxr.linux.no/source/Documentation/CodingStyle
+ */
+
+#include <limits.h>	/* INT_MAX ... */
+#include <string.h>	/* memmove ... */
+#include <stdio.h>	/* fprintf ... */
+#include <stdlib.h>	/* calloc ... */
+
+#include <fcntl.h>	/* open O_RDWR ... */
+#include <scsi/sg.h>	/* SG_... sg_... */
+#include <sys/ioctl.h>	/* ioctl ... */
+#include <unistd.h>	/* close ... */
+
+#include "gccscsi.h"
+
+void sp_dump(char const * chars, int length);
+
+/* Describe a Linux ioctl SG_IO connection to a device. */
+
+#define MAX_CDB_LENGTH 0xFF
+#define MAX_SENSE_LENGTH 0xFF
+
+typedef struct ScsiPassAll ScsiPassAll;
+
+struct ScsiPassAll
+	{
+	sg_io_hdr_t	theSgioHdr;
+	long long	theCdbAlignHint;
+	char		theCdbChars[MAX_CDB_LENGTH];
+	long long	theSenseAlignHint;
+	char		theSenseChars[MAX_SENSE_LENGTH];
+	long long	theDataChars[1];
+	};
+
+int sp_open(char const * name)
+{
+	int mode = O_RDWR; /* O_RDONLY often works */
+	int fd = open(name, mode);
+//	(void) fprintf(stderr, "%s\n", name);
+	if (0 <= fd) {
+		if (0 < fd) {
+			int version = 0;
+			int ii = ioctl(fd, SG_GET_VERSION_NUM, &version);
+			if (0 <= ii) {
+				if (30000 <= version) {
+					return fd;
+				}
+			}
+		}
+		(void) close(fd);
+	}
+	return 0;
+}
+
+int sp_close(int dev)
+{
+	int fd = dev;
+	return close(fd);
+}
+
+int sp_say(int dev, char const * cdbChars, int cdbLength, char * outChars, char * inChars, int maxLength)
+{
+	sg_io_hdr_t * sih = NULL;
+	int ii = 0;
+	int sihInfo = 0;
+	int residue = 0;
+	int senseLength = 0;
+	int exitInt = 0;
+
+	int fd = dev;
+	int maxSenseLength = 0x12;
+	int minSeconds = (28 * 60 * 60); /* 28*60*60 s = 28 h = 1.125 days */
+	int minMilliSeconds = (1000 * minSeconds);
+
+	int spaLength = sizeof (ScsiPassAll);
+	ScsiPassAll * spa = calloc(1, spaLength);
+	if (spa == NULL) return -__LINE__;
+
+	sih = &spa->theSgioHdr;
+	(void) memset(sih, '\0', sizeof *sih);
+	sih->interface_id = 'S';
+
+	sih->cmdp = (unsigned char *) &spa->theCdbChars[0];
+	(void) memmove(sih->cmdp, cdbChars, cdbLength);
+	sih->cmd_len = ((unsigned char) cdbLength);
+
+	sih->dxfer_len = maxLength;
+	if (outChars != NULL) {
+		sih->dxfer_direction = SG_DXFER_TO_DEV; /* often -2 */
+		sih->dxferp = inChars = outChars;
+	} else if (inChars != NULL) {
+		sih->dxfer_direction = SG_DXFER_FROM_DEV; /* often -3 */
+		sih->dxferp = outChars = inChars;
+	} else {
+		sih->dxfer_direction = SG_DXFER_NONE; /* often -1 */
+		sih->dxferp = NULL;
+	}
+
+	sih->sbp = (unsigned char *) &spa->theSenseChars[0];
+	sih->mx_sb_len = ((unsigned char) maxSenseLength);
+
+	sih->timeout = minMilliSeconds;
+
+	/* Leave much zeroed. */
+
+	; /* sih->iovec_count sih->flags sih->pack_id sih->usr_ptr */
+	; /* sih->status sih->masked_status sih->msg_status */
+	; /* sih->sb_len_wr sih->host_status sih->drive_status */
+	; /* sih->resid sih->duration sih->info */
+
+//	sp_dump(cdbChars, cdbLength);
+	ii = ioctl(fd, SG_IO, sih);
+	sihInfo = sih->info;
+	residue = sih->resid;
+	senseLength = sih->sb_len_wr;
+
+	exitInt = residue;
+	if (ii < 0) {
+		exitInt = -__LINE__; /* ioctl failed */
+	} else if ((exitInt < 0) || (maxLength < exitInt)) {
+		exitInt = -__LINE__; /* residue out of range */
+	} else if ((sihInfo & SG_INFO_OK_MASK) != SG_INFO_OK) {
+		if ((senseLength < 0) || (maxSenseLength < senseLength)) {
+			exitInt = -__LINE__; /* sense length out of range */
+		} else { /* blech */
+			sp_dump(cdbChars, cdbLength);
+			sp_dump(&spa->theSenseChars[0], senseLength);
+			exitInt = ((residue == 0) ? -1 : -2); /* sense plus */
+		}
+	}
+
+	(void) free(spa);
+
+	return exitInt;
+}
+
+static void sp_dumpx(char const * chars, int length)
+{
+	int absent = (0x10 - length);
+	(void) fprintf(stderr, "x ");
+	while (0 < length--) {
+		int i = ((*chars++) & 0xFF);
+		(void) fprintf(stderr, "%02X ", i);
+	}
+	while (0 < absent--) {
+		(void) fprintf(stderr, ".. ");
+	}
+}
+
+static void sp_dumpq(char const * chars, int length)
+{
+	(void) fprintf(stderr, "\"");
+	while (0 < length--) {
+		int i = ((*chars++) & 0xFF);
+		i &= 0x7F;
+		if ((i < 0x20) || (0x7E < i)) i ^= 0x40;
+		(void) fprintf(stderr, "%c", i);
+	}
+	(void) fprintf(stderr, "\"");
+}
+
+void sp_dump(char const * chars, int length)
+{
+	int index = 0;
+	while (index < length) {
+		char const * first = &chars[index];
+		int line = (length - index);
+		if (0x10 < line) line = 0x10;
+		sp_dumpx(first, line);
+		sp_dumpq(first, line);
+		(void) fprintf(stderr, "\n");
+		index += line;
+	}
+}
+
+/* end of file */
+

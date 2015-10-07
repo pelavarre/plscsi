@@ -1,0 +1,350 @@
+<html>
+
+<head>
+<title>PLScsi News</title>
+<style type="text/css">
+body { font-family: sans-serif; }
+pre { font-family: monospace; }
+</style>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p>
+<a href="index.html">Home</a> &nbsp; &nbsp; &nbsp;
+<a href="linux.html">Linux</a> &nbsp; &nbsp; &nbsp;
+<a href="windows.html">Windows</a> &nbsp; &nbsp; &nbsp;
+<a href="dos.html">Dos</a> &nbsp; &nbsp; &nbsp;
+<a href="mac.html">Mac</a>
+</p>
+
+<p>
+Last updated Saturday, December 21, 2002 by <a href="mailto:p.lavarre@ieee.org">p.lavarre@ieee.org</a>
+</p>
+
+<h1><a name="title"></a>PLScsi News</h1>
+
+<p>
+<strong>
+<a href="please.html">Please do email us</a>
+if you're using PLScsi</strong>, the tool or these web pages,
+else we won't know to keep working.
+</p>
+<p>
+<a href="please.html">Anonymous email</a> works too.
+</p>
+
+<p>
+[[[If a link labelled &quot;<strong>write once, breaks everywhere</strong>&quot; brought you here,
+sorry, we're not quite ready for you.
+Send us an email to tell us you got this far into our site?
+The info you want IS near here, but it's not yet easy to find,
+<a href="bugs.html">bugs.html</a> is one place.
+]]]
+</p>
+
+<hr>
+
+<p>
+<h2>Since February 12, 2003:</h2>
+</p>
+
+<p>
+We launched a GUI effort.
+We're discussing it in email, not yet in web pages.
+But we do have some .png screen shots collected together with our .zip's of .java sources:
+</p>
+
+<blockquote>
+<p>
+<a href="http://members.aol.com/plforth/console/scsi/">
+http://members.aol.com/plforth/console/scsi/</a>
+</p>
+</blockquote>
+
+<p>
+We found some new
+<a href="bugs.html">bugs</a>
+in our own stuff,
+and the new
+<a href="http://support.microsoft.com/?kbid=813908">813908</a>
+Microsoft explanation
+for how passing thru op x1A ModeSense6 of a header may crash Win 2K.
+</p>
+
+<p>
+In the field, we saw Win XP round DOWN the length of data copied
+by a command like: -x "12 0 0 0 05 0" -i x05 // Inquiry for up to 5.
+Misaligning the data address doesn't help.
+Offline we're told other people have seen Win XP hang.
+</p>
+
+<blockquote>
+<pre>
+D:\msvc\plscsi\Release>plscsi \\.\E: -v -x "12 0 0 0 05 0" -i 5 -d x10 -a x3FF x400
+x 00000000 12 00:00:00 05 00 .. .. .. .. .. .. .. .. .. .. "R@@@E@"
+// Data at: x329FFF
+x 00000000 AE:AE:AE:AE AE:AE:AE:AE AE:AE:AE:AE AE:AE:AE:AE "................"
+x 00000000 05:80:00:31 AE:AE:AE:AE AE:AE:AE:AE AE:AE:AE:AE "E@@1............"
+// 0 = plscsi.main exit int
+
+D:\msvc\plscsi\Release>
+</pre>
+</blockquote>
+
+<hr>
+
+<p>
+<h2>Since December 21, 2002:</h2>
+</p>
+
+<p>
+We continued the rework of December 7, 2002.
+The &quot;Related Tools&quot; no longer appear all together
+in <a href="why.html">why.html</a>
+but instead now appear sorted by operating system:
+</p>
+
+<blockquote>
+<p>
+<a href="linux.html">Linux</a> &nbsp; &nbsp; &nbsp;
+<a href="windows.html">Windows</a> &nbsp; &nbsp; &nbsp;
+<a href="dos.html">Dos</a> &nbsp; &nbsp; &nbsp;
+<a href="mac.html">Mac</a>
+</p>
+</blockquote>
+
+<p>
+On the other hand, we've added, unlinked except from here,
+a (highly technical) cross-platform page
+to discuss the plug 'n play descriptors of Usb Storage devices:
+<a href="tools/usbpnp.html">
+tools/usbpnp.html</a>
+</p>
+
+<p>
+In the Linux page, we provided the promised example
+of what plscsi -w success looks like.
+On the Windows page, we corrected the BusTools link.
+To the Mac page, we added PhotoCop.
+</p>
+
+<hr>
+
+<p>
+<h2>Since December 7, 2002:</h2>
+</p>
+
+<p>
+1: We've completely reworked the site (i.e. <a href="http://members.aol.com/plscsi/">PLScsi</a>)
+to suit people who begin with just one platform:
+people who work with less than all the platforms we support.
+</p>
+
+<p>
+2: The old site map also made it hard for you to review our bugs and code.
+We think this new site map could make this easy ... but it doesn't yet, sorry.
+Resources include:
+</p>
+<blockquote>
+<p>
+<a href="tools/index.html">tools/index.html</a>
+<br>
+<a href="bugs.html">bugs.html</a>
+<br>
+<a href="2002/09/22/review.html">2002/09/22/review.html</a>
+<br>
+<a href="2002/09/22/changes.txt">2002/09/22/changes.txt</a>
+</p>
+</blockquote>
+
+<p>
+3: We also want to link more directly to the leftover links we list at the bottom of
+<a href="bugs.html">bugs.html</a>
+especially:
+</p>
+<blockquote>
+<p>
+<a href="20000125/13cases.gif">20000125/13cases.gif</a>
+<br>
+<a href="20000125/13paths.gif">20000125/13paths.gif</a>
+<br>
+<a href="cdbcomplete.html">cdbcomplete.html</a>
+<br>
+<a href="scsiany.html">scsiany.html</a>
+<br>
+<a href="scsinotq.html">scsinotq.html</a>
+</p>
+</blockquote>
+
+<hr>
+
+<p>
+<h2>Since November 2, 2002:</h2>
+</p>
+
+<p>
+See also the known <a href="bugs.html">bugs.html</a>
+and the change history of the source code, currently:
+<a href="2002/09/22/changes.txt">2002/09/22/changes.txt</a>
+</p>
+
+<p>
+Added
+<a href="2002/09/22/review.html">2002/09/22/review.html</a><br>
+Added more at
+<a href="thanks.html">thanks.html</a><br>
+Corrected to "skip" from "seek" in `dd` syntax of
+<a href="index.html#why">index.html#why</a>
+</p>
+<p>
+Did Not yet merge in ...<br>
+the iScsi home page:<br>
+<a href="http://www.diskdrive.com/">http://www.diskdrive.com</a><br>
+and Apple talk of speaking with devices:<br>
+<a href="http://developer.apple.com/techpubs/macosx/Darwin/IOKit/DeviceInterfaces/AccessingHardware/index.html">
+http://developer.apple.com/techpubs/macosx/Darwin/IOKit/DeviceInterfaces/AccessingHardware/index.html</a><br>
+and a tool for burning a Knoppix boot CD:<br>
+<a href="http://www.nero.com/en/index.html#root">
+http://www.nero.com/en/index.html#root</a>
+</p>
+
+<hr>
+
+<h2>Since October 31, 2002:</h2>
+
+<p>
+Not only do the six char disk/cd drive names "\\.\$letter:" work,
+for instance \\.\I:,
+but also the nine or more char names "\\.\TAPE$n",
+for instance <b>\\.\TAPE0</b>.
+However, we find the latter work only with tape devices
+that appear listed in DeviceManager as "Tape drives",
+rather than as "Unknown devices".
+</p>
+
+<p>
+Rumour tells us:
+there is a programmer on earth
+who found PLScsi just before taking on the job of writing such a thing.
+</p>
+
+<p>
+Rumour tells us:
+one of the multi-LUN device folk
+patched a driver for Win 98/ME
+to enumerate multiple LUN's like PLScsi does.
+</p>
+
+<p>
+Our
+<a href="bugs.html">bugs.html</a> and
+<a href="thanks.html">thanks.html</a>
+are now more complete.
+We now say "Out to" where we had been wrongly saying "Out from",
+thanks for writing to tell us.
+</p>
+
+<p>
+We now lead our <a href="index.html">index.html</a>
+with our three favourite links elsewhere,
+we now bold (via Strong tags)
+more of the <a href="index.html">index.html</a>,
+and we mention the issue of residue accurate to the byte.
+</p>
+
+<p>
+See now at <a href="index.html#why">index.html#why</a> "Safer tools" that:
+</p>
+
+<blockquote>
+<p>
+Boot Linux from CD, without having to modify your HDD<br>
+Poke around in the Windows registry<br>
+</p>
+</blockquote>
+
+<p>
+Also at <a href="bugs.html">bugs.html</a> we not only discuss the known bugs
+(including new feature requests) but we now we also
+go ahead and link to some assorted stuff
+we have posted but not well-linked.
+</p>
+
+<hr>
+
+<h2>Since October 9, 2002:</h2>
+
+<p>
+See now at <a href="data/partboot.html">data/partboot.html</a>
+</p>
+
+<blockquote>
+<p>
+Linux source for identifying partitions & volumes<br>
+Disassembly of x86 <b>partition sector</b> (first LBA of disk)<br>
+Disassembly of x86 <b>boot sector</b> (first LBA of FAT volume)<br>
+</p>
+</blockquote>
+
+<p>
+See now at <a href="index.html#why">index.html#why</a>
+</p>
+
+<blockquote>
+<p>
+Linux dd<br>
+Dos debug
+</p>
+</blockquote>
+
+<hr>
+
+<h2>And before all that:</h2>
+
+<p>
+We released the 2002/09/22 edition to
+<a href="index.html#downloads">index.html#downloads</a><br>
+</p>
+
+<p>
+We released the 2002/07/08 edition: as yet only <b>Dos & Win & Linux</b>.<br>
+<a href="2002/07/08/">2002/07/08/</a>
+</p>
+
+<p>
+<b>We wish we had written the Linux edition first.</b>
+We found we could port back to Dos & Win from Linux
+more easily than the other way,
+which argues that in Linux we could more easily see
+how we should write code to run across platforms.
+We remember realising in particular that a device name
+should be a string of chars.
+Device names in Dos & Win were less arbitrary.
+</p>
+
+<p>
+We released the 2002/04/09 edition: Dos only, source may be lost, first hints of Linux:<br>
+<a href="20020409/">20020409/</a>
+</p>
+
+<p>
+We released a Win NT/ 2K/ XP only edition, years ago, only by email reflector not by http.
+</p>
+
+<p>
+We released a Dos only edition sometime before that, only by person-to-person email.
+</p>
+
+<hr>
+
+<p>
+Last updated Saturday, December 21, 2002 by <a href="mailto:p.lavarre@ieee.org">p.lavarre@ieee.org</a>
+</p>
+
+<p>
+<a href="index.html">Home</a>
+</p>
+
+</body>
+</html>

@@ -1,0 +1,279 @@
+<html>
+<head>
+<title>FTP Is</title>
+<style type="text/css">
+body { font-family: sans-serif; }
+pre { font-family: monospace; }
+</style>
+</head>
+<body bgcolor="#FFFFFF">
+
+<p>
+<a href="../index.html">PLScsi Home</a>
+</p>
+
+<p>
+Last updated Wednesday, January 1, 2002 by <a href="mailto:p.lavarre@ieee.org">p.lavarre@ieee.org</a>
+</p>
+
+<h1>FTP Is</h1>
+
+<p>
+Four Q&A on FTP, converted to Html from the text note
+found at the end of the
+"Thursday, January 17, 2002" edition of
+FtpClient.java:
+</a>
+</p>
+
+<p>
+<strong>1) Why did we write yet another Ftp client?</strong>
+</p>
+
+<p>
+For fun, for education, and to give us an easy way to copy just the
+different portion of a folder of folders, to the web from the Java
+platform of our choice.
+</p>
+
+<p>
+Alternatives we rejected included:
+</p>
+
+<blockquote>
+<p>
+        classic command-line `ftp`
+</p>
+
+<blockquote>
+<p>
+(can't put just files that are newer or more different)<br>
+(can't put/get folders of folders)<br>
+(can't echo the mailto PASS of USER anonymous,<br>
+&nbsp; &nbsp; &nbsp;
+without also echoing our firewall's ACCT password)<br>
+(can't substitute PASV/EPSV for PORT/EPRT per rfc1579)
+</p>
+</blockquote>
+
+<p>
+        <a href="http://java.sun.com/j2se/1.4.1/docs/api/java/net/URL.html">
+java.net.URL</a>("ftp://...")
+</p>
+
+<blockquote>
+<p>
+                (can't put)
+</p>
+</blockquote>
+
+<p>
+        `javap <a href="http://java.sun.com/products/jdk/faq/faq-sun-packages.html">
+sun.net.ftp.FtpClient</a>`
+</p>
+
+<blockquote>
+<p>
+                (less well documented and distributed than java.net)<br>
+                (rumoured to be imprecise in protocol)<br>
+                (lacks a main method)
+</p>
+</blockquote>
+
+<p>
+        <a href=http://www.rfc-editor.org/rfc/rfc1350.txt">
+http://www.rfc-editor.org/rfc/rfc1350.txt</a> (TFtp)
+</p>
+
+<blockquote>
+<p>
+                (tftp can't put/get folders)
+</p>
+</blockquote>
+
+<p>
+        <a href="http://www.rfc-editor.org/rfc/rfc913.txt">
+http://www.rfc-editor.org/rfc/rfc913.txt</a> (SFtp)
+</p>
+
+<blockquote>
+<p>
+                (fun but ...)<br>
+                (not line-buffered: eol is NUL rather than CR LF)<br>
+                (no provision for including NUL in path names)
+</p>
+</blockquote>
+</blockquote>
+
+<p>
+<strong>2) In writing our Ftp client, we found helpful:</strong>
+</p>
+
+<blockquote>
+<p>
+        <a href="http://java.sun.com/docs/books/tutorial/networking/index.html">
+http://java.sun.com/docs/books/tutorial/networking/index.html</a>
+</p>
+
+<p>
+        <a href="http://groups.google.com/groups?group=comp.protocols.tcp-ip">
+news://comp.protocols.tcp-ip</a><br>
+        <a href="http://www.itprc.com/tcpipfaq/default.htm">
+http://www.itprc.com/tcpipfaq/default.htm</a>
+</p>
+
+<p>
+        <a href="http://groups.google.com/groups?group=comp.lang.java.programmer">
+news://comp.lang.java.programmer</a><br>
+        <a href="http://www.afu.com/javafaq.html">
+http://www.afu.com/javafaq.html</a>
+</p>
+</blockquote>
+
+<p>
+<strong>3) To find rfc's relevant to Ftp client design we recommend:</strong>
+</p>
+
+<blockquote>
+<p>
+        <a href="http://www.rfc-editor.org/rfcsearch.html">
+http://www.rfc-editor.org/rfcsearch.html</a>
+</p>
+<blockquote>
+<p>
+                SEARCH: file transfer protocol<br>
+                Search: RFC<br>
+                Search Results Link to: HTTP<br>
+                Match: EntireWord<br>
+                Results Per Page: All
+</p>
+</blockquote>
+
+<p>
+We also recommend searching for just "ftp" as well as "file transfer protocol":
+we regretfully report
+that these two searches found many of the same but a few different rfc's for us.
+</p>
+</blockquote>
+
+<p>
+<strong>4) In January 2002, we found most relevant these rfc's:</strong>
+</p>
+
+<blockquote>
+<p>
+        <a href="http://www.ietf.org/internet-drafts/draft-ietf-ftpext-mlst-13.txt">
+http://www.ietf.org/internet-drafts/draft-ietf-ftpext-mlst-13.txt</a><br>
+                Extensions to FTP<br>
+                Expires November 2001: Internet Draft
+</p>
+
+<p>
+        <a href="http://www.ietf.org/rfc/rfc2640.txt">
+http://www.ietf.org/rfc/rfc2640.txt</a><br>
+                Internationalization of the File Transfer Protocol<br>
+                July 1999: Proposed Standard
+</p>
+
+<p>
+        <a href="http://www.ietf.org/rfc/rfc2577.txt">
+http://www.ietf.org/rfc/rfc2577.txt</a><br>
+                FTP Security Considerations<br>
+                May 1999: Informational<br>
+</p>
+
+<p>
+        <a href="http://www.ietf.org/rfc/rfc2428.txt">
+http://www.ietf.org/rfc/rfc2428.txt</a><br>
+                FTP Extensions for IPv6 and NATs<br>
+                September 1998: Proposed Standard
+</p>
+
+<p>
+        <a href="http://www.ietf.org/rfc/rfc2396.txt">
+http://www.ietf.org/rfc/rfc2396.txt</a><br>
+                Uniform Resource Identifiers (URI): Generic Syntax<br>
+                        2.4.1. [%XX] Escaped Encoding<br>
+                August 1998: Draft Standard
+</p>
+
+<p>
+        <a href="http://www.ietf.org/rfc/rfc2389.txt">
+http://www.ietf.org/rfc/rfc2389.txt</a><br>
+                Feature negotiation mechanism for the File Transfer Protocol<br>
+                August 1998: Proposed Standard
+</p>
+
+<p>
+        <a href="http://www.ietf.org/rfc/rfc2151.txt">
+http://www.ietf.org/rfc/rfc2151.txt</a><br>
+                A Primer On Internet and TCP/IP Tools and Utilities<br>
+                        4.2. FTP<br>
+                June 1997: Informational
+</p>
+
+<p>
+        <a href="http://www.rfc-editor.org/rfc/rfc1738.txt">
+http://www.rfc-editor.org/rfc/rfc1738.txt</a><br>
+                Uniform Resource Locators (URL)<br>
+                        3.2. FTP<br>
+                December 1994: Proposed Standard
+</p>
+
+<p>
+        <a href="http://www.ietf.org/rfc/rfc1579.txt">
+http://www.ietf.org/rfc/rfc1579.txt</a><br>
+                Firewall-Friendly FTP<br>
+                February 1994: Informational
+</p>
+
+<p>
+        <a href="http://www.ietf.org/rfc/rfc1123.txt">
+http://www.ietf.org/rfc/rfc1123.txt</a><br>
+                Requirements for Internet Hosts -- Application and Support<br>
+                        4.1  File Transfer Protocol -- FTP<br>
+                October 1989: Standard
+</p>
+
+<p>
+        <a href="http://www.ietf.org/rfc/rfc959.txt">
+http://www.ietf.org/rfc/rfc959.txt</a><br>
+                File Transfer Protocol (FTP)<br>
+                October 1985: Standard
+</p>
+
+<p>
+        <a href="http://www.ietf.org/rfc/rfc854.txt">
+http://www.ietf.org/rfc/rfc854.txt</a><br>
+                Telnet Protocol Specification<br>
+                May 1983:Standard
+</p>
+
+<p>
+        <a href="http://www.ietf.org/rfc/rfc624.txt">
+http://www.ietf.org/rfc/rfc624.txt</a><br>
+                Comments on the File Transfer Protocol<br>
+                February 1974
+</p>
+
+<p>
+        <a href="http://www.ietf.org/rfc/rfc542.txt">
+http://www.ietf.org/rfc/rfc542.txt</a><br>
+                File Transfer Protocol for the ARPA Network<br>
+                August 1973
+</p>
+</blockquote>
+
+<p>
+Ftp goes further back in time but quickly becomes less recognisable.
+Before the rfc542 of 1973, the only REPLY_0YZ is 000.  Before
+the rfc354 of July 1972, the commands are unprintable opcodes,
+rather than three/four char corruptions of English.
+</p>
+
+<p>
+Last updated Wednesday, January 1, 2002 by <a href="mailto:p.lavarre@ieee.org">p.lavarre@ieee.org</a>
+</p>
+
+</body>
+</html>

@@ -1,0 +1,303 @@
+<html>
+
+<head>
+<title>PLScsi for Windows</title>
+<style type="text/css">
+body { font-family: sans-serif; }
+pre { font-family: monospace; }
+</style>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p>
+<a href="index.html">Home</a> &nbsp; &nbsp; &nbsp;
+<a href="linux.html">Linux</a> &nbsp; &nbsp; &nbsp;
+Windows &nbsp; &nbsp; &nbsp;
+<a href="dos.html">Dos</a> &nbsp; &nbsp; &nbsp;
+<a href="mac.html">Mac</a>
+</p>
+
+<p>
+Last updated Wednesday, February 12, 2003 by <a href="mailto:p.lavarre@ieee.org">p.lavarre@ieee.org</a>
+</p>
+
+<h1>PLScsi for Windows</h1>
+
+<p>
+For Windows 95/98/ME NT/2K/XP ...
+</p>
+
+<p>
+<strong>Documentation:</strong>
+</p>
+<blockquote>
+<p>
+<a href="news.html">Our News</a>
+</p><p>
+<a href="why.html">Why Bother With PLScsi</a>
+</p><p>
+<a href="syntax.html">The Syntax of a SCSI Command Line</a>
+</p>
+</blockquote>
+
+<p>
+<strong>Application:</strong>
+</p>
+<blockquote>
+<p>
+<a href="2002/09/22/win/plscsi.exe">2002/09/22/win/plscsi.exe</a>
+= the `plscsi` application, ready to run,
+except please backup before running it
+</p>
+</blockquote>
+
+<p>
+<strong>Source Code:</strong>
+</p>
+<blockquote>
+<p>
+<a href="2002/09/22/plscsi.zip">2002/09/22/plscsi.zip</a>
+= `make` the `plscsi` application
+</p><p>
+<a href="2002/09/22/sptx.cpp.txt">2002/09/22/sptx.cpp.txt</a>
+= just the .c that makes <strong>DeviceIoControl</strong> talk like SCSI elsewhere
+</p><p>
+<a href="2002/09/22/winaspi.cpp.txt">2002/09/22/winaspi.cpp.txt</a>
+= just the .c that makes <strong>Wnaspi32.dll</strong> talk like SCSI elsewhere
+</p><p>
+<a href="2002/09/22/scsistub.cpp.txt">2002/09/22/scsistub.cpp.txt</a>
+= example .c for &quot;write once, talk anywhere&quot; with SCSI
+</p><p>
+<u>src/storage/class/spti/</u>
+= example .c from Microsoft :(seemingly not on the web):
+</p>
+</blockquote>
+
+<p>
+<strong>Related Tools:</strong>
+</p>
+<blockquote>
+<p>
+<a href="tools/mingw.html">tools/mingw.html</a>
+= free `make` and `gcc` you can use in place of Microsoft Visual C++
+</p><p>
+Format<br>
+FDisk, DiskManager<br>
+<a href="20020416/winmedbg.txt">
+Win 9X/ME Debug</a>,
+<a href="http://www.geocities.com/thestarman3/asm/debug/debug.htm">
+much discussed</a>
+<br>
+<a href="http://www.microsoft.com/ddk/debugging/installx86.asp">WinDbg</a>
+since <a href="20020416/win2kdbg.txt">
+classic Debug doesn't work well in Win NT/2K/XP</a>
+</p><p>
+<a href="http://www.osr.com/resources_downloads.shtml">
+http://www.osr.com/resources_downloads.shtml</a><br>
+<a href="http://www.osr.com/files/devicetree_v28.zip">
+http://www.osr.com/files/devicetree_v28.zip</a>
+</p><p>
+<a href="http://www.bustrace.com/downloads/index.htm">
+http://www.bustrace.com/downloads/index.htm</a><br>
+<a href="http://www.bustrace.com/products/guid_explorer.htm">
+guidexp.exe
+</a>
+</p><p>
+<a href="http://www.bit-net.com/~rmiller/scu.html">
+scu</a>
+a SCSI Command Utility
+</p>
+</blockquote>
+
+<p>
+<strong>Win NT/2K/XP Links:</strong>
+</p>
+<blockquote>
+<p>
+<u>ntddk/inc/ntddscsi.h</u>
+= the main .h of DeviceIoControl (seemingly not on the web)
+</p><blockquote><p>
+<a href="ntddk/inc/ntddscsi.h.txt">ntddk/inc/ntddscsi.h</a>
+= a fragmentary and obsolete but local and small copy
+</p></blockquote><p>
+Windows DDK: <a href="http://msdn.microsoft.com/library/en-us/buses/hh/buses/scsi_struct_3qnm.asp">
+System Support for Buses: DeviceIoControl struct SCSI_PASS_THROUGH_DIRECT</a>
+</p><p>
+Windows DDK: <a href="http://msdn.microsoft.com/library/en-us/buses/hh/buses/scsi_struct_34tu.asp">
+System Support for Buses: DeviceIoControl struct SCSI_PASS_THROUGH</a>
+</p><p>
+Windows DDK: <a href="http://msdn.microsoft.com/library/en-us/storage/hh/storage/k307_59yq.asp">
+Storage Devices: DeviceIoControl dwIoControlCode IOCTL_SCSI_PASS_THROUGH_DIRECT</a>
+</p><p>
+Windows DDK: <a href="http://msdn.microsoft.com/library/en-us/storage/hh/storage/k307_4x0y.asp">
+Storage Devices: DeviceIoControl dwIoControlCode IOCTL_SCSI_PASS_THROUGH</a>
+</p><p>
+Microsoft: <a href="http://support.microsoft.com/?kbid=813908">
+SCSI Pass-Through Mode Sense Command May Crash the Computer</a>
+[--please required]
+</p><p>
+Microsoft: <a href="http://support.microsoft.com/?kbid=259573">
+SCSI Pass Through Fails with Invalid User Buffer Error</a> [-X Sptd -i 1 (or -X Sptd -o 1)]
+</p><p>
+Microsoft: [Administrator Privilege]
+<a href="http://support.microsoft.com/?kbid=241374">
+Required for SCSI Pass Through Requests</a>
+</p><p>
+<a href="http://support.microsoft.com/search/default.aspx?Query=scsi+pass+through">
+Microsoft Re SCSI Pass Through</a>
+</p><p>
+Platform SDK: <a href="http://msdn.microsoft.com/library/en-us/fileio/base/creating_a_backup_application.asp">
+Storage: Creating a Backup Application</a> i.e. talking with \\.\TAPE0 and friends
+</p><p>
+Microsoft: <a href="http://msdn.microsoft.com/library/en-us/iosguide/hh/iosguide/iosguide95_0fu1.asp">
+Windows NT IOCTL Unavailable with Windows 95</a> [also Win 98/ME]
+</p>
+</blockquote>
+
+<p>
+<strong>Win 95/98/ME Links:</strong>
+</p>
+<blockquote>
+<p>
+<a href="http://www.zianet.com/jgray/dat/files/aspisdk.exe">Adaptec ASPI SDK</a> (1,566,545 bytes)
+</p><blockquote><p>
+<a href="http://www.zianet.com/jgray/dat/files/aspi32.pdf">aspisdk/docs/aspi32.pdf</a> (190,777 bytes, November 6, 2001)
+</p><p>
+<a href="aspisdk/docs/aspi32.pdf">aspisdk/docs/aspi32.pdf</a> (local, 100,676 bytes, July 1, 1998)
+</p><p>
+<a href="aspisdk/include/wnaspi32.h.txt">aspisdk/include/wnaspi32.h.txt</a>
+= an obsolete but local copy of the main .h of ASPI
+</p><p>
+<u>ntddk/inc/ddk/srb.h</u>
+</p><p>
+Microsoft: <a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/buses/hh/buses/scsi_struct_0hte.asp">
+ASPI struct SCSI_REQUEST_BLOCK</a>
+</p><p>
+Windows DDK: <a href="http://msdn.microsoft.com/library/en-us/wmeother/hh/wmeother/storage_5ny0.asp">
+ASPI for Win32</a>
+</p></blockquote><p>
+</p><p>
+Microsoft: <a href="http://support.microsoft.com/?kbid=182542">
+ASPI on Windows NT Is Not Supported by Microsoft</a> [nor Win 2K/XP]
+</p>
+</blockquote>
+
+<p>
+<strong>Frequently asked questions</strong> include:
+</p>
+<blockquote>
+
+<p>
+<strong>1: Success looks like what?</strong>
+</p><p>
+<pre>
+C:\> plscsi -w
+set PLSCSI=\\.\C:       // @ IBM-DJSA -230             JS6O maybe
+set PLSCSI=\\.\D:       // @ IBM-DJSA -230             JS6O maybe
+set PLSCSI=\\.\E:       // @ LG       DVD-ROM DRN8080B 1.11
+set PLSCSI=0.0.0        // @ IBM-DJSA -230             JS6O maybe
+set PLSCSI=1.0.0        // @ LG       DVD-ROM DRN8080B 1.11
+
+C:\> set PLSCSI=\\.\E:
+
+> plscsi -v
+x 00000000 12 00:00:00 24 00 .. .. .. .. .. .. .. .. .. .. "R@@@$@"
+x 00000000 05:80:00:31 5B:00:00:00 4C:47:20:20 20:20:20:20 "E@@1[@@@LG      "
+x 00000010 44:56:44:2D 52:4F:4D:20 44:52:4E:38 30:38:30:42 "DVD-ROM DRN8080B"
+x 00000020 31:2E:31:31 .. .. .. .. .. .. .. .. .. .. .. .. "1.11"
+set PLSCSI=\\.\E:       // @ LG       DVD-ROM DRN8080B 1.11
+// 0 = plscsi.main exit int
+
+C:\>
+</pre>
+</p><p>
+Note:
+Here the -X Sptx partition names \\.\C: and \\.D: and the -X Aspi name 0.0.0 all name the same device.
+</p><p>
+Note:
+Here the "maybe" suffix tells us cryptically that plscsi -v of \\.\C: or \\.\D:
+would show that the Microsoft SCSI to ATA translator has
+scrambled (in fact zeroed) the offset 4 additionalLength.
+</p>
+
+<p>
+<strong>2: Device not found?</strong>
+</p><p>
+In Win NT/2K/XP, the 09/22 release doesn't list names like <strong>\\.\TAPE0</strong> for you,
+but they work if you try them (as shown, with no trailing colon).
+</p><p>
+In Win NT/2K/XP, devices sometimes do and sometimes don't also appear listed
+with ASPI devices names (e.g. "1.0.0" as well as "\\.\E:").
+We don't yet understand why.
+Part of the answer is whether Wnaspi32.dll exists: Microsoft doesn't include it in Win NT/2K/XP.
+Part of the answer is that FireWire & USB devices never appear with ASPI device names in Win NT/2K/XP.
+When they do appear, rumour tells us the timeouts are wrong (doubled? halved?).
+</p><p>
+In Win 95/98/ME, internal ATA hard drives sometimes do and sometimes don't appear listed.
+We don't yet understand why.
+</p>
+
+<p>																
+<strong>3: Sometimes the gcc link fails?</strong>
+</p><p>
+By Microsoft Visual C++ convention.
+our source file names should end in <strong>.cpp</strong>,
+else the compiler chokes over assign-where-declared.
+By contradictory Gnu conventions,
+our source file names should end in <strong>.c</strong>,
+but they actually end in .cpp, whoops.
+Make sure you don't mix gcc with g++.
+Use just one or the other, preferably always gcc, both to compile and to link.
+</p>
+
+<p>
+<strong>4: Root privilege required?</strong>
+</p><p>
+<strong>Yes</strong>, in Win NT/2K/XP, for `plscsi --whichever` to see any devices,
+you need Administrator privilege,
+per Windows usage tip
+<a href="http://support.microsoft.com/?kbid=241374">241374</a>.
+</p>
+
+<p>
+<strong>5: Win chokes over -X Sptd -i 1, or -X Sptd -o 1?</strong>
+</p><p>
+Yes, with these options, Win NT/2K/XP DeviceIoControl says:
+x6F8 (1784) &quot;The supplied user buffer is not valid for the requested operation&quot;,
+per Windows usage tip
+<a href="http://support.microsoft.com/?kbid=259573">259573</a>.
+</p>
+
+<p>
+<strong>6: Sometimes I have to say --please?</strong>
+</p><p>
+Yes, to try op x1A ModeSense(6) for less than 8, you have to say --please,
+per Windows usage tip
+<a href="http://support.microsoft.com/?kbid=813908">813908</a>.
+Seemingly what takes down the kernel is byte 4 of -x $cdb being between 1 and 7,
+when byte 0 of -x $cdb was x1A ModeSense6
+but Windows wants to pass thru x5A ModeSense10 instead.
+Our 2002/09/22/ release only knows to require you to say --please
+if you also specify -i between 1 and 7.
+</p>
+
+<p>
+<strong>7: Write once, breaks everywhere?</strong>
+</p><p>
+See
+<a href="news.html">Our News</a>
+</p>
+
+</blockquote>
+
+<p>
+Last updated Wednesday, February 12, 2003 by <a href="mailto:p.lavarre@ieee.org">p.lavarre@ieee.org</a>
+</p>
+
+<p>
+<a href="index.html">Home</a>
+</p>
+
+</body>
+</html>

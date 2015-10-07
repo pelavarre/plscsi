@@ -1,0 +1,252 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+  <style type="text/css">
+body { font-family: sans-serif; }
+pre { font-family: monospace; }
+  </style>
+  <title>PLScsi Tools gccscsi</title>
+</head>
+<body>
+<h1><a href="../../">PLScsi/</a>&nbsp;&nbsp; <a href="../">Tools/</a>&nbsp;&nbsp;
+gccscsi/ </h1>
+<p> Updated on Tuesday, September 23, 2003 </p>
+<table style="text-align: left; width: 100%;" border="0" cellspacing="2"
+ cellpadding="2">
+  <tbody>
+    <tr>
+      <td style="vertical-align: top;">
+      <p>&nbsp;</p>
+      <p>See Also:</p>
+      <p><a
+ href="http://www.google.com/search?q=link:members.aol.com/plscsi/tools/gccscsi/">links&nbsp;to&nbsp;this&nbsp;page</a></p>
+      <p><a href="../../">plscsi/</a>&nbsp;&nbsp;<a href="../">tools/</a>&nbsp;&nbsp;<a
+ href="../knoppix/">knoppix/</a></p>
+      <p><a href="http://www.torque.net/sg/">linux&nbsp;sg&nbsp;utils</a></p>
+      <p>&nbsp;</p>
+      <p>Download:</p>
+      <p><a href="gccscsi.tar.bz2">gccscsi.tar.bz2</a></p>
+      <p><a href="gccscsi.zip">gccscsi.zip</a></p>
+      <p>&nbsp;</p>
+      <p>Preview: </p>
+      <p><a href="gccscsi.h.txt">gccscsi.h.txt</a></p>
+      <p><a href="gccscsi.c.txt">gccscsi.c.txt</a> </p>
+      <p>&nbsp; </p>
+      <p>Help re Linux Scsi Pass Thru:
+      </p>
+      <p><a href="lscsi.c.txt">lscsi.c.txt</a></p>
+      <p><a href="http://www.tldp.org/HOWTO/SCSI-Generic-HOWTO/">sg&nbsp;how&nbsp;to</a> </p>
+      <p><a
+ href="http://groups.google.com/groups?q=nlo.lists.kernelnewbies">kernelnewbies&nbsp;google&nbsp;archive</a></p>
+      <p><a href="http://marc.theaimsgroup.com/?l=kernelnewbies">kernelnewbies&nbsp;marc&nbsp;archive</a></p>
+      <p>&nbsp;</p>
+      <p>Free gcc/g++ for Windows:</p>
+      <p><a
+ href="http://prdownloads.sf.net/mingw/MinGW-3.1.0-1.exe?download">MinGW&nbsp;3.1.0-1
+gcc/g++&nbsp;for&nbsp;Windows</a></p>
+      <p><a href="http://www.mingw.org">MinGW&nbsp;Home&nbsp;Page</a></p>
+      <p>&nbsp;</p>
+      <p>Help re Microsoft Scsi Pass Thru:
+      </p>
+      <p><a href="ntddscsi.hpp.txt">ntddscsi.hpp.txt</a></p>
+      <p><a href="wscsi.cpp.txt">wscsi.cpp.txt</a></p>
+      <p><a
+ href="http://www.google.com/search?as_q=IOCTL_SCSI_PASS_THROUGH+site:msdn.microsoft.com">google&nbsp;Microsoft
+IOCTL_SCSI_PASS_THROUGH</a></p>
+      <p><a
+ href="http://www.google.com/search?as_q=scsi+pass+through+site:msdn.microsoft.com">google&nbsp;Microsoft
+scsi&nbsp;pass&nbsp;through</a></p>
+      </td>
+      <td style="vertical-align: top;">
+      <p> </p>
+      <p>Please do back up your hard drive before you run gccscsi,
+rather than having gccscsi demonstrate your need to backup more often.
+      </p>
+      <p>As yet we support <span style="font-weight: bold;">Linux and
+Win 2K/XP</span>, please ask if you want a port to Win 9X/ME, or Dos, or
+Mac OF (boot Forth), or Mac OS X, or elsewhere.</p>
+      <hr style="width: 100%; height: 2px;">
+      <h1>1. Readme</h1>
+      <p>Our <span style="font-weight: bold;">gccscsi.h defines a
+macro language for speaking Scsi to devices</span>, much as the Unix
+standard curses.h defines a macro language for drawing characters on a
+glass teletype.
+      </p>
+      <p>Programs you write with gccscsi aren't quite as concise as
+PLScsi scripts, but they run as fast when compiled as do Forth scripts
+i.e. faster than bash or .bat scripts.
+      </p>
+      <p>Three examples:
+      </p>
+      <p style="font-weight: bold;">1) To print the name <span
+ style="font-weight: normal;">of the Linux device "/dev/sg0":</span></p>
+      <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+ style="font-weight: bold;">ds</span>("/dev/sg0");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
+ style="font-weight: bold;">i</span>(0x24); <span
+ style="font-weight: bold;">y</span>("\x12\x00\x00\x00\x24\x00");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; puts(&amp;(chars())[8]);</p>
+      <p><span style="font-weight: bold;">2) To count the blocks per
+disk</span> (and bytes per block) of the Windows device "\\\\.\\V:":</p>
+      <div style="margin-left: 40px;">ds("\\\\.\\V:");<br>
+      <span style="font-weight: bold;">v</span>(); <span
+ style="font-weight: bold;">i</span>(8); <span
+ style="font-weight: bold;">y</span>("\x25\x00" "\x00\x00\x00\x00"
+"\x00" "\x00\x00" "\x00" );</div>
+      <p><span style="font-weight: bold;">3) To write</span> an x800
+block at lba (logical block address) 0:</p>
+      <div style="margin-left: 40px;">
+      <p>ds("\\\\.\\V:");<br>
+      <span style="font-weight: bold;">o</span>(0x800); <span
+ style="font-weight: bold;">y</span>("\x2A\x00" "\x00\x00\x10\x00"
+"\x00" "\x00\x01" "\x00" );</p>
+      </div>
+      <p>For more examples, see the Download link in the upper left<span
+ style="font-weight: bold;"><br>
+      </span></p>
+      <hr style="width: 100%; height: 2px;">
+      <h1>2. Man Page</h1>
+      <p>You may prefer reading the source code i.e. <a
+ href="gccscsi.h.txt">gccscsi.h.txt</a>, but here more prominently is a
+quick reference:<span style="font-weight: bold;"><br>
+      </span></p>
+      <p><span style="font-weight: bold;">q</span>() = quiet<br>
+      <span style="font-weight: bold;">v</span>() = verbose<br>
+      <span style="font-weight: bold;">if_v</span>() ... = if (verbose)
+...<br>
+      </p>
+      <p> </p>
+      <p> </p>
+      <p><span style="font-weight: bold;">ds</span>(D) = device select<br>
+      <span style="font-weight: bold;">qui</span>() = quit = exit
+noisily<br>
+      </p>
+      <p><span style="font-weight: bold;">i</span>(I) = copy I data
+bytes In from the device<br>
+      <span style="font-weight: bold;">o</span>(O) = copy O data bytes
+Out to the device<br>
+      <span style="font-weight: bold;">y</span>(C) = send cdb C, exit
+noisily unless totally ok<br>
+      <span style="font-weight: bold;">n</span>(C) = send cdb C, exit
+noisily unless not totally ok<br>
+      <span style="font-weight: bold;">yn</span>(c) = send cdb C,
+return zero if totally ok, else nonzero<br>
+      </p>
+      <p><span style="font-weight: bold;">chars</span>() = the data<br>
+      <span style="font-weight: bold;">chars_max_length</span>() = max
+bytes/cdb<br>
+      <span style="font-weight: bold;">chars_length</span>() = count of
+bytes that were copied In<br>
+      </p>
+      <p><span style="font-weight: bold;">h</span>() = height = maxLba
++ 1 = count of blocks<br>
+      <span style="font-weight: bold;">w</span>() = width = bytes per
+block<br>
+      <span style="font-weight: bold;">h_is</span>(H) = say height is H<br>
+      <span style="font-weight: bold;">w_is</span>(W) = say width is W
+      </p>
+      <hr style="width: 100%; height: 2px;">
+      <h1>3. FAQ</h1>
+      <p> </p>
+      <p> </p>
+      <h2>3.1 Why</h2>
+      <h3>Q1. Why did the Scsi pass thru fail?</h3>
+      <p>gccscsi distinguishes Four ways a Scsi pass thru may fail:</p>
+      <ol>
+        <li>
+          <p>The system may refuse the pass thru, e.g. if you lack root
+privilege, or if a timeout occurs.</p>
+        </li>
+        <li>
+          <p>The system may claim to have copied more data bytes
+than&nbsp;allotted, or less than zero bytes.</p>
+        </li>
+        <li>
+          <p>The system may claim to have copied more auto sense bytes
+than&nbsp;allotted, or less than zero bytes.</p>
+        </li>
+        <li>
+          <p>An auto sensed failure may have occurred, with or without
+copying all data bytes allotted.</p>
+        </li>
+      </ol>
+      <h2>3.2 Where</h2>
+      <h3>Q1. Say again where the free gcc/g++ for Windows is?</h3>
+<p>
+Of the many too many MinGW packages, the one that gives you just
+gcc/g++ is the one labelled just "MinGW".&nbsp; Perhaps because of spam
+defences, we're told our feedback re this and other issues hasn't yet
+reached any of the MinGW folk.</p>
+      <p>
+"Cygwin" has more history as a free gcc/g++ for Windows, but builds
+.exe that don't run unless you also install a Cygwin dll.&nbsp; Also as
+yet we have failed to find a Cygwin install that works without a network
+connection.</p>
+      <h3>Q2. Haven't I seen these bugs before?
+      </h3>
+The three source files lscsi.c wscsi.cpp ntddscsi.hpp appear in roughly
+equivalent, almost identical form in PLScsi/ Tools/ pldd and in example
+found in ftp:// of loading lscsi.so into GForth.
+      <p> </p>
+      <p> </p>
+      <hr style="width: 100%; height: 2px;">
+      <h1>4. Bugs</h1>
+      <p>We allude cryptically to our known bugs in the commentary that
+begins each .h or .c file.</p>
+      <p>In the September 20, 2003 version we said: </p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">gccscsi.h:
+      </span></p>
+      <p style="margin-left: 80px;">ds(devname) doesn't yet move the
+focus to another device
+      </p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">gccscsi.cpp:</span> </p>
+      <p style="margin-left: 80px;">gs_exit not yet included in all
+exit via &lt;stdlib.h&gt; atexit
+      </p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">lscsi.c/
+wscsi.cpp:</span> </p>
+      <p style="margin-left: 80px;">Never ask to time out in less than
+28 hours,</p>
+      <p style="margin-left: 80px;">Never ask for other than x12 sense
+bytes. </p>
+      <p style="margin-left: 80px;">Never return sense bytes, always
+print in hex to stderr. </p>
+      <p style="margin-left: 80px;">Refuse to pass thru more than xFF
+bytes of CDB. </p>
+      <p style="margin-left: 80px;">Limit bytes per CDB to what caller
+can allocate virtually. </p>
+      <p style="margin-left: 80px;">Don't bother to filter duplicate
+lines from dumps. </p>
+      <p style="margin-left: 40px;"><span style="font-weight: bold;">wscsi.cpp:</span> </p>
+      <p style="margin-left: 80px;">Never use
+IOCTL_SCSI_PASS_THROUGH_DIRECT, not even for &gt; 16 KiB data.</p>
+      <p style="margin-left: 80px;">Take the time to invoke calloc and
+free once per cdb.</p>
+      <p style="margin-left: 80px;">64-bit Windows may choke via cast
+between int and HANDLE thru __int64.</p>
+      <hr style="width: 100%; height: 2px;">
+      <h1>5. Changes</h1>
+      <p><span style="font-weight: bold;">FUTURE</span>:</p>
+      <p> Please write <a href="mailto:p.lavarre@ieee.org">Pat LaVarre</a>
+to tell us if you wish already we also supported:</p>
+      <p> </p>
+      <div style="margin-left: 40px;">
+      <p>Win 2K/SP IOCTL_SCSI_PASS_THROUGH_DIRECT above 16 KiB/cdb</p>
+      <p> Win 9X/ME, or Dos, or Mac OF (boot Forth), or Mac OS X
+      </p>
+      </div>
+      <p> <span style="font-weight: bold;">Saturday, September 20, 2003 </span></p>
+      <p><span style="font-weight: bold;"> </span></p>
+      <p style="margin-left: 40px;"> First published! </p>
+      <p style="margin-left: 40px;"> </p>
+      </td>
+    </tr>
+    <tr>
+    </tr>
+  </tbody>
+</table>
+<p> Posted by <a href="mailto:p.lavarre@ieee.org">Pat LaVarre5</a> </p>
+</body>
+</html>

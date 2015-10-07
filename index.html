@@ -1,0 +1,121 @@
+<html>
+<head>
+<style type="text/css">   body { font-family: sans-serif; }   pre { font-family: monospace; }   </style>
+<title>PLScsi</title>
+</head>
+<body>
+<p>Sunday, May 23, 2010</p>
+<h1><a href="http://www.bswd.com/cornucop.htm">Storage/</a> PLScsi/</h1>
+<table style="text-align: left; width: 100%;" border="0" cellspacing="2" cellpadding="2">
+<tbody>
+
+    <tr>
+      <td style="vertical-align: top;">
+      <p>Downloads:</p>
+      <p><a href="dos/">dos/</a></p>
+      <p><a href="linux/">linux/</a></p>
+      <p><a href="mac/">mac/</a></p>
+      <p><a href="solaris/">solaris/</a> </p>
+      <p><a href="windows/">windows/</a></p>
+      <p><br>
+Doc:</p>
+      <p><a href="authors/">authors/</a></p>
+      <p><a href="changes/">changes/</a></p>
+      <p><a href="faq/">faq/</a></p>
+      <p><a href="manual/">manual/</a></p>
+      <p><a href="tools/">tools/</a> </p>
+      <p><a href="tutorial/">tutorial/</a></p>
+      <p><br>
+Related:</p>
+      <p><a href="gui/">gui/</a></p>
+      <p><a href="pldd/">pldd/</a></p>
+      <p><a href="gccscsi/">gccscsi/</a></p>
+      <p><br>
+Similar:</p>
+      <p><a href="http://www.winsim.com/diskid32/diskid32.html">diskid32</a></p>
+      <p><a href="http://sg.danny.cz/sg/sg3_utils.html">sg_raw</a></p>
+      <p><br>
+See Also: </p>
+      <p><a
+ href="http://www.google.com/search?q=link:home.comcast.net/~plavarre/plscsi/">links&nbsp;to&nbsp;this&nbsp;page</a>
+      </p>
+      <p><a href="index.20081025.html">previous edition</a> </p>
+      <p><a href="http://www.bustrace.com/support/links.htm">bustrace.com</a></p>
+	<p><a href="http://sg.danny.cz/sg/tools.html">sg.danny.cz</a></p>
+      </td>
+      <td style="vertical-align: top;">
+      <p>&nbsp;</p>
+      </td>
+      <td style="vertical-align: top;">
+      <p>Welcome, bienvenido,
+bienvenue. </p>
+      <p>PLScsi makes talking SCSI to your storage as easy as typing AT
+commands
+into a dial-up modem.<br>
+      </p>
+      <p>PLScsi makes each SCSI fragment as interactive as a C
+interpreter could, taking the SCSI CDB in hex from the command line and
+streaming the binary data in/out thru stdout or stdin.
+Think: { open(); ioctl{}; close(); exit(); }</p>
+      </p>
+      <p>Here you can find: </p>
+      <div style="margin-left: 40px;">1. the PLScsi application,<br>
+      <br>
+2. its source code in C,<br>
+      <br>
+3. links to gratis C compilers, and<br>
+      <br>
+4. technical discussion of SCSI pass thru.<br>
+      </div>
+      <p>PLScsi can work for you if you have some combination of:</p>
+      <p style="margin-left: 40px;">Storage Devices:</p>
+      <div style="margin-left: 80px;">Flash, DVD, CD, HDD, Tape </div>
+      <p style="margin-left: 40px;">Operating Systems:</p>
+      <p style="margin-left: 80px;">Dos, Linux 2.6/ 2.4, Mac OS X/ OF,
+Solaris, Windows Vista/ XP/ 2K, Windows ME/ 98/ 95/ 3.1</p>
+      <p style="margin-left: 40px;">Cabling:</p>
+      <p style="margin-left: 80px;">CardBus, FireWire (aka iLink aka
+1394), PATA/ PATAPI (aka parallel IDE aka ATA/ ATAPI), PC Card, SATA/ SATAPI, SAS,
+SPI (aka parallel SCSI), USB </p>
+      <p>PLScsi can work for you at several levels:</p>
+      <div style="margin-left: 40px;">gui = graphical user interface
+(not yet complete)
+      <p>pldd = i/o streams conventionally shattered into
+multiple CDB's, described by a command line resembling Unix dd </p>
+      <p>plscsi = single arbitrary CDB's, described by a command line</p>
+      <p>gccscsi = single arbitrary CDB's, described by C code</p>
+      </div>
+      <p>Learning to use a tool like PLScsi will probably
+remind you of
+the need
+to backup often. If you won't enjoy that lesson, then please
+don't
+pick up the tool. Potential
+side effects include kernel panics, destroyed discs,
+destroyed devices, and even imperceptibly subtle forms of data
+corruption. Storage devices differ from modems first by being
+designed to record your mistakes permanently, and second by defining
+some commands or sequences of commands to mean self-destruct. </p>
+      <span style="font-weight: bold;"></span>
+
+<p>
+We have not yet heard of anyone hurt by trying `plscsi -w`,
+which lists all devices to which your O.S. has given one of the well-known SCSI device names.
+We do recommend first trying `plscsi -w` only while no drives are sleeping, spinning up, or spinning down.
+</p>
+
+<p>
+Please write
+to share your experience of PLScsi.
+As our "posted by" mailto links suggest, please include the word plscsi in the Subject line of your e-mail.
+Blank subject lines and vague subject lines like "hi" help lose your e-mail as if it were spam.
+</p>
+
+      </td>
+    </tr>
+
+</tbody>
+</table>
+<p>Posted by <a href="mailto:p.lavarre@ieee.org?Subject=plscsi/">Pat LaVarre</a></p>
+</body>
+</html>

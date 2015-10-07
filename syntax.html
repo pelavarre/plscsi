@@ -1,0 +1,286 @@
+<html>
+
+<head>
+<title>PLScsi Syntax</title>
+<style type="text/css">
+body { font-family: sans-serif; }
+pre { font-family: monospace; }
+</style>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p>
+<a href="index.html">Home</a> &nbsp; &nbsp; &nbsp;
+<a href="linux.html">Linux</a> &nbsp; &nbsp; &nbsp;
+<a href="windows.html">Windows</a> &nbsp; &nbsp; &nbsp;
+<a href="dos.html">Dos</a> &nbsp; &nbsp; &nbsp;
+<a href="mac.html">Mac</a>
+</p>
+
+<p>
+Last updated Saturday, December 7, 2002 by <a href="mailto:p.lavarre@ieee.org">p.lavarre@ieee.org</a>.
+</p>
+
+<h1>PLScsi Syntax</h1>
+
+<p>We say the syntax of a SCSI command line is:</p>
+<blockquote>
+<p>
+plscsi [-$option...] [$name...] [// $comment...]
+</p>
+</blockquote>
+
+<p>
+We present examples in our essay titled
+<a href="why.html">Why Bother With PLScsi</a>.
+Commonly, the first command issued is:
+</p>
+<blockquote>
+<p>
+plscsi -w
+</p>
+</blockquote>
+
+<p>
+`plscsi -h` will remind you of all the options we offer.
+To let you talk SCSI, we define:
+</p>
+<blockquote>
+    <table border="1" cellpadding="5" cellspacing="1">
+        <tr>
+            <td>-w</td>
+            <td>&nbsp;</td>
+            <td>--whichever</td>
+            <td>&nbsp;</td>
+            <td>list the well-known path names now connected to SCSI devices</td>
+        </tr>
+        <tr>
+            <td>-h</td>
+            <td>&nbsp;</td>
+            <td>--help</td>
+            <td>&nbsp;</td>
+            <td>say much, but less than all, of what you see here</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>-x</td>
+            <td>&nbsp;</td>
+            <td>--x $cdb</td>
+            <td>&nbsp;</td>
+            <td>specify a specific Cdb in hex</td>
+        </tr>
+        <tr>
+            <td>-i</td>
+            <td>&nbsp;</td>
+            <td>--in $length</td>
+            <td>&nbsp;</td>
+            <td>ask to copy In from the device
+            at most a length of bytes</td>
+        </tr>
+        <tr>
+            <td>-o</td>
+            <td>&nbsp;</td>
+            <td>--out $length</td>
+            <td>&nbsp;</td>
+            <td>ask to copy Out to the
+            device at most a length of bytes</td>
+        </tr>
+        <tr>
+            <td>-a</td>
+            <td>&nbsp;</td>
+            <td>--align $page $offset</td>
+            <td>&nbsp;</td>
+            <td>mis/align the data to a $page
+            size by an $offset in bytes</td>
+        </tr>
+        <tr>
+            <td>-d</td>
+            <td>&nbsp;</td>
+            <td>--data $length</td>
+            <td>&nbsp;</td>
+            <td>allot &amp; trace more than just the --in or --out $length of data</td>
+        </tr>
+    </table>
+</blockquote>
+
+<p>
+If possible, to let you decide more of the command, we define:
+</p>
+<blockquote>
+    <table border="1" cellpadding="5" cellspacing="1">
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>-X sense $length</td>
+            <td>&nbsp;</td>
+            <td>limit the count of sense bytes copied In</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>-X time $s $ns</td>
+            <td>&nbsp;</td>
+            <td>limit the seconds &amp; nanoseconds spent talking</td>
+        </tr>
+    </table>
+</blockquote>
+
+<p>
+When a merely conventional shell is your scripting engine, we also define:
+</p>
+<blockquote>
+    <table border="1" cellpadding="5" cellspacing="1">
+        <tr>
+            <td>-v</td>
+            <td>&nbsp;</td>
+            <td>--verbose</td>
+            <td>&nbsp;</td>
+            <td>trace more to stderr</td>
+        </tr>
+        <tr>
+            <td>-q</td>
+            <td>&nbsp;</td>
+            <td>--quiet</td>
+            <td>&nbsp;</td>
+            <td>trace less to stderr</td>
+        </tr>
+        <tr>
+            <td>-p</td>
+            <td>&nbsp;</td>
+            <td>--please</td>
+            <td>&nbsp;</td>
+            <td>allow -x 04 Format, unusual
+            Cdb lengths, etc.</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>-f</td>
+            <td>&nbsp;</td>
+            <td>--from $fileName</td>
+            <td>&nbsp;</td>
+            <td>copy the data Out to the device from $fileName (&quot;&quot; means stdin)</td>
+        </tr>
+        <tr>
+            <td>-l</td>
+            <td>&nbsp;</td>
+            <td>--loop</td>
+            <td>&nbsp;</td>
+            <td>talk to an imaginary loopback
+            device</td>
+        </tr>
+        <tr>
+            <td>-t</td>
+            <td>&nbsp;</td>
+            <td>--to $fileName</td>
+            <td>&nbsp;</td>
+            <td>copy the data In from the device to the $fileName (&quot;&quot; means stdout)</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>-c</td>
+            <td>&nbsp;</td>
+            <td>--compare</td>
+            <td>&nbsp;</td>
+            <td>compare data supposedly copied
+            Out with the data copied In</td>
+        </tr>
+        <tr>
+            <td>-y</td>
+            <td>&nbsp;</td>
+            <td>--yes</td>
+            <td>&nbsp;</td>
+            <td>repeat while not ok, until ok</td>
+        </tr>
+        <tr>
+            <td>-n</td>
+            <td>&nbsp;</td>
+            <td>--no</td>
+            <td>&nbsp;</td>
+            <td>repeat while ok, until not ok</td>
+        </tr>
+    </table>
+</blockquote>
+
+<p>
+Always, we let you ask for a specific form of transport:
+</p>
+<blockquote>
+    <table border="1" cellpadding="5" cellspacing="1">
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>-X aspi</td>
+            <td>&nbsp;</td>
+            <td>talk only thru Microsoft Windows ASPI</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>-X dos</td>
+            <td>&nbsp;</td>
+            <td>talk only thru Microsoft DOS ASPI</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>-X sgio</td>
+            <td>&nbsp;</td>
+            <td>talk only thru Linux ioctl SG_IO</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>-X spt</td>
+            <td>&nbsp;</td>
+            <td>talk only thru Windows DeviceIoControl IOCTL_SCSI_PASS_THROUGH</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>-X sptd</td>
+            <td>&nbsp;</td>
+            <td>talk only thru Windows DeviceIoControl IOCTL_SCSI_PASS_THROUGH_DIRECT</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>-X sptx</td>
+            <td>&nbsp;</td>
+            <td>talk only thru Windows DeviceIoControl, -X Spt if <= 16KiB, else -X Sptd</td>
+        </tr>
+    </table>
+</blockquote>
+
+<p>
+If possible, we define residue accurate to the byte in the exit code.
+</p>
+
+<p>
+Last updated Saturday, December 7, 2002 by <a href="mailto:p.lavarre@ieee.org">p.lavarre@ieee.org</a>.
+</p>
+
+<p>
+<a href="index.html">Home</a>
+</p>
+
+</body>
+</html>

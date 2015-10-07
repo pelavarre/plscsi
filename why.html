@@ -1,0 +1,194 @@
+<html>
+
+<head>
+<title>PLScsi Why</title>
+<style type="text/css">
+body { font-family: sans-serif; }
+pre { font-family: monospace; }
+</style>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<p>
+<a href="index.html">Home</a> &nbsp; &nbsp; &nbsp;
+<a href="linux.html">Linux</a> &nbsp; &nbsp; &nbsp;
+<a href="windows.html">Windows</a> &nbsp; &nbsp; &nbsp;
+<a href="dos.html">Dos</a> &nbsp; &nbsp; &nbsp;
+<a href="mac.html">Mac</a>
+</p>
+
+<p>
+Last updated Friday, December 20, 2002 by <a href="mailto:p.lavarre@ieee.org">p.lavarre@ieee.org</a>
+</p>
+
+<h1>Why Bother With PLScsi?</h1>
+
+<p>
+Why Bother With PLScsi?
+</p>
+<p>
+Because a SCSI command line <strong>connects you directly</strong> with your SCSI device.
+</p>
+
+<p>
+Typing out SCSI command lines is like typing out AT commands to send to a modem.
+Except SCSI devices often remember much of what you do,
+so with SCSI devices one mistake can last forever.
+With a SCSI command line,
+you can do anything your O.S. does with the device,
+but only one step at a time.
+</p>
+
+<p>
+<a href="syntax.html">
+Technically speaking</a>,
+you can independently decide
+the Cdb,
+the max byte length of data to copy which way,
+the alignment of data,
+the max byte length of sense data to copy In,
+the max time to let the command run,
+etc.
+</p>
+
+<p>
+For example,
+if you have an ATA disk drive, you can read and write.
+If you have an ATAPI CD-ROM, you can eject the disk.
+And so on.
+Talking this way can confuse your O.S. only if it assumes only it talks to the device, as most do, indeed.
+That is, talking this way can confuse most any O.S. in ways that teach you something of the internals.
+</p>
+
+<p>
+What you say in a SCSI command line,
+passes through other software and hardware to your device.
+You need more custom software if you want to control that other stuff.
+For example, you can't tell PLScsi
+to change the timing of a data burst mode,
+or to poll a masked interrupt.
+</p>
+
+<p>
+When we say you connect with a "SCSI device",
+we mean at least any device connected in a way
+that replies coherently to the command -x &quot;12 0 0 0 24 0&quot; -i x24
+i.e. an op x12 Inquiry for up to x24 bytes.
+Typically, your ATA boot hard drive, your ATAPI CD-ROM drive,
+and your FireWire and USB drives all answer this description,
+as well as any classic parallel SCSI peripherals you may have.
+</p>
+
+<p>
+For example,
+from <a href="devices.html">SCSI device specifications</a>, we know to try:
+</p>
+<blockquote>
+<p>
+plscsi -vx "12 0 0 0 24 0" -i x24 // Inquiry for up to x24 bytes
+<br>
+plscsi -v // (shorthand for the same thing)
+</p><p>
+plscsi -vx "00 0 0 0 0 0" // TestUnitReady
+<br>
+plscsi -vx "1E 0 0 0 01 0" // PreventMediumRemoval
+<br>
+plscsi -vx "1E 0 0 0 00 0" // AllowMediumRemoval
+<br>
+plscsi -vx "25 0 0:0:0:0 0 0:0 0" -i 8 // ReadCapacity (expressed as maxLba)
+<br>
+plscsi -vx "1B 0 0 0 02 0" // Eject
+<br>
+plscsi -vx "1B 0 0 0 00 0" // Stop
+</p>
+</blockquote>
+
+<p>
+And then when we want to see how things break, we can try less common commands:
+</p>
+<blockquote>
+<p>
+plscsi -vx "12 0 0 0 00 0" // Inquiry for no bytes i.e. TestUnitReady without disturbing unit attentions
+<br>
+plscsi -vx "12 0 0 0 80 0" -i xC0 -d xFF // Inquiry for up to x80 bytes, expliclitly permitting as many as xC0 bytes, tracing xFF bytes
+<br>
+plscsi -pvx "1A 08 3F 0 04 0" -i 4 // ModeSense6 of just header data
+<br>
+plscsi -vx "28 0 00:00:00:00 0 00:01 0" -i x800 // Read Lba 0 assuming 1 block <= x800 bytes
+</p>
+</blockquote>
+
+<p>
+We recommend you learn to use our SCSI command line
+by playing with removable media drives:
+floppies, CD/DVD, flash, whatever.
+We're thinking when you play with removable media
+you can afford to replace any media you destroy accidentally.
+</p>
+
+<p>
+We recommend you backup before using PLScsi
+primarily because, if you mistype the name of a device,
+you may end up writing the wrong storage.
+But also, anything you say may confuse your O.S.,
+which might then crash.
+In particular, you can crash an O.S.
+by accidentally abusing the freedom you have to specify the Cdb
+independently of the count and direction of data to copy.
+</p>
+
+<p>
+Example results that maybe we should comment more extensively include:
+</p>
+<blockquote>
+<p>
+<a href="20020316/win98inq.txt">20020316/win98inq.txt</a>
+<br>
+<a href="20020327/winmecd.txt">20020327/winmecd.txt</a>
+<br>
+<a href="20020328/oddwinme.txt">20020328/oddwinme.txt</a>
+</p>
+</blockquote>
+
+<p>
+A SCSI command line is a diagnostic tool:
+a tool less familiar, more easily misused, more potentially destructive,
+and therefore differently useful than the &quot;related tools&quot; of:
+</p>
+
+<blockquote>
+<p>
+<a href="linux.html">Linux</a> &nbsp; &nbsp; &nbsp;
+<a href="windows.html">Windows</a> &nbsp; &nbsp; &nbsp;
+<a href="dos.html">Dos</a> &nbsp; &nbsp; &nbsp;
+<a href="mac.html">Mac</a>
+</p>
+</blockquote>
+
+<p>
+Those other tools can only erase (every partition of) your hard drive,
+and some of them even ask you for permission first.
+But with a SCSI command line, you can smash the media (or the firmware flash rom)
+of your boot hard drive badly enough to require repair by the manufacturer
+(perhaps at your expense, since you've voided the warranty).
+</p>
+
+<p>
+For example, accidentally entering just the 13 chars of the command `plscsi -pwx04` might smash every connected SCSI drive for you. We're not sure just because we haven't tried that much.
+</p>
+
+<p>
+Like we say elsewhere: "Please do backup your hard drive before you run PLScsi, rather than living thru the pain of having PLScsi teach you that you need to backup more often." You should trust PLScsi less than those other tools, both because PLScsi is a sharper tool and because less people have used PLScsi.
+</p>
+
+<p>
+Last updated Friday, December 20, 2002 by <a href="mailto:p.lavarre@ieee.org">p.lavarre@ieee.org</a>
+</p>
+
+<p>
+<a href="index.html">Home</a>
+</p>
+
+</body>
+</html>

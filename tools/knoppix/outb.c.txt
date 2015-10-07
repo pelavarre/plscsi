@@ -1,0 +1,20 @@
+#include <stdio.h>
+#include <string.h>
+
+#include <sys/io.h>
+
+int main(int argc, char * argv[])
+{
+	int port = 0;
+	int value = 0;
+
+	--argc; ++argv;
+	if (argc != 2) return __LINE__;
+	if (sscanf(argv[0], "x%X", &value) != 1) return __LINE__;
+	if (sscanf(argv[1], "x%X", &port) != 1) return __LINE__;
+
+	if (ioperm(port, 1, 1)) return __LINE__;
+
+	outb(value, port);
+	return 0;
+}

@@ -1,0 +1,205 @@
+/* wscsi.c
+ *
+ * Implement Scsi pass thru in Linux per "pldd.h".
+ *
+ * Talk thru a Win DeviceIoControl IOCTL_SCSI_PASS_THROUGH connection to a
+ * device, available in Win NT/2K/XP.
+ *
+ * Bugs include:
+ *
+ *	Never use IOCTL_SCSI_PASS_THROUGH_DIRECT, not even for > 16 KiB data.
+ *	Take the time to invoke calloc and free once per cdb.
+ *	64-bit Windows may choke via cast between int and HANDLE thru __int64.
+ *
+ *	Never ask to time out in less than 28 hours,
+ *	Never ask for other than x12 sense bytes.
+ *	Never return sense bytes, always print in hex to stderr.
+ *	Refuse to pass thru more than xFF bytes of CDB.
+ *	Limit bytes per CDB to what caller can allocate virtually.
+ *	Don't bother to filter duplicate lines from dumps.
+ *
+ * See also: http://lxr.linux.no/source/Documentation/CodingStyle
+ */
+
+#include "windows.h"
+#include "ntddscsi.hpp"
+
+#include <stddef.h>
+#include <stdio.h>
+
+#include "gccscsi.h"
+
+void sp_dump(char const * chars, int length);
+
+#define MAX_CDB_LENGTH 0xFF
+#define MAX_SENSE_LENGTH 0xFF
+
+typedef struct ScsiPassAll ScsiPassAll;
+struct ScsiPassAll
+	{
+	SCSI_PASS_THROUGH spt;
+	UCHAR	ucMoreCdbChars[MAX_CDB_LENGTH]; /* 16 more than necessary */
+	DWORD	dwBeforeSense; /* exist to dword-align ucSense */
+	UCHAR	ucSense[MAX_SENSE_LENGTH];
+	DWORD	dwBeforeData; /* exist to dword-align ucData */
+	UCHAR	ucData[1]; /* 1 more than necessary */
+/*	UCHAR	ucData[...]; // dynamically sized */
+	};
+
+// __declspec(dllexport)
+int sp_open(char const * name)
+{
+
+	LPCTSTR lpFileName =		name;
+	DWORD dwDesiredAccess =		(GENERIC_WRITE | GENERIC_READ);
+	DWORD dwShareMode =		(FILE_SHARE_WRITE | FILE_SHARE_READ);
+	LPSECURITY_ATTRIBUTES lpSecurityAttributes = NULL;
+	DWORD dwCreationDispostion =	OPEN_EXISTING;
+	DWORD dwFlagsAndAttributes =	FILE_ATTRIBUTE_NORMAL;
+	HANDLE hTemplateFile =		NULL;
+
+	HANDLE hCreateFile = CreateFile(
+		lpFileName, dwDesiredAccess, dwShareMode, lpSecurityAttributes,
+		dwCreationDispostion, dwFlagsAndAttributes, hTemplateFile);
+
+	if (hCreateFile == INVALID_HANDLE_VALUE) return 0;
+
+	return (int) /* (__int64) */ hCreateFile;
+}
+
+// __declspec(dllexport)
+int sp_close(int dev)
+{
+	HANDLE hCreateFile = (HANDLE) /* (__int64) */ dev;
+
+	BOOL fCloseHandle = CloseHandle(hCreateFile);
+
+	return (fCloseHandle ? 0 : -1);
+}
+
+// __declspec(dllexport)
+int sp_say(int dev, char const * cdbChars, int cdbLength, char * outChars, char * inChars, int maxLength)
+{
+	HANDLE hCreateFile = (HANDLE) /* (__int64) */ dev;
+	int maxSenseLength = 0x12;
+	int minSeconds = (28 * 60 * 60); /* 28 * 60 * 60 s = 28 hours = 1.125 days */
+
+	int spaLength = (sizeof (ScsiPassAll) + maxLength);
+	ScsiPassAll * spa = (ScsiPassAll *) calloc(1, spaLength);
+	if (spa == NULL) return -__LINE__;
+
+	SCSI_PASS_THROUGH * spt = &spa->spt;
+	(void) memset(spt, '\0', sizeof *spt); /* unnecessary */
+	spt->Length = sizeof *spt;
+
+	(void) memmove(&spt->Cdb[0], cdbChars, cdbLength);
+	spt->CdbLength = (UCHAR) cdbLength;
+
+	spt->DataBufferOffset = offsetof(ScsiPassAll, ucData);
+	spt->DataTransferLength = maxLength;
+	if (outChars != NULL) {
+		spt->DataIn = SCSI_IOCTL_DATA_OUT; /* often 0 */
+		inChars = outChars;
+	} else if (inChars != NULL) {
+		spt->DataIn = SCSI_IOCTL_DATA_IN; /* often 1 */
+		outChars = inChars;
+	} else {
+		spt->DataIn = SCSI_IOCTL_DATA_OUT; /* often 0 */
+	}
+
+	spt->SenseInfoOffset = offsetof(ScsiPassAll, ucSense);
+	spt->SenseInfoLength = (UCHAR) maxSenseLength;
+
+	spt->TimeOutValue = minSeconds;
+//	spt->PathId = spt->TargetId = spt->Lun = 0;
+//	spt->ScsiStatus;
+
+	(void) memmove(&spa->ucData[0], outChars, maxLength); /* unnecessary if IN */
+
+	DWORD dwIoControlCode = IOCTL_SCSI_PASS_THROUGH; /* often x4D004 */
+	LPVOID lpInBuffer = spa;
+	DWORD nInBufferSize = spaLength; /* unnecessarily large if IN */
+	LPOVERLAPPED lpOverlapped = NULL; /* trust CreateFile of hDevice was without FILE_FLAG_OVERLAPPED */
+
+	LPVOID lpOutBuffer = lpInBuffer;
+	DWORD nOutBufferSize = spaLength; /* unnecessarily large if OUT */
+	DWORD dwBytesReturned = 0;
+	LPDWORD lpBytesReturned = &dwBytesReturned;
+
+//	sp_dump(cdbChars, cdbLength);
+
+	BOOL fDeviceIoControl = DeviceIoControl(hCreateFile, dwIoControlCode,
+		lpInBuffer, nInBufferSize,
+		lpOutBuffer, nOutBufferSize,
+		lpBytesReturned,
+		lpOverlapped);
+	int residue = (maxLength - spt->DataTransferLength);
+	int senseLength = spt->SenseInfoLength;
+
+	(void) memmove(inChars, &spa->ucData[0], maxLength); /* unnecessary if OUT */
+
+	int exitInt = residue;
+	int sptScsiStatus = spt->ScsiStatus;
+	if (!fDeviceIoControl) {
+		exitInt = -__LINE__;
+	} else if ((residue < 0) || (residue < exitInt)) {
+		exitInt = -__LINE__; /* residue out of range */
+	} else if (sptScsiStatus == 0x00) { /* x00 = Good */
+		;
+	} else if (sptScsiStatus == 0x02)  { /* x02 = Auto-sense-able */
+		if ((senseLength < 0) || (maxSenseLength < senseLength)) {
+			exitInt = -__LINE__; /* sense length out of range */
+		} else { /* blech */
+			sp_dump(cdbChars, cdbLength);
+			sp_dump((char const *) &spa->ucSense[0], senseLength); /* blech */
+			exitInt = ((residue == 0) ? -1 : -2); /* sense plus */
+		}
+	} else {
+		exitInt = -__LINE__;
+	}
+
+	(void) free(spa);
+	return exitInt;
+}
+
+static void sp_dumpx(char const * chars, int length)
+{
+	int absent = (0x10 - length);
+	(void) fprintf(stderr, "x ");
+	while (0 < length--) {
+		int i = ((*chars++) & 0xFF);
+		(void) fprintf(stderr, "%02X ", i);
+	}
+	while (0 < absent--) {
+		(void) fprintf(stderr, ".. ");
+	}
+}
+
+static void sp_dumpq(char const * chars, int length)
+{
+	(void) fprintf(stderr, "\"");
+	while (0 < length--) {
+		int i = ((*chars++) & 0xFF);
+		i &= 0x7F;
+		if ((i < 0x20) || (0x7E < i)) i ^= 0x40;
+		(void) fprintf(stderr, "%c", i);
+	}
+	(void) fprintf(stderr, "\"");
+}
+
+void sp_dump(char const * chars, int length)
+{
+	int index = 0;
+	while (index < length) {
+		char const * first = &chars[index];
+		int line = (length - index);
+		if (0x10 < line) line = 0x10;
+		sp_dumpx(first, line);
+		sp_dumpq(first, line);
+		(void) fprintf(stderr, "\n");
+		index += line;
+	}
+}
+
+/* end of file */
+

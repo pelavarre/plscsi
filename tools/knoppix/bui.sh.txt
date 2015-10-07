@@ -1,0 +1,7 @@
+bzip2 -dc /mnt/hda5/lx/linux-2.4.20.tar.bz2 | tar -xvf -
+cd linux-2.4.20
+make mrproper
+make xconfig
+make dep
+make bzImage
+make modules

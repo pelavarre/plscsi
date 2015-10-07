@@ -1,0 +1,34 @@
+#define _LARGEFILE64_SOURCE
+
+#include <assert.h>
+#include <errno.h>
+#include <stdio.h>
+
+int main(int argc, char *argv[]) {
+	--argc; ++argv;
+
+	long long ll = 0x123456789LL;
+	sscanf(argv[2], "x%llX", &ll);
+	--ll;
+	printf("x%llX = %lld\n", ll, ll);
+
+	FILE * fi = fopen64(argv[0], argv[1]);
+	assert(fi != NULL);
+	int ii = fseeko64(fi, ll, SEEK_SET); 
+	if (ii != 0) {
+		int ij = errno;
+		perror("fseeko64");
+		fprintf(stderr, "%d = x%X\n", ij, ij);
+	}
+	assert(ii == 0);
+	ii = fputc(0, fi);
+	assert(0 <= ii);
+	// char chars[1] = { '\0' };
+	// size_t si = fwrite(&chars[0], 1, 1, fi);
+	// assert(si == 1);
+	ii = fclose(fi);
+	assert(ii == 0);
+
+	return 0;
+}
+
